@@ -1,0 +1,26 @@
+{
+    "name": "neatplex/phprouter",
+    "description": "Free PHP router for neat and powerful projects!",
+    "keywords": ["Router", "PHP", "Free", "Library", "Neat", "Powerful"],
+    "homepage": "http://neatplex.com/package/phprouter",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Milad Rahimi",
+            "email": "info@miladrahimi.com",
+            "homepage": "http://miladrahimi.com",
+			"role": "Developer"
+        }
+    ],
+	"support": {
+        "email": "info@neatplex.com",
+        "source": "https://github.com/neatplex/phprouter/issues"
+    },
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-4": {"Neatplex\\": "src/Neatplex/"}
+    }
+}
