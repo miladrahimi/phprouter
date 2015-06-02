@@ -1,7 +1,7 @@
 # PHPRouter
 Free PHP router for neat and powerful projects!
 
-## Neatplex PHPRouter Documentation
+## Documentation
 Neatplex PHPRouter is a free, neat, powerful and stand-alone router for PHP projects.
 It's inspired by Laravel framework router and appropriate for no-framework projects and brand new frameworks.
 
@@ -640,8 +640,8 @@ Template engines usually returns HTML output, so you can return it in your contr
 Next Neatplex package is a template engine, if you cannot wait awhile,
 so [Mustache template engine](https://github.com/bobthecow/mustache.php) is a good option.
 
-## Contributor
+## Contributors
 *	[Milad Rahimi](http://miladrahimi.com)
 
 ## License
-PHPLogger is created by [Neatplex](http://neatplex.com) and released under the [MIT License](http://opensource.org/licenses/mit-license.php).
+PHPRouter is created by [Neatplex](http://neatplex.com) and released under the [MIT License](http://opensource.org/licenses/mit-license.php).
