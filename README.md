@@ -22,6 +22,7 @@ For example when the URI is `/blog/post/93`, the router will call a method like 
 so the browser will display what this method returns.
 
 ### Installation
+#### Using Composer
 It's strongly recommended to use [Composer](http://getcomposer.org) to install Neatplex PHPRouter.
 If you are not familiar with Composer, just read
 [How to use composer in php projects](http://www.miladrahimi.com/blog/2015/04/12/how-to-use-composer-in-php-projects)
@@ -41,8 +42,11 @@ and update your dependencies:
 ```
 php composer.phar update
 ```
-If you don't want to use Composer (I really don't know why!) you can download the package and put its folder into
-your application folders.
+#### Using VendorLoader
+If you don't use Composer you can use [VendorLoader](https://github.com/miladrahimi/vendorloader).
+This package namespaces are match with directories so it's easy to use VendorLoader.
+#### Manually
+You can download the package and put its folder into your application folders.
 Of course in this case, your project has to follow [PSR-0](http://www.php-fig.org/psr/psr-0) or
 [PSR-4](http://www.php-fig.org/psr/psr-4) standards for autoloading application classes and packages.
 Or you may simply include all the package files
