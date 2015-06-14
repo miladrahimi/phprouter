@@ -1,8 +1,8 @@
 {
     "name": "neatplex/phprouter",
-    "description": "Free PHP router for neat and powerful projects!",
-    "keywords": ["Router", "PHP", "Free", "Library", "Neat", "Powerful"],
-    "homepage": "http://neatplex.com/package/phprouter",
+    "description": "Free PHP URL router for neat and powerful projects!",
+    "keywords": ["Router", "URL Router", "Routing", "URL Routing", "URL", "Route"],
+    "homepage": "http://phprouter.neatplex.com",
     "type": "library",
     "license": "MIT",
     "authors": [

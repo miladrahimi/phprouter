@@ -1,32 +1,34 @@
 # PHPRouter
-Free PHP router for neat and powerful projects!
+Free PHP URL router for neat and powerful projects!
 
 ## Documentation
-Neatplex PHPRouter is a free, neat, powerful and stand-alone router for PHP projects.
-It's inspired by Laravel framework router and appropriate for no-framework projects and brand new frameworks.
+PHPRouter is a free, neat, powerful and stand-alone URL router for PHP projects.
+It's inspired by [Laravel](http://laravel.com/docs/master/routing) routing system and
+appropriate for no-framework projects and brand new frameworks.
 
-### Routing
-Take a look at website URL pattern without router:
+### URL Routing
+URL Routing means mapping URLs to controllers.
+Consider following URL:
 ```
-http://example.com/blog.php?page_type=post&id=93
+http://example.com/index.php?section=blog&page_type=post&id=93
 ```
-And a website equipped with a router:
+The URL above is probably mapped to a controller which runs a code snippet like:
+```
+$post = new Blog\Post();
+$post->show(93);
+```
+Modern URL routers (like PHPRouter) provide full control on URL,
+So you can map a shorter URL like:
 ```
 http://example.com/blog/post/93
 ```
-But what happened and how?
-In the second website all user requests will be handled by one PHP file like `index.php`.
-The PHP file uses a router.
-The router checks the request URI and method then call appropriate function or method to respond the request.
-For example when the URI is `/blog/post/93`, the router will call a method like `$blog->showPost(93);`,
-so the browser will display what this method returns.
 
 ### Installation
 #### Using Composer
-It's strongly recommended to use [Composer](http://getcomposer.org) to install Neatplex PHPRouter.
-If you are not familiar with Composer, just read
+It's strongly recommended to use [Composer](http://getcomposer.org) to add PHPRouter to your application.
+If you are not familiar with Composer, The article
 [How to use composer in php projects](http://www.miladrahimi.com/blog/2015/04/12/how-to-use-composer-in-php-projects)
-article.
+can be useful.
 After installing Composer, go to your project directory and run following command there:
 ```
 php composer.phar require neatplex/phprouter
@@ -43,21 +45,18 @@ and update your dependencies:
 php composer.phar update
 ```
 #### Using VendorLoader
-If you don't use Composer you can use [VendorLoader](https://github.com/miladrahimi/vendorloader).
-This package namespaces are match with directories so it's easy to use VendorLoader.
+If you don't use Composer you may use [VendorLoader](https://github.com/miladrahimi/vendorloader).
+Copy `src` directory content in your application vendor directory,
+then include the `vendorloader.php` in your application.
 #### Manually
-You can download the package and put its folder into your application folders.
-Of course in this case, your project has to follow [PSR-0](http://www.php-fig.org/psr/psr-0) or
-[PSR-4](http://www.php-fig.org/psr/psr-4) standards for autoloading application classes and packages.
-Or you may simply include all the package files
-and prepend namespace using statements in the file you call the package
-methods (strongly not recommended).
+You can use your own autoloader as long as it follows [PSR-0](http://www.php-fig.org/psr/psr-0) or
+[PSR-4](http://www.php-fig.org/psr/psr-4) standards.
+In this case you can put `src` directory content in your vendor directory.
 
 ### Getting Started
-All of your website requests must be handled by one PHP file like `index.php`.
+All of your application requests must be handled by one PHP file like `index.php`.
 Edit the `.htaccess` file achieve this goal:
 ```
-## .htaccess file contents
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -65,104 +64,136 @@ RewriteRule ^.*$ index.php [PT,L]
 ```
 Now you can use `Router` class in the PHP file (here `index.php`) to route your application:
 ```
-// use this namespace
+// Use this namespace
 use Neatplex\PHPRouter\Router;
 
-// brand new Router object
+// Create brand new Router object
 $router = new Router();
 
-// match this function for home (GET method)
+// Map this function to home page
 $router->get("/", function () {
-    return "This is home!";
+    return "This is home page!";
 });
 
-// match this function for /blog URI (GET method)
+// Dispatch all matched routes and run!
+$router->dispatch();
+```
+
+### Basic Routing
+To buy more convenience, most of controllers in the examples are defined as closure.
+Of course, PHPRouter supports plenty of controller types which you will read in further sections.
+There are some simple routes below.
+```
+use Neatplex\PHPRouter\Router;
+
+$router = new Router();
+
+// Map this function to home page (GET method)
+$router->get("/", function () {
+    return "This is home page!";
+});
+
+// Map this function to /blog URI (GET method)
 $router->get("/blog", function () {
     return "This is blog!";
 });
 
-// dispatch all matched routes and run!
+// Map this function to /submit URI (POST method)
+$router->post("/submit", function () {
+    return "I'm supposed to catch posted data!";
+});
+
 $router->dispatch();
 ```
-*   The example above matches controller for home (`/`) and blog (`/blog`) pages.
-*   Both of controllers are closure functions.
-*   The `get()` method matches controllers for `GET` request methods.
+*   All of controllers above are closure functions.
+*   The `get()` method map controllers to `GET` request methods.
+*   The `post()` method map controllers to `POST` request methods.
 
-### POST and other request methods
-Both `get()` and `post()` methods in `Router` class are shortcuts to matching controller for `GET` and `POST` requests.
-But the main method is `match()` which you can use to match for all kind of request methods, as following example shows:
+### Request methods
+Both `get()` and `post()` methods in `Router` class are shortcuts for mapping controllers to `GET` and `POST` requests.
+The super method is `map()` which catches request method as its first argument.
 ```
 use Neatplex\PHPRouter\Router;
 
 $router = new Router();
 
-$router->match("GET", "/", function () {
+// Alias: $router->get();
+$router->map("GET", "/", function () {
     return "This is Home!";
 });
 
-$router->match("POST", "/post_data", function () {
+// Alias: $router->post();
+$router->map("POST", "/post_data", function () {
     return "Data updated!";
 });
 
-$router->match("PUT", "/put_data", function () {
+// PUT Request method
+$router->map("PUT", "/put_data", function () {
     return "Data uploaded!";
 });
 
-$router->match("DELETE", "/delete_data", function () {
+// DELETE Request method
+$router->map("DELETE", "/delete_data", function () {
     return "Data deleted!";
 });
 
 $router->dispatch();
 ```
 
-### Array of request methods
-Because of flexibility, All of `match()`, `get()`, `post()` and `any()` arguments
-are able to be an array except controller.
-For now we try array of request methods for `match()` method.
-For example following route will respond to `/` URI when the request is `GET`, `POST` or `DELETE`.
+### Multiple request methods
+The controller can be mapped to multiple request methods as following example demonstrates:
 ```
 use Neatplex\PHPRouter\Router;
 
 $router = new Router();
 
-$router->match(array("GET", "POST", "DELETE"), "/", function () {
+// Map to GET, POST and DELETE request methods
+$router->map(["GET", "POST", "DELETE"], "/", function () {
     return "Homepage for GET, POST and DELETE request methods!";
 });
 
 $router->dispatch();
 ```
+*   PHP >= 5.4 supports `[]` [syntax for array](http://php.net/manual/en/language.types.array.php).
+    you may use old `array()` syntax.
 
 ### Any request method
-Sometimes a controller can handle the URI regardless to its request method, so may try this:
+If the controller can respond to the route with any request method, you may try this method:
 ```
 use Neatplex\PHPRouter\Router;
 
 $router = new Router();
 
+// Respond to all request methods (GET, POST, PUT, etc)
 $router->any("/", function () {
-    return "This is Home! No matter what is the request method!";
+    return "This is Home! No matter what the request method is!";
 });
 
 $router->dispatch();
 ```
 
-### Array of routes
-Other argument which can be an array is `$route`.
-You can match some routes (and some request methods) with only one controller.
+### Multiple routes
+Array of routes is supported too. If the controller can respond to multiple routes,
+the method below may be useful to you.
 ```
 use Neatplex\PHPRouter\Router;
 
 $router = new Router();
 
-$router->match(array("GET", "POST"), array("/", "/home"), function () {
+$router->map(["GET", "POST"], ["/", "/home"], function () {
     return "Homepage for GET, POST and DELETE requests!";
 });
 
 $router->dispatch();
 ```
+*   The controller above will respond to these request methods and routes:
+    *   Method: `GET`   Route: `/`
+    *   Method: `GET`   Route: `/home`
+    *   Method: `POST`  Route: `/`
+    *   Method: `POST`  Route: `/home`
 
 ### Controllers
-Personally, I hate using closure as controller.
+Personally, I hate using closure as a controller.
 I believe a controller absolutely must be a method.
 However, following codes shows how to use all kind of controllers.
 ```
@@ -200,16 +231,17 @@ $router->get("/4", "Controller@method");
 $router->dispatch();
 ```
 
-### Do not forget namespaces!
-Because of MVC pattern, developers usually put controller classes in a directory and declare them with namespace.
-Current version of Neatplex PHPRouter doesn't recognize used namespaces, so you must pass them with class name.
-Check following example which `Post` class is declared with `Blog` namespace.
+### Controller class namespaces
+Because of MVC pattern, developers usually declare controllers with namespaces.
+Current version of PHPRouter doesn't recognize "used namespaces",
+so you have to pass them with the class names.
+See following example which `Post` class is declared with `Blog` namespace.
 ```
 use Neatplex\PHPRouter\Router;
 
 $router = new Router();
 
-$router->get("/post/{id}", 'Blog\Post@show');
+$router->get("/blog/posts", 'Blog\Post@all');
 
 $router->dispatch();
 ```
@@ -218,24 +250,24 @@ The `Post` class:
 <?php namespace Blog;
 
 class Post {
-    function show($id) {
-        return "Post " . $id;
+    function all() {
+        return "All posts";
     }
 }
 ```
 
-### Dynamic routes
-Of course! Router is build to help developers to handle dynamic routes easier than ever.
-So let's back to the first example, I mean this one:
+### Route parameters
+Router is build to help developers to handle dynamic routes easier than ever.
+Let's go back to the first example, I mean this one:
 ```
 http://example.com/blog/post/93
 ```
 The post ID (`93` in the example above) is variable.
-Actually we need to handle all the following pattern with one controller:
+Actually we need to handle all the routes with following pattern with only one controller:
 ```
 http://example.com/blog/post/{id}
 ```
-Don't worry if you use Neatplex PHPRouter!
+Don't worry while you use PHPRouter!
 Because you can handle it in the easiest way.
 Look at following example:
 ```
@@ -249,6 +281,7 @@ $router->get("/blog/post/{id}", function ($id) {
 
 $router->dispatch();
 ```
+
 Or you may use a method as the controller:
 ```
 class Blog
@@ -274,8 +307,8 @@ $router->dispatch();
 ### Optional Parameters
 You may consider one or some of parameters optional.
 In this example `id` is optional.
-If request URI has ID, it returns page ID.
-If request URI is without ID (`/page/`), it returns `All pages!`.
+If request URI had ID, it would return page with the caught ID.
+If request URI was without ID (`/page/`), it would return `All pages!`.
 ```
 use Neatplex\PHPRouter\Router;
 
@@ -289,10 +322,10 @@ $router->get("/page/{id?}", function ($id) {
 
 $router->dispatch();
 ```
-*   All parameters which hasn't value will be `null`.
+*   Parameters which hasn't any value will be `null`.
 
-In the example above to see all pages, user must visit `/page/`.
-You may want it to work for `/page` too.
+In the example above to see all pages, user must enter `/page/` URI.
+You may consider `/page` for this purpose too.
 To achieve that you can use array of routes or use following trick:
 ```
 use Neatplex\PHPRouter\Router;
@@ -307,12 +340,15 @@ $router->get("/page/?{id?}", function ($id) {
 
 $router->dispatch();
 ```
+*   `?` makes preceding character optional.
 
-### Customized route parameters with Regular Expression
-In default, route parameters can be everything (`[^/]+`).
+### More customized parameters
+In default, route parameters can be everything (`[^/]+` Regular Expression pattern).
 Sometimes the route parameter must be only a numeric value.
 Sometimes you need them to follow a complex pattern.
-No problem! You can define Regular Expression pattern for some or all of the route parameters.
+No problem! You can define
+[Regular Expression](http://www.regular-expressions.info/)
+pattern for some or all of the route parameters.
 ```
 use Neatplex\PHPRouter\Router;
 
@@ -334,7 +370,7 @@ $router->get("/user/{username}", function ($username) {
 
 $router->dispatch();
 ```
-*   No need to check if ID is a number of not, I will be a number, promise!
+*   No need to check if ID is a number of not, I will be a number, I promise!
 *   To avoid unwanted results, pattern group characters (`(` and `)`) are disabled.
 
 ### Request and Response objects
@@ -342,34 +378,94 @@ The Router passes two objects named `$request` and `$response` to the route cont
 Of course the controller must be considered to get them too.
 These objects help you in some cases.
 To get these object you must name them (one or both) in the controller parameters.
-Don't worry, Neatplex PHPRouter is enough flexible to don't care about order of controller parameters!
+Don't worry, PHPRouter is enough flexible to don't care about the order of controller parameters!
+#### Request object
+The URL:
+```
+http://example.com/blog/post/93?section=comments
+```
+The application routing section:
 ```
 use Neatplex\PHPRouter\Router;
 
 $router = new Router();
 
-$router->get("/page/{num}", function ($num, $request, $response) {
-
-    return "Page $num<br> User IP:" . $request->ip();
-
-    // All methods in $request
-    // $request->ip();
-    // $request->port();
-    // $request->method();
-    // $request->protocol();
-    // $request->uri();
-    // $request->queryString();
-    // $request->get(); // $_GET
-    // $request->port(); // $_POST
-
-    // All methods in $response
-    // $response->redirect();
-    // $response->render(); // include
-
+$router->get("/blog/post/{id}", function ($id, $request) {
+    echo $id . "<br>";
+    echo $request->getUrl() . "<br>";
+    echo $request->getUri() . "<br>";
+    echo $request->getWebsite() . "<br>";
+    echo $request->getPage() . "<br>";
+    echo $request->getQueryString() . "<br>";
+    echo $request->getBaseUri() . "<br>";
+    echo $request->getLocalUri() . "<br>";
+    echo $request->getMethod() . "<br>";
+    echo $request->getProtocol() . "<br>";
+    echo $request->getIP() . "<br>";
+    echo $request->getPort() . "<br>";
 });
 
 $router->dispatch();
 ```
+The output:
+```
+93
+example.com/blog/post/93?section=comments
+/blog/post/93?section=comments
+example.com
+/blog/post/93
+section=comments
+
+/blog/post/93
+GET
+HTTP/1.1
+127.0.0.1
+14889
+```
+
+Other methods:
+```
+// Return Previous URL (HTTP_REFERRER)
+$request->referer();
+// Following method will be discussed more!
+$request->get();
+$request->get("key");
+$request->post();
+$request->post("key");
+$request->cookie();
+$request->cookie("name");
+```
+
+#### Response object
+
+Response object manipulates the application HTTP response to the client. Here is an example:
+
+```
+use Neatplex\PHPRouter\Router;
+
+$router = new Router();
+
+$router->get("/fa", function ($response) {
+    $response->render("test.php");
+    $response->publish("Here is the published content!");
+});
+
+$router->dispatch();
+```
+The output:
+```
+This is test.php file content!
+Here is the published content!
+```
+Methods:
+```
+$response->publish($content);       // Publish string, array or object content
+$response->cookie($name,$value);    // Set cookie value (using PHP native setcookie() function)
+$response->redirect($to);           // Redirect to the new URL ($to)
+$response->render($file);           // Render PHP file (using PHP include syntax)
+$response->contents();              // Return current output 
+```
+
 If you use IDEs like PhpStorm, it'd be good practice not to omit `$request` and `$response` data types.
 Then your IDE can help you and provide auto-complete options.
 See example below:
@@ -387,9 +483,9 @@ $router->get("/page/{num}", function ($num, Request $request, Response $response
 $router->dispatch();
 ```
 
-### Access $_GET and $_POST
-Of course you can use the same `$_GET` and `$_POST` arrays.
-But it might neater and more beautiful to use `get()` and `post()` methods in `$request` object.
+### Access $_GET, $_POST and $_COOKIE
+Of course you can use the same `$_GET`, `$_POST` and `$_COOKIE` arrays.
+But it might neater and more beautiful to use the `$request` methods.
 Run following example for `http://example.com/user?id=93`:
 ```
 use Neatplex\PHPRouter\Router;
@@ -397,15 +493,51 @@ use Neatplex\PHPRouter\Router;
 $router = new Router();
 
 $router->get("/user", function ($request) {
-    return $request->get("id");
+    return $request->get("id"); // will publish "93"
 });
 
 $router->dispatch();
 ```
+#### GET
+The `get()` method in `$request` object is used to access GET parameters.
+Following example returns $_GET array when the `$key` parameter is absent.
+```
+$request->get();
+```
+But this time, it would return value of `id` parameter if it had existed:
+```
+$request->get("id");
+```
+#### POST
+The `post()` method in `$request` object is used to access POST parameters.
+Following example returns $_POST array when the `$key` parameter is absent.
+```
+$request->post();
+```
+But this time, it would return value of `id` parameter if it had existed:
+```
+$request->post("id");
+```
+#### COOKIE
+The `cookie()` method in `$request` object is used to access cookies.
+Following example returns all cookies (as an array) when the `$name` parameter is absent.
+```
+$request->cookie();
+```
+But this time, it would return value of `id` in cookies if it had existed:
+```
+$request->cookie("id");
+```
+The `cookie()` method in `$response` object is used to manipulate or write cookies.
+Following example shows the way it works:
+```
+$response->cookie("language","persian");
+```
+*   `$response->cookie()` arguments: `$name`, `$value`, `$expire`, `$path`, `$domain`, `$secure`, `$httponly`
 
 ### Redirection
 You can redirect the request with the php `header()` function.
-But if you are interested in using Neatplex PHPRouter methods, you may try this:
+But if you are interested in using PHPRouter methods, you may try this:
 ```
 use Neatplex\PHPRouter\Router;
 
@@ -418,8 +550,9 @@ $router->get("/old-page", function ($response) {
 $router->dispatch();
 ```
 *   The `redirect()` method will consider the **Base URI**.
+*   If you omit `$to` parameters, it will be `"/"` in default and it will redirect client to home.
 
-### Render PHP files
+### Rendering PHP files
 Sometimes the result you want to return is not plain texts or compiled PHP codes but it's a PHP file.
 No problem! you can use `render()` method in `$response` object as it's shown in the following example:
 ```
@@ -468,7 +601,9 @@ $router->dispatch();
 
 ### Groups
 It's the most exciting part! You can group your routes and set common options for them.
-In this version Neatplex PHPRouter supports common **middleware**, **prefix** and **postfix**.
+In this version PHPRouter supports common
+**middleware**, **domain**, **subdomain**, **prefix** and **postfix**.
+
 For example all of user control panel pages need authentication.
 So you can group all of them.
 ```
@@ -519,7 +654,7 @@ function authenticate($id, $response)
         $response->redirect("/login");
 }
 
-$options = array("middleware" => "authenticate", "prefix" => "/user"); // This line!
+$options = ["middleware" => "authenticate", "prefix" => "/user"]; // This line!
 
 $router->group($options, function (Router $router) { // And this line too!
 
@@ -541,12 +676,12 @@ $router->dispatch();
 ```
 *   The `middleware` element can be callable function, name of a function or method or array of them.
 *   The `prefix` and `postfix` elements are string, array of them is not permitted.
-*   You may put `$router` data type (`Router`) in the group body parameters.
+*   You may put `$router` data type (`Router`) in the group body parameters to help your IDE.
 *   If you use this way of injecting Router object to the group body,
     the object's name in the body will be `$router` always.
 
-You may use PHP `use` statement.
-It's useful specially when your Router object name is not `$router`.
+You may use PHP `use` syntax to access the router object.
+It's useful specially when the router object name is not `$router`!
 ```
 use Neatplex\PHPRouter\Router;
 
@@ -560,7 +695,7 @@ function authenticate($id, $response)
     }
 }
 
-$options = array("middleware" => "authenticate", "prefix" => "/user");
+$options = ["middleware" => "authenticate", "prefix" => "/user"];
 
 $my_router->group($options, function () use ($my_router) { // This line!
 
@@ -574,7 +709,80 @@ $my_router->group($options, function () use ($my_router) { // This line!
 
 $router->dispatch();
 ```
-*   When you use `use` statement, you can keep you Router object's name in the group body.
+*   When you use `use` syntax, you can keep your Router object's name in the group body.
+
+### Domains
+You can have some different websites on one hosting!
+The `domain` element in the first argument of `group()` method will help you.
+Check out following example:
+```
+use Neatplex\PHPRouter\Router;
+
+$router = new Router();
+
+$router->group(["domain" => "domain1.com"], function () use ($router) {
+    $router->get("/", function () {
+        return "Homepage of domain1.com";
+    });
+});
+
+$router->group(["domain" => "domain1.com"], function () use ($router) {
+    $router->get("/", function () {
+        return "Homepage of domain2.com";
+    });
+});
+
+$router->dispatch();
+```
+*   You can use other common options like middleware beside of domain option.
+
+### Subdomains
+It's really easy to manage subdomains with PHPRouter.
+The `domain` element in the first argument of `group()` method will help you.
+As mentioned above this element is used to manage domains too,
+but this time we work with subdomains.
+#### Static subdomains
+Following Example shows how to work with `blog` and `forum` subdomains:
+```
+use Neatplex\PHPRouter\Router;
+
+$router = new Router();
+
+$router->group(["domain" => "blog.example.com"], function () use ($router) {
+    $router->get("/", function () {
+        return "Blog home page!";
+    });
+});
+
+$router->group(["domain" => "forum.example.com"], function () use ($router) {
+    $router->get("/", function () {
+        return "Forum home page!";
+    });
+});
+
+$router->dispatch();
+```
+#### Dynamic subdomains
+You can catch subdomain as a parameter just like route parameter.
+See the following example.
+it's really nice feature.
+```
+use Neatplex\PHPRouter\Router;
+
+$router = new Router();
+
+$router->group(["domain" => "{subdomain}.example.com"], function () use ($router) {
+    $router->get("/", function ($subdomain) {
+        return "This is " . $subdomain;
+    });
+});
+
+$router->dispatch();
+```
+*   You can make parameter in domain wherever you need and catch them in controller parameters.
+*   Route parameters would overwrite subdomains if their name was the same.
+*   You can use other common options like middleware next to domain option.
+*   Just like route parameters, middleware will can access the subdomains.
 
 ### Base URI and projects in subdirectory
 You can handle routes for the projects in subdirectories with the tools explained above.
@@ -635,7 +843,7 @@ and will be thrown when an Internal error (like passing undefined function as co
 You can see all this exception error codes in the [official page](http://neatplex.com/package/phprouter/errors).
 
 #### Your application exceptions
-Neatplex PHPRouter doesn't manipulate your application exceptions,
+PHPRouter doesn't manipulate your application exceptions,
 so you can catch them like `HttpError` and `PHPRouterError` exceptions.
 
 ### Template Engine
@@ -647,5 +855,9 @@ so [Mustache template engine](https://github.com/bobthecow/mustache.php) is a go
 ## Contributors
 *	[Milad Rahimi](http://miladrahimi.com)
 
+## Official homepage
+*   [PHPRouter](http://phprouter.neatplex.com) (Soon!)
+
 ## License
-PHPRouter is created by [Neatplex](http://neatplex.com) and released under the [MIT License](http://opensource.org/licenses/mit-license.php).
+PHPRouter is created by [Neatplex](http://neatplex.com)
+and released under the [MIT License](http://opensource.org/licenses/mit-license.php).

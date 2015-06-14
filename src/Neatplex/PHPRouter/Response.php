@@ -1,20 +1,14 @@
 <?php namespace Neatplex\PHPRouter;
 
-    /*
-    --------------------------------------------------------------------------------
-    Response Class
-    --------------------------------------------------------------------------------
-    Response Class is used to help developer to response the matched route, it
-    includes methods like redirect(), render(), etc.
-    --------------------------------------------------------------------------------
-    http://neatplex.com/package/phprouter/master/component#response
-    --------------------------------------------------------------------------------
-    */
-
 /**
  * Class Response
  *
+ * Response Class is used to help developer to response the matched route, it
+ * includes methods like redirect(), render(), etc.
+ *
  * @package Neatplex\PHPRouter
+ *
+ * @author Milad Rahimi <info@miladrahimi.com>
  */
 class Response
 {
@@ -49,6 +43,7 @@ class Response
      * Get singleton instance of the class
      *
      * @param Router $router
+     *
      * @return Request
      */
     public static function getInstance(Router $router = null)
@@ -89,4 +84,55 @@ class Response
             include $file;
     }
 
+
+    /**
+     * Response cookies (write-only)
+     *
+     * @param string $name
+     * @param string $value
+     * @param int $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool $secure
+     * @param bool $httponly
+     *
+     * @return array
+     */
+    public function cookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = false)
+    {
+        if (empty($name) || empty($value))
+            throw new \InvalidArgumentException("cookie() method catches empty name or value parameter");
+        return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
+    }
+
+    /**
+     * Return current output content
+     *
+     * @return string
+     */
+    public function contents()
+    {
+        return ob_get_contents();
+    }
+
+    /**
+     * Publish output content
+     *
+     * @param string|mixed $content
+     */
+    public function publish($content)
+    {
+        // Open output stream
+        $fp = fopen("php://output", 'r+');
+        // Raw content
+        if (is_string($content) || is_numeric($content) || is_null($content)) {
+            fputs($fp, $content);
+        } // Object with __toString method
+        else if (is_object($content) && method_exists($content, "__toString")) {
+            fputs($fp, $content->__toString());
+        } // Else
+        else {
+            fputs($fp, print_r($content, true));
+        }
+    }
 }

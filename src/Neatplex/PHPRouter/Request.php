@@ -1,21 +1,15 @@
 <?php namespace Neatplex\PHPRouter;
 
-    /*
-    --------------------------------------------------------------------------------
-    Request Class
-    --------------------------------------------------------------------------------
-    Request Class is used to get user HTTP request information. Whole the project
-    would have only one instance (singleton pattern) an that is an optional
-    parameter for controller method, function to closure.
-    --------------------------------------------------------------------------------
-    http://neatplex.com/package/phprouter/master/component#request
-    --------------------------------------------------------------------------------
-    */
-
 /**
  * Class Request
  *
+ * Request Class is used to get user HTTP request information. Whole the project
+ * would have only one instance (singleton pattern) an that is an optional
+ * parameter for controller method, function to closure.
+ *
  * @package Neatplex\PHPRouter
+ *
+ * @author Milad Rahimi <info@miladrahimi.com>
  */
 class Request
 {
@@ -28,26 +22,135 @@ class Request
     private static $instance = null;
 
     /**
-     * Injected Router object
+     * Full URL (Website + URI)
      *
-     * @var Router
+     * @var string
      */
-    private $router;
+    private $url;
 
     /**
-     * @param Router $rooter
+     * The base URI (for projects in sub-folder)
+     *
+     * @var string
      */
-    private function __construct(Router $rooter)
+    private $base_uri;
+
+    /**
+     * Current URI (removed base URI and query string)
+     *
+     * @var string
+     */
+    private $local_uri;
+
+    /**
+     * Current page (removed query string)
+     *
+     * @var string
+     */
+    private $page;
+
+    /**
+     * End-user request URI
+     *
+     * @var string
+     */
+    private $uri;
+
+    /**
+     * End-user request query string
+     *
+     * @var string
+     */
+    private $query_string;
+
+    /**
+     * End-user request method
+     *
+     * @var string
+     */
+    private $method;
+
+    /**
+     * End-user request protocol
+     *
+     * @var string
+     */
+    private $protocol;
+
+    /**
+     * End-user request IP
+     *
+     * @var string
+     */
+    private $ip;
+
+    /**
+     * End-user request server name
+     *
+     * @var string
+     */
+    private $website;
+
+    /**
+     * End-user request port
+     *
+     * @var int
+     */
+    private $port;
+
+    /**
+     * End-user request HTTP referer
+     *
+     * @var string
+     */
+    private $referer;
+
+    /**
+     * End-user request POST array
+     *
+     * @var array
+     */
+    private $post;
+
+    /**
+     * End-user request GET array
+     *
+     * @var array
+     */
+    private $get;
+
+    /**
+     * @param Router $router
+     */
+    private function __construct(Router $router)
     {
-        if (!($rooter instanceof Router))
+        if (!($router instanceof Router))
             throw new \InvalidArgumentException("Neatplex PHPRouter: Invalid object given instead of Router object");
-        $this->router = $rooter;
+        $this->router = $router;
+        $u = $this->uri = urldecode($_SERVER["REQUEST_URI"]);
+        $q = $this->query_string = $_SERVER["QUERY_STRING"];
+        $this->page = trim(substr($u, 0, strlen($u) - strlen($q)), '?');
+        $this->method = $_SERVER["REQUEST_METHOD"];
+        $this->protocol = $_SERVER["SERVER_PROTOCOL"];
+        $this->ip = $_SERVER["REMOTE_ADDR"];
+        $this->website = $_SERVER["SERVER_NAME"];
+        $this->port = $_SERVER["REMOTE_PORT"];
+        $this->referer = empty($_SERVER["HTTP_REFERER"]) ? null : $_SERVER["HTTP_REFERER"];
+        $this->get = $_GET;
+        $this->post = $_POST;
+        $this->base_uri = $router->getBaseURI();
+        $lu = $this->page;
+        if (substr($lu, 0, strlen($this->base_uri)) == $this->base_uri)
+            $lu = substr($lu, strlen($this->base_uri));
+        $this->local_uri = $lu;
+        $this->url = $this->website . $this->uri;
     }
 
     /**
      * Get singleton instance of the class
      *
      * @param Router $router
+     *
      * @return Request
      */
     public static function getInstance(Router $router = null)
@@ -60,7 +163,7 @@ class Request
      */
     public function __toString()
     {
-        return $this->router->getRequestMethod() . " " . $this->router->getRequestUri();
+        return $this->method . " " . $this->uri;
     }
 
     /**
@@ -70,61 +173,11 @@ class Request
      */
     public function uri()
     {
-        $u = $this->router->getRequestUri();
+        $u = $this->uri;
         $b = $this->router->getBaseURI();
         if (substr($u, 0, strlen($b)) == $b)
             $u = substr($u, strlen($b));
         return $u;
-    }
-
-    /**
-     * Return the user HTTP request query string
-     *
-     * @return string
-     */
-    public function queryString()
-    {
-        return $this->router->getRequestQueryString();
-    }
-
-    /**
-     * Return the user HTTP request method
-     *
-     * @return string
-     */
-    public function method()
-    {
-        return $this->router->getRequestMethod();
-    }
-
-    /**
-     * Return the user HTTP request protocol
-     *
-     * @return string
-     */
-    public function protocol()
-    {
-        return $this->router->getRequestProtocol();
-    }
-
-    /**
-     * Return the user HTTP request IP
-     *
-     * @return string
-     */
-    public function ip()
-    {
-        return $this->router->getRequestIP();
-    }
-
-    /**
-     * Return the user HTTP request port
-     *
-     * @return int
-     */
-    public function port()
-    {
-        return $this->router->getRequestPort();
     }
 
     /**
@@ -136,8 +189,8 @@ class Request
     public function get($key = null)
     {
         if (is_null($key))
-            return $this->router->getRequestGET();
-        $get = $this->router->getRequestGET();
+            return $this->get;
+        $get = $this->get;
         return isset($get[$key]) ? $get[$key] : null;
     }
 
@@ -145,14 +198,125 @@ class Request
      * Return the user HTTP request POST
      *
      * @param string $key
+     *
      * @return array
      */
     public function post($key = null)
     {
         if (is_null($key))
-            return $this->router->getRequestPOST();
-        $post = $this->router->getRequestPOST();
+            return $this->post;
+        $post = $this->post;
         return isset($post[$key]) ? $post[$key] : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocalUri()
+    {
+        return $this->local_uri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueryString()
+    {
+        return $this->query_string;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProtocol()
+    {
+        return $this->protocol;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIP()
+    {
+        return $this->ip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * Request cookies (Read-only)
+     *
+     * @param string $name
+     *
+     * @return array
+     */
+    public function cookie($name = null)
+    {
+        if (is_null($name))
+            return $_COOKIE;
+        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->base_uri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReferer()
+    {
+        return $this->referer;
     }
 
 }

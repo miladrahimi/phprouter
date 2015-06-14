@@ -1,19 +1,13 @@
 <?php namespace Neatplex\PHPRouter;
 
-    /*
-    --------------------------------------------------------------------------------
-    PHPRouterError Exception
-    --------------------------------------------------------------------------------
-    PHPRouterError Exception is the main error exception for whole the package.
-    --------------------------------------------------------------------------------
-    http://neatplex.com/package/phprouter/master/component#phprouter-error
-    --------------------------------------------------------------------------------
-    */
-
 /**
  * Class PHPRouterError
  *
+ * PHPRouterError Exception is the main error exception for whole the package.
+ *
  * @package Neatplex\PHPRouter
+ *
+ * @author Milad Rahimi <info@miladrahimi.com>
  */
 class PHPRouterError extends \Exception
 {
