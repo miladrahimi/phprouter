@@ -851,9 +851,8 @@ so [Mustache template engine](https://github.com/bobthecow/mustache.php) is a go
 ## Contributors
 *	[Milad Rahimi](http://miladrahimi.com)
 
-## Official homepage
-*   [PHPRouter](http://miladrahimi.github.io/phprouter) (Soon!)
+## Homepage
+*   [PHPRouter](http://miladrahimi.github.io/phprouter)
 
 ## License
-PHPRouter is created by [MiladRahimi](http://miladrahimi.com)
-and released under the [MIT License](http://opensource.org/licenses/mit-license.php).
+PHPRouter is released under the [MIT License](http://opensource.org/licenses/mit-license.php).
