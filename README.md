@@ -31,23 +31,23 @@ If you are not familiar with Composer, The article
 can be useful.
 After installing Composer, go to your project directory and run following command there:
 ```
-php composer.phar require neatplex/phprouter
+php composer.phar require miladrahimi/phprouter
 ```
 Or if you have `composer.json` file already in your application,
 you may add this package to your application requirements
 and update your dependencies:
 ```
 "require": {
-    "neatplex/phprouter": "dev-master"
+    "miladrahimi/phprouter": "dev-master"
 }
 ```
 ```
 php composer.phar update
 ```
-#### Using VendorLoader
-If you don't use Composer you may use [VendorLoader](https://github.com/miladrahimi/vendorloader).
+#### Using PHPVendor
+If you don't use Composer you may use [PHPVendor](https://github.com/miladrahimi/phpvendor).
 Copy `src` directory content in your application vendor directory,
-then include the `vendorloader.php` in your application.
+then include the `phpvendor.php` in your application.
 #### Manually
 You can use your own autoloader as long as it follows [PSR-0](http://www.php-fig.org/psr/psr-0) or
 [PSR-4](http://www.php-fig.org/psr/psr-4) standards.
@@ -65,7 +65,7 @@ RewriteRule ^.*$ index.php [PT,L]
 Now you can use `Router` class in the PHP file (here `index.php`) to route your application:
 ```
 // Use this namespace
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 // Create brand new Router object
 $router = new Router();
@@ -84,7 +84,7 @@ To buy more convenience, most of controllers in the examples are defined as clos
 Of course, PHPRouter supports plenty of controller types which you will read in further sections.
 There are some simple routes below.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -113,7 +113,7 @@ $router->dispatch();
 Both `get()` and `post()` methods in `Router` class are shortcuts for mapping controllers to `GET` and `POST` requests.
 The super method is `map()` which catches request method as its first argument.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -143,7 +143,7 @@ $router->dispatch();
 ### Multiple request methods
 The controller can be mapped to multiple request methods as following example demonstrates:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -160,7 +160,7 @@ $router->dispatch();
 ### Any request method
 If the controller can respond to the route with any request method, you may try this method:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -176,7 +176,7 @@ $router->dispatch();
 Array of routes is supported too. If the controller can respond to multiple routes,
 the method below may be useful to you.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -197,7 +197,7 @@ Personally, I hate using closure as a controller.
 I believe a controller absolutely must be a method.
 However, following codes shows how to use all kind of controllers.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -237,7 +237,7 @@ Current version of PHPRouter doesn't recognize "used namespaces",
 so you have to pass them with the class names.
 See following example which `Post` class is declared with `Blog` namespace.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -271,7 +271,7 @@ Don't worry while you use PHPRouter!
 Because you can handle it in the easiest way.
 Look at following example:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -292,7 +292,7 @@ class Blog
     }
 }
 
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -310,7 +310,7 @@ In this example `id` is optional.
 If request URI had ID, it would return page with the caught ID.
 If request URI was without ID (`/page/`), it would return `All pages!`.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -328,7 +328,7 @@ In the example above to see all pages, user must enter `/page/` URI.
 You may consider `/page` for this purpose too.
 To achieve that you can use array of routes or use following trick:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -350,7 +350,7 @@ No problem! You can define
 [Regular Expression](http://www.regular-expressions.info/)
 pattern for some or all of the route parameters.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -386,7 +386,7 @@ http://example.com/blog/post/93?section=comments
 ```
 The application routing section:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -441,7 +441,7 @@ $request->cookie("name");
 Response object manipulates the application HTTP response to the client. Here is an example:
 
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -470,9 +470,9 @@ If you use IDEs like PhpStorm, it'd be good practice not to omit `$request` and 
 Then your IDE can help you and provide auto-complete options.
 See example below:
 ```
-use Neatplex\PHPRouter\Router;
-use Neatplex\PHPRouter\Request;
-use Neatplex\PHPRouter\Response;
+use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Request;
+use MiladRahimi\PHPRouter\Response;
 
 $router = new Router();
 
@@ -488,7 +488,7 @@ Of course you can use the same `$_GET`, `$_POST` and `$_COOKIE` arrays.
 But it might neater and more beautiful to use the `$request` methods.
 Run following example for `http://example.com/user?id=93`:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -539,7 +539,7 @@ $response->cookie("language","persian");
 You can redirect the request with the php `header()` function.
 But if you are interested in using PHPRouter methods, you may try this:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -556,7 +556,7 @@ $router->dispatch();
 Sometimes the result you want to return is not plain texts or compiled PHP codes but it's a PHP file.
 No problem! you can use `render()` method in `$response` object as it's shown in the following example:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -574,7 +574,7 @@ It can control access like authentication or anything you want.
 You can consider one or more middleware for the route.
 Actually the `$middleware` parameter can be a callable, a method name or an array of them.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -607,7 +607,7 @@ In this version PHPRouter supports common
 For example all of user control panel pages need authentication.
 So you can group all of them.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -644,7 +644,7 @@ $router->dispatch();
 
 You may use **prefix** option beside of middleware.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 $router = new Router();
 
 // Middleware
@@ -683,7 +683,7 @@ $router->dispatch();
 You may use PHP `use` syntax to access the router object.
 It's useful specially when the router object name is not `$router`!
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $my_router = new Router();
 
@@ -716,7 +716,7 @@ You can have some different websites on one hosting!
 The `domain` element in the first argument of `group()` method will help you.
 Check out following example:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -744,7 +744,7 @@ but this time we work with subdomains.
 #### Static subdomains
 Following Example shows how to work with `blog` and `forum` subdomains:
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -767,7 +767,7 @@ You can catch subdomain as a parameter just like route parameter.
 See the following example.
 it's really nice feature.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
@@ -791,7 +791,7 @@ For example you work on a blog and all of its files are in directory like `blog`
 You can set it's base URI to route you blog easier.
 It's useful in some cases like redirection too, the `redirect()` in `$response` object adds base URI to the target.
 ```
-use Neatplex\PHPRouter\Router;
+use MiladRahimi\PHPRouter\Router;
 
 // You can determine the base URI with Router constructor
 $router = new Router("/blog");
@@ -809,9 +809,9 @@ $router->dispatch();
 To be neater, all of the errors (exceptions) will be thrown when you call `dispatch()` method.
 So you must wrap this method with `try-catch`.
 ```
-use Neatplex\PHPRouter\Router;
-use Neatplex\PHPRouter\HttpError;
-use Neatplex\PHPRouter\PHPRouterError;
+use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PHPRouter\HttpError;
+use MiladRahimi\PHPRouter\PHPRouterError;
 
 $router = new Router();
 
@@ -849,15 +849,15 @@ so you can catch them like `HttpError` and `PHPRouterError` exceptions.
 ### Template Engine
 When you use a router for your application, you will find it out soon which you need a **template engine** too.
 Template engines usually returns HTML output, so you can return it in your controller.
-Next Neatplex package is a template engine, if you cannot wait awhile,
+Next MiladRahimi package is a template engine, if you cannot wait awhile,
 so [Mustache template engine](https://github.com/bobthecow/mustache.php) is a good option.
 
 ## Contributors
 *	[Milad Rahimi](http://miladrahimi.com)
 
 ## Official homepage
-*   [PHPRouter](http://phprouter.neatplex.com) (Soon!)
+*   [PHPRouter](http://miladrahimi.github.io/phprouter) (Soon!)
 
 ## License
-PHPRouter is created by [Neatplex](http://neatplex.com)
+PHPRouter is created by [MiladRahimi](http://miladrahimi.com)
 and released under the [MIT License](http://opensource.org/licenses/mit-license.php).

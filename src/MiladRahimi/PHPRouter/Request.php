@@ -1,4 +1,4 @@
-<?php namespace Neatplex\PHPRouter;
+<?php namespace MiladRahimi\PHPRouter;
 
 /**
  * Class Request
@@ -7,7 +7,7 @@
  * would have only one instance (singleton pattern) an that is an optional
  * parameter for controller method, function to closure.
  *
- * @package Neatplex\PHPRouter
+ * @package MiladRahimi\PHPRouter
  *
  * @author Milad Rahimi <info@miladrahimi.com>
  */

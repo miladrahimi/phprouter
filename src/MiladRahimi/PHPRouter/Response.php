@@ -1,4 +1,4 @@
-<?php namespace Neatplex\PHPRouter;
+<?php namespace MiladRahimi\PHPRouter;
 
 /**
  * Class Response
@@ -6,7 +6,7 @@
  * Response Class is used to help developer to response the matched route, it
  * includes methods like redirect(), render(), etc.
  *
- * @package Neatplex\PHPRouter
+ * @package MiladRahimi\PHPRouter
  *
  * @author Milad Rahimi <info@miladrahimi.com>
  */

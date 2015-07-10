@@ -1,11 +1,11 @@
-<?php namespace Neatplex\PHPRouter;
+<?php namespace MiladRahimi\PHPRouter;
 
 /**
  * Class PHPRouterError
  *
  * PHPRouterError Exception is the main error exception for whole the package.
  *
- * @package Neatplex\PHPRouter
+ * @package MiladRahimi\PHPRouter
  *
  * @author Milad Rahimi <info@miladrahimi.com>
  */
