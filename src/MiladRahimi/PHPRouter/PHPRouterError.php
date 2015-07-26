@@ -2,11 +2,9 @@
 
 /**
  * Class PHPRouterError
- *
- * PHPRouterError Exception is the main error exception for whole the package.
+ * The main package exception
  *
  * @package MiladRahimi\PHPRouter
- *
  * @author Milad Rahimi <info@miladrahimi.com>
  */
 class PHPRouterError extends \Exception
