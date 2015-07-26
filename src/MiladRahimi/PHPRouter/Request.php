@@ -2,13 +2,11 @@
 
 /**
  * Class Request
- *
  * Request Class is used to get user HTTP request information. Whole the project
  * would have only one instance (singleton pattern) an that is an optional
  * parameter for controller method, function to closure.
  *
  * @package MiladRahimi\PHPRouter
- *
  * @author Milad Rahimi <info@miladrahimi.com>
  */
 class Request
@@ -120,12 +118,12 @@ class Request
     private $get;
 
     /**
-     * @param Router $router
+     * Constructor
+     *
+     * @param Router $router : Router object
      */
     private function __construct(Router $router)
     {
-        if (!($router instanceof Router))
-            throw new \InvalidArgumentException("Neatplex PHPRouter: Invalid object given instead of Router object");
         $this->router = $router;
         $u = $this->uri = urldecode($_SERVER["REQUEST_URI"]);
         $q = $this->query_string = $_SERVER["QUERY_STRING"];
@@ -150,10 +148,9 @@ class Request
      * Get singleton instance of the class
      *
      * @param Router $router
-     *
      * @return Request
      */
-    public static function getInstance(Router $router = null)
+    public static function getInstance(Router $router)
     {
         return isset(self::$instance) ? self::$instance : self::$instance = new Request($router);
     }
@@ -197,16 +194,16 @@ class Request
     /**
      * Return the user HTTP request POST
      *
-     * @param string $key
-     *
+     * @param string $name
      * @return array
      */
-    public function post($key = null)
+    public function post($name = null)
     {
-        if (is_null($key))
+        if (is_null($name))
             return $this->post;
-        $post = $this->post;
-        return isset($post[$key]) ? $post[$key] : null;
+        if(!is_scalar($name))
+            throw new InvalidArgumentException("Name must be a string value");
+        return isset($this->post[$name]) ? $this->post[$name] : null;
     }
 
     /**
@@ -285,13 +282,14 @@ class Request
      * Request cookies (Read-only)
      *
      * @param string $name
-     *
      * @return array
      */
     public function cookie($name = null)
     {
         if (is_null($name))
             return $_COOKIE;
+        if(!is_scalar($name))
+            throw new InvalidArgumentException("Name must be a string value");
         return isset($_COOKIE[$name]) ? $_COOKIE[$name] : null;
     }
 

@@ -2,12 +2,10 @@
 
 /**
  * Class Response
- *
  * Response Class is used to help developer to response the matched route, it
  * includes methods like redirect(), render(), etc.
  *
  * @package MiladRahimi\PHPRouter
- *
  * @author Milad Rahimi <info@miladrahimi.com>
  */
 class Response
@@ -43,10 +41,9 @@ class Response
      * Get singleton instance of the class
      *
      * @param Router $router
-     *
      * @return Request
      */
-    public static function getInstance(Router $router = null)
+    public static function getInstance(Router $router)
     {
         return isset(self::$instance) ? self::$instance : self::$instance = new Response($router);
     }
@@ -58,6 +55,8 @@ class Response
      */
     public function redirect($to = "/")
     {
+        if (!is_scalar($to))
+            throw new InvalidArgumentException("To must be a string value");
         $to = $this->router->getBaseURI() . (is_string($to) ? $to : "");
         ob_start();
         ob_clean();
@@ -76,12 +75,19 @@ class Response
     /**
      * Render (PHP) file
      *
-     * @param string $file
+     * @param string $file : PHP file to render
+     * @throws InvalidArgumentException
+     * @throws PHPRouterError
      */
-    public function render($file = null)
+    public function render($file)
     {
-        if (file_exists($file))
-            include $file;
+        if (!is_scalar($file))
+            throw new InvalidArgumentException("File must be a string value");
+        if (file_exists($file)) {
+            require $file;
+        } else {
+            throw new PHPRouterError("File does not exist");
+        }
     }
 
 
@@ -100,8 +106,10 @@ class Response
      */
     public function cookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = false)
     {
-        if (empty($name) || empty($value))
-            throw new \InvalidArgumentException("cookie() method catches empty name or value parameter");
+        if (!isset($name) || !is_scalar($name))
+            throw new InvalidArgumentException("Name must be a string value");
+        if (!isset($value))
+            throw new InvalidArgumentException("Value must be set");
         return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
     }
 
@@ -122,6 +130,8 @@ class Response
      */
     public function publish($content)
     {
+        if (!isset($content))
+            throw new InvalidArgumentException("Content must be set");
         // Open output stream
         $fp = fopen("php://output", 'r+');
         // Raw content

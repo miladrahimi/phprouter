@@ -2,12 +2,10 @@
 
 /**
  * Class Router
- *
  * Router class is the main class which developers must interactive with to
  * dispatch all website routes.
  *
  * @package MiladRahimi\PHPRouter
- *
  * @author Milad Rahimi <info@miladrahimi.com>
  */
 class Router
@@ -92,15 +90,16 @@ class Router
     private $response;
 
     /**
-     * @param string $base_uri
+     * Constructor
      *
+     * @param string $base_uri
      * @throw \InvalidArgumentException
      */
     public function __construct($base_uri = "")
     {
         // Set Base URI
         if (!is_string($base_uri))
-            throw new \InvalidArgumentException('Neatplex PHPRouter: $base_uri must be a string value');
+            throw new InvalidArgumentException("Base URI must be a string value");
         $this->base_uri = $base_uri;
         // New Request
         $this->request = Request::getInstance($this);
@@ -120,11 +119,14 @@ class Router
      *
      * @param array|callable|string $options
      * @param callable $body
-     *
      * @throws PHPRouterError
      */
     public function group($options, $body)
     {
+        if (!isset($options))
+            throw new InvalidArgumentException("Options must be set");
+        if (!isset($body))
+            throw new InvalidArgumentException("Body must be set");
         if (is_array($options)) {
             if (isset($options["middleware"]))
                 if (!is_array($options["middleware"]))
@@ -235,7 +237,6 @@ class Router
      * Convert route to regex pattern and extract the parameters
      *
      * @param string $route Route ro compile
-     *
      * @return string Pattern
      */
     private function convertToRegex($route)
@@ -247,9 +248,7 @@ class Router
      * Check whether the set domain is correct or not
      *
      * @param string $domain Set Domain
-     *
      * @return array arguments
-     *
      * @throws HttpError
      */
     private function checkDomain($domain)
@@ -267,7 +266,6 @@ class Router
      *
      * @param callable $function
      * @param array $arguments
-     *
      * @return array
      */
     private function arrangeFuncArgs($function, $arguments)
@@ -293,7 +291,6 @@ class Router
      * @param object $class
      * @param callable $method
      * @param array $arguments
-     *
      * @return array
      */
     private function arrangeMethodArgs($class, $method, $arguments)
@@ -344,11 +341,16 @@ class Router
      * @param string|array $routes
      * @param string|callable $controller
      * @param callable|string|null $middleware
-     *
      * @throws PHPRouterError
      */
     public function map($methods, $routes, $controller, $middleware = null)
     {
+        if (!isset($methods))
+            throw new InvalidArgumentException("Methods must be set");
+        if (!isset($routes))
+            throw new InvalidArgumentException("Routes must be set");
+        if (!isset($controller))
+            throw new InvalidArgumentException("Controllers must be set");
         if (!is_array($methods))
             $methods = array($methods);
         if (!is_array($routes))
@@ -377,7 +379,6 @@ class Router
      * Escape undesired regex from the given content
      *
      * @param string $content
-     *
      * @return string
      */
     private function safeRegex($content)
@@ -416,15 +417,14 @@ class Router
      *
      * @param string $parameter_name Desired parameter for changing it's regex pattern
      * @param string $regex Desired regex pattern for related parameter
-     *
      * @throw \InvalidArgumentException
      */
     public function define($parameter_name, $regex)
     {
-        if (!is_string($parameter_name))
-            throw new \InvalidArgumentException('Neatplex PHPRouter: $parameter_name must be a string value');
-        if (!is_string($regex))
-            throw new \InvalidArgumentException('Neatplex PHPRouter: $regex must be a string value');
+        if (!isset($parameter_name) || !is_string($parameter_name))
+            throw new \InvalidArgumentException("Parameter name must be a string value");
+        if (!isset($regex) || !is_string($regex))
+            throw new \InvalidArgumentException("Regex must be a string value");
         $this->parameters[$parameter_name] = $this->safeRegex($regex);
     }
 
@@ -440,7 +440,6 @@ class Router
      * Return the regex pattern of given parameter
      *
      * @param string $name Parameter Name
-     *
      * @return string Pattern
      */
     private function regexParameter($name)

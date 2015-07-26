@@ -31,19 +31,23 @@ If you are not familiar with Composer, The article
 can be useful.
 After installing Composer, go to your project directory and run following command there:
 ```
-php composer.phar require miladrahimi/phprouter
+composer require miladrahimi/phprouter
 ```
 Or if you have `composer.json` file already in your application,
 you may add this package to your application requirements
 and update your dependencies:
 ```
 "require": {
-    "miladrahimi/phprouter": "dev-master"
+    "miladrahimi/phprouter": "~2.2"
 }
 ```
 ```
-php composer.phar update
+composer update
 ```
+#### Using PHPVendor
+If you don't use Composer you may use [PHPVendor](https://github.com/miladrahimi/phpvendor).
+Copy `src` directory content in your application vendor directory,
+then include the `phpvendor.php` in your application.
 #### Manually
 You can use your own autoloader as long as it follows [PSR-0](http://www.php-fig.org/psr/psr-0) or
 [PSR-4](http://www.php-fig.org/psr/psr-4) standards.
