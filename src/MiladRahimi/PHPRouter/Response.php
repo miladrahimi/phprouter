@@ -1,15 +1,17 @@
 <?php namespace MiladRahimi\PHPRouter;
 
+use MiladRahimi\PHPRouter\Exceptions\InvalidArgumentException;
+use MiladRahimi\PHPTemplate\Exceptions\FileNotFoundException;
+
 /**
  * Class Response
  * Response Class is used to help developer to response the matched route, it
  * includes methods like redirect(), render(), etc.
  *
  * @package MiladRahimi\PHPRouter
- * @author Milad Rahimi <info@miladrahimi.com>
+ * @author  Milad Rahimi <info@miladrahimi.com>
  */
-class Response
-{
+class Response {
 
     /**
      * Singleton instance of the class
@@ -30,10 +32,10 @@ class Response
      *
      * @param Router $rooter
      */
-    private function __construct(Router $rooter)
-    {
-        if (!($rooter instanceof Router))
+    private function __construct(Router $rooter) {
+        if (!($rooter instanceof Router)) {
             throw new \InvalidArgumentException("Neatplex PHPRouter: Invalid object given instead of Router object");
+        }
         $this->router = $rooter;
     }
 
@@ -41,10 +43,10 @@ class Response
      * Get singleton instance of the class
      *
      * @param Router $router
+     *
      * @return Request
      */
-    public static function getInstance(Router $router)
-    {
+    public static function getInstance(Router $router) {
         return isset(self::$instance) ? self::$instance : self::$instance = new Response($router);
     }
 
@@ -53,10 +55,10 @@ class Response
      *
      * @param string $to
      */
-    public function redirect($to = "/")
-    {
-        if (!is_scalar($to))
+    public function redirect($to = "/") {
+        if (!is_scalar($to)) {
             throw new InvalidArgumentException("To must be a string value");
+        }
         $to = $this->router->getBaseURI() . (is_string($to) ? $to : "");
         ob_start();
         ob_clean();
@@ -67,8 +69,7 @@ class Response
     /**
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         return ob_get_contents();
     }
 
@@ -76,40 +77,42 @@ class Response
      * Render (PHP) file
      *
      * @param string $file : PHP file to render
-     * @throws InvalidArgumentException
-     * @throws PHPRouterError
+     *
+     * @throws FileNotFoundException
      */
-    public function render($file)
-    {
-        if (!is_scalar($file))
+    public function render($file) {
+        if (!is_scalar($file)) {
             throw new InvalidArgumentException("File must be a string value");
+        }
         if (file_exists($file)) {
+            /** @noinspection PhpIncludeInspection */
             require $file;
         } else {
-            throw new PHPRouterError("File does not exist");
+            throw new FileNotFoundException();
         }
     }
-
 
     /**
      * Response cookies (write-only)
      *
      * @param string $name
      * @param string $value
-     * @param int $expire
+     * @param int    $expire
      * @param string $path
      * @param string $domain
-     * @param bool $secure
-     * @param bool $httponly
+     * @param bool   $secure
+     * @param bool   $httponly
      *
      * @return array
      */
-    public function cookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = false)
-    {
-        if (!isset($name) || !is_scalar($name))
+    public function cookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false,
+                           $httponly = false) {
+        if (!isset($name) || !is_scalar($name)) {
             throw new InvalidArgumentException("Name must be a string value");
-        if (!isset($value))
+        }
+        if (!isset($value)) {
             throw new InvalidArgumentException("Value must be set");
+        }
         return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
     }
 
@@ -118,8 +121,7 @@ class Response
      *
      * @return string
      */
-    public function contents()
-    {
+    public function contents() {
         return ob_get_contents();
     }
 
@@ -128,21 +130,20 @@ class Response
      *
      * @param string|mixed $content
      */
-    public function publish($content)
-    {
-        if (!isset($content))
-            throw new InvalidArgumentException("Content must be set");
+    public function publish($content = null) {
         // Open output stream
         $fp = fopen("php://output", 'r+');
         // Raw content
         if (is_string($content) || is_numeric($content) || is_null($content)) {
             fputs($fp, $content);
         } // Object with __toString method
-        else if (is_object($content) && method_exists($content, "__toString")) {
-            fputs($fp, $content->__toString());
-        } // Else
         else {
-            fputs($fp, print_r($content, true));
+            if (is_object($content) && method_exists($content, "__toString")) {
+                fputs($fp, $content->__toString());
+            } // Else
+            else {
+                fputs($fp, print_r($content, true));
+            }
         }
     }
 }

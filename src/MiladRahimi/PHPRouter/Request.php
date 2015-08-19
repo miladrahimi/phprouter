@@ -1,5 +1,7 @@
 <?php namespace MiladRahimi\PHPRouter;
 
+use MiladRahimi\PHPRouter\Exceptions\InvalidArgumentException;
+
 /**
  * Class Request
  * Request Class is used to get user HTTP request information. Whole the project
