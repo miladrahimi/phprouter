@@ -260,7 +260,9 @@ class Router {
      * @return string Pattern
      */
     private function convertToRegex($route) {
-        return '@^' . preg_replace("@{([^}]+)}@", '$this->regexParameter("$1")', $route) . '$@';
+        return '@^' . preg_replace_callback("@{([^}]+)}@", function ($match) {
+            return $this->regexParameter($match[0]);
+        }, $route) . '$@';
     }
 
     /**
