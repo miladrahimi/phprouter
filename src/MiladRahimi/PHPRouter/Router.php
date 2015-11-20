@@ -261,7 +261,7 @@ class Router {
      */
     private function convertToRegex($route) {
         return '@^' . preg_replace_callback("@{([^}]+)}@", function ($match) {
-            return $this->regexParameter($match[0]);
+            return $this->regexParameter($match[1]);
         }, $route) . '$@';
     }
 
