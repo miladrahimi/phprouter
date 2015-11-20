@@ -218,7 +218,9 @@ class Router {
                                 if (method_exists($list[0], $list[1])) {
                                     $mid_args = $arguments;
                                     $mid_args = $this->arrangeMethodArgs($list[0], $list[1], $mid_args);
-                                    $this->publish(call_user_func_array($list[0]->$list[1], $mid_args));
+
+                                    $mid_instance = new $list[0];
+                                    $this->publish(call_user_func_array(array($mid_instance, $list[1]), $mid_args));
                                 } else {
                                     throw new BadMiddleware('Cannot detect the middleware method');
                                 }
