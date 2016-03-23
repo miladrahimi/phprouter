@@ -891,7 +891,7 @@ try {
         $router->publish("Error 404! Not found!");
     //...
 
-} catch(PHPRouterError $e) {
+} catch(Exception $e) {
     // Log details...
     $router->publish("Sorry, there is an internal error, we will fix it asap!");
 }
@@ -905,7 +905,7 @@ The exception message contain it's code like `404`.
 
 ### Your application exceptions
 PHPRouter doesn't manipulate your application exceptions,
-so you can catch them like `HttpError` and `PHPRouterError` exceptions.
+so you can catch them like `HttpError` exception.
 
 ## Template Engine
 When you use a router for your application, you will find it out soon which you need a **template engine** too.
@@ -914,5 +914,5 @@ I have created a template engine package too and you may download it at:
 [PHPTemplate](https://github.com/miladrahimi/phptemplate).
 
 ## License
-PHPTemplate is created by [Milad Rahimi](http://miladrahimi.com)
+PHPRouter is created by [Milad Rahimi](http://miladrahimi.com)
 and released under the [MIT License](http://opensource.org/licenses/mit-license.php).
