@@ -7,6 +7,6 @@
  * @package MiladRahimi\PHPRouter\Exceptions
  * @author  Milad Rahimi <info@miladrahimi.com>
  */
-class FileNotFound extends \Exception {
+class FileNotFoundException extends \Exception {
     // Not implemented yet!
 }

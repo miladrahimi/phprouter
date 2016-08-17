@@ -1,7 +1,7 @@
 <?php namespace MiladRahimi\PHPRouter;
 
 use MiladRahimi\PHPRouter\Exceptions\InvalidArgumentException;
-use MiladRahimi\PHPTemplate\Exceptions\FileNotFoundException;
+use MiladRahimi\PHPRouter\Exceptions\FileNotFoundException;
 
 /**
  * Class Response
@@ -101,19 +101,19 @@ class Response {
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httponly
+     * @param bool   $httpOnly
      *
      * @return array
      */
     public function cookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false,
-                           $httponly = false) {
+                           $httpOnly = false) {
         if (!isset($name) || !is_scalar($name)) {
             throw new InvalidArgumentException("Name must be a string value");
         }
         if (!isset($value)) {
             throw new InvalidArgumentException("Value must be set");
         }
-        return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
+        return setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
     }
 
     /**
