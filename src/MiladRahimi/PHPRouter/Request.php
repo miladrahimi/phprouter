@@ -127,7 +127,8 @@ class Request
     private function __construct(Router $router)
     {
         $this->router = $router;
-        $u = $this->uri = urldecode($_SERVER["REQUEST_URI"]);
+        $u = $_SERVER["REQUEST_URI"];
+        $this->uri = urldecode($u);
         $q = $this->query_string = $_SERVER["QUERY_STRING"];
         $this->page = trim(substr($u, 0, strlen($u) - strlen($q)), '?');
         $this->method = $_SERVER["REQUEST_METHOD"];
