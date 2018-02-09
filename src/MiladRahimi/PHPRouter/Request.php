@@ -128,8 +128,8 @@ class Request
     {
         $this->router = $router;
         $u = $_SERVER["REQUEST_URI"];
-        $this->uri = urldecode($u);
-        $q = $this->query_string = $_SERVER["QUERY_STRING"];
+        $this->uri = $u ? urldecode($u) : null;
+        $q = $this->query_string = $_SERVER["QUERY_STRING"] ?: null;
         $this->page = trim(substr($u, 0, strlen($u) - strlen($q)), '?');
         $this->method = $_SERVER["REQUEST_METHOD"];
         $this->protocol = $_SERVER["SERVER_PROTOCOL"];
@@ -204,7 +204,7 @@ class Request
     {
         if (is_null($name))
             return $this->post;
-        if(!is_scalar($name))
+        if (!is_scalar($name))
             throw new InvalidArgumentException("Name must be a string value");
         return isset($this->post[$name]) ? $this->post[$name] : null;
     }
@@ -291,7 +291,7 @@ class Request
     {
         if (is_null($name))
             return $_COOKIE;
-        if(!is_scalar($name))
+        if (!is_scalar($name))
             throw new InvalidArgumentException("Name must be a string value");
         return isset($_COOKIE[$name]) ? $_COOKIE[$name] : null;
     }
