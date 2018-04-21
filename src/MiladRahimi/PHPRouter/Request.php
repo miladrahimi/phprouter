@@ -129,7 +129,7 @@ class Request
         $this->router = $router;
         $u = $_SERVER["REQUEST_URI"];
         $this->uri = $u ? urldecode($u) : null;
-        $q = $this->query_string = $_SERVER["QUERY_STRING"] ?: null;
+        $q = $this->query_string = empty($_SERVER["QUERY_STRING"]) ? null : $_SERVER["QUERY_STRING"];
         $this->page = trim(substr($u, 0, strlen($u) - strlen($q)), '?');
         $this->method = $_SERVER["REQUEST_METHOD"];
         $this->protocol = $_SERVER["SERVER_PROTOCOL"];
