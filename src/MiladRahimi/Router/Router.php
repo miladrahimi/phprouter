@@ -188,6 +188,9 @@ class Router
     /**
      * Dispatch routes and run the application
      *
+     * @throws InvalidControllerException
+     * @throws InvalidMiddlewareException
+     * @throws RouteNotFoundException
      * @throws Throwable
      */
     public function dispatch()
@@ -211,7 +214,7 @@ class Router
                     RouteAttributes::URI => $routeAttributes[RouteAttributes::URI],
                 ];
 
-                $this->publisher->publish($this->run($routeAttributes, $routeParameters));
+                $this->publish($this->run($routeAttributes, $routeParameters));
 
                 return;
             }
@@ -226,6 +229,8 @@ class Router
      * @param array $routeAttributes
      * @param array $routeParameters
      * @return mixed|ResponseInterface
+     * @throws InvalidControllerException
+     * @throws InvalidMiddlewareException
      * @throws Throwable
      */
     private function run(array $routeAttributes, array $routeParameters)
@@ -284,6 +289,7 @@ class Router
      * @param Closure|callable|string $controller
      * @param array $parameters
      * @return ResponseInterface|null
+     * @throws InvalidControllerException
      * @throws Throwable
      */
     private function runController($controller, array $parameters)
@@ -525,7 +531,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param \MiladRahimi\Router\Services\Middleware|Middleware[] $middleware
+     * @param Middleware|Middleware[] $middleware
      * @param string|null $domain
      * @param string|null $name
      */
@@ -611,6 +617,16 @@ class Router
         }
 
         return null;
+    }
+
+    /**
+     * Publish http response manually
+     *
+     * @param $httpResponse
+     */
+    public function publish($httpResponse)
+    {
+        $this->publisher->publish($httpResponse);
     }
 
     /**
