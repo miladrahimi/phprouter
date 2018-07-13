@@ -74,4 +74,15 @@ class TestCase extends BaseTestCase
 
         return $publisher->output;
     }
+
+    /**
+     * Get router publisher
+     *
+     * @param Router $router
+     * @return \MiladRahimi\Router\Services\PublisherInterface|Publisher
+     */
+    protected function getPublisher(Router $router): Publisher
+    {
+        return $router->getPublisher();
+    }
 }
