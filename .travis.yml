@@ -15,15 +15,11 @@ before_install:
   - travis_retry composer self-update
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - composer install --no-interaction --no-suggest
 
 script:
-  - composer install
-  - vendor/bin/phpunit
-
-cache:
-  directories:
-    - $HOME/.composer/cache
+  - vendor/bin/phpunit --no-coverage tests
 
 notifications:
   email:
