@@ -16,7 +16,7 @@ class HeaderExposer implements HeaderExposerInterface
      * @param string $name
      * @param string $value
      */
-    public function addHeaderLine(string $name, string $value): void
+    public function addHeaderLine(string $name, string $value)
     {
         header($name . ': ' . $value);
     }
