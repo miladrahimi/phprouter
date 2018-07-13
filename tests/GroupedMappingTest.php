@@ -29,7 +29,7 @@ class GroupedMappingTest extends TestCase
 
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
     }
 
     /**
@@ -51,7 +51,7 @@ class GroupedMappingTest extends TestCase
 
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
         $this->assertContains(777, SampleMiddleware::$output);
     }
 
@@ -75,7 +75,7 @@ class GroupedMappingTest extends TestCase
 
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
         $this->assertContains(1001, SampleMiddleware::$output);
         $this->assertContains(1002, SampleMiddleware::$output);
     }
@@ -99,7 +99,7 @@ class GroupedMappingTest extends TestCase
 
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
     }
 
     /**
@@ -121,7 +121,7 @@ class GroupedMappingTest extends TestCase
 
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
     }
 
     /**
@@ -143,7 +143,7 @@ class GroupedMappingTest extends TestCase
 
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
     }
 
     /**
@@ -161,7 +161,7 @@ class GroupedMappingTest extends TestCase
 
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
         $this->assertFalse($router->isRoute('NameForNothing'));
     }
 }
