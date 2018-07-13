@@ -11,13 +11,18 @@ namespace MiladRahimi\Router\Services;
 class HeaderExposer implements HeaderExposerInterface
 {
     /**
-     * Add header line to http response headers
-     *
-     * @param string $name
-     * @param string $value
+     * @inheritdoc
      */
     public function addHeaderLine(string $name, string $value)
     {
         header($name . ': ' . $value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setResponseCode(int $code)
+    {
+        http_response_code($code);
     }
 }

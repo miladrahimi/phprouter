@@ -29,7 +29,7 @@ class SimpleMappingTest extends TestCase
         $router->map('GET', '/', $this->simpleController());
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
     }
 
     /**
@@ -42,16 +42,14 @@ class SimpleMappingTest extends TestCase
         $router->map('POST', '/{id}', SampleController::class . '@postOneParameter');
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
-
-        ob_clean();
+        $this->assertEquals('Here I am!', $this->getOutput($router));
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
 
         $router->setServerRequest(ServerRequestFactory::fromGlobals());
         $router->dispatch();
 
-        $this->assertEquals('The id is 666', ob_get_contents());
+        $this->assertEquals('The id is 666', $this->getOutput($router));
     }
 
     /**
@@ -65,7 +63,7 @@ class SimpleMappingTest extends TestCase
         $router->map('GET', '/', $this->simpleController(), $middleware);
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
         $this->assertContains(13, SampleMiddleware::$output);
     }
 
@@ -80,7 +78,7 @@ class SimpleMappingTest extends TestCase
         $router->map('GET', '/', $this->simpleController(), $middleware);
         $router->dispatch();
 
-        $this->assertEquals('Stopped in middleware.', ob_get_contents());
+        $this->assertEquals('Stopped in middleware.', $this->getOutput($router));
         $this->assertContains(11, StopperMiddleware::$output);
     }
 
@@ -95,7 +93,7 @@ class SimpleMappingTest extends TestCase
         $router->map('GET', '/', $this->simpleController(), $middleware);
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
         $this->assertContains(32, SampleMiddleware::$output);
         $this->assertContains(64, SampleMiddleware::$output);
     }
@@ -111,7 +109,7 @@ class SimpleMappingTest extends TestCase
         $router->map('GET', '/', $this->simpleController(), [], 'server.domain.ext');
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
     }
 
     /**
@@ -125,7 +123,7 @@ class SimpleMappingTest extends TestCase
         $router->map('GET', '/', $this->simpleController(), [], '(.*).domain.ext');
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
     }
 
     /**
@@ -137,7 +135,7 @@ class SimpleMappingTest extends TestCase
         $router->map('GET', '/', $this->simpleController(), [], null, 'TheName');
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
         $this->assertTrue($router->isRoute('TheName'));
     }
 
@@ -150,7 +148,7 @@ class SimpleMappingTest extends TestCase
         $router->useName('TheName')->map('GET', '/', $this->simpleController());
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', ob_get_contents());
+        $this->assertEquals('Here I am!', $this->getOutput($router));
         $this->assertTrue($router->isRoute('TheName'));
 
         ob_clean();
@@ -163,7 +161,7 @@ class SimpleMappingTest extends TestCase
         $router->map('POST', '/{id}', $controller);
         $router->dispatch();
 
-        $this->assertEquals('The id is 666', ob_get_contents());
+        $this->assertEquals('The id is 666', $this->getOutput($router));
         $this->assertFalse($router->isRoute('TheName'));
     }
 

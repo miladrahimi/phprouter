@@ -13,8 +13,8 @@ use MiladRahimi\Router\Enums\RouteAttributes;
 use MiladRahimi\Router\Exceptions\InvalidControllerException;
 use MiladRahimi\Router\Exceptions\InvalidMiddlewareException;
 use MiladRahimi\Router\Exceptions\RouteNotFoundException;
-use MiladRahimi\Router\Services\HeaderExposer;
-use MiladRahimi\Router\Services\HeaderExposerInterface;
+use MiladRahimi\Router\Services\Publisher;
+use MiladRahimi\Router\Services\PublisherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
@@ -84,9 +84,9 @@ class Router
     private $response;
 
     /**
-     * @var HeaderExposerInterface
+     * @var PublisherInterface
      */
-    private $headerExposer;
+    private $publisher;
 
     /**
      * Router constructor.
@@ -94,7 +94,7 @@ class Router
     public function __construct()
     {
         $this->initializeRequestAndResponse();
-        $this->headerExposer = new HeaderExposer();
+        $this->publisher = new Publisher();
     }
 
     /**
@@ -211,7 +211,7 @@ class Router
                     RouteAttributes::URI => $routeAttributes[RouteAttributes::URI],
                 ];
 
-                $this->publish($this->run($routeAttributes, $routeParameters));
+                $this->publisher->publish($this->run($routeAttributes, $routeParameters));
 
                 return;
             }
@@ -382,40 +382,6 @@ class Router
 
             $reflection->getParameters()
         );
-    }
-
-    /**
-     * Publish response
-     *
-     * @param mixed $response
-     * @return bool
-     */
-    private function publish($response = null)
-    {
-        $output = fopen("php://output", 'r+');
-
-        if ($response instanceof ResponseInterface) {
-            http_response_code($response->getStatusCode());
-
-            foreach ($response->getHeaders() as $name => $values) {
-                $value = $response->getHeaderLine($name);
-                $this->headerExposer->addHeaderLine($name, $value);
-            }
-
-            fwrite($output, $response->getBody());
-
-            return fclose($output);
-        }
-
-        if (is_scalar($response)) {
-            fwrite($output, $response);
-
-            return fclose($output);
-        }
-
-        fwrite($output, json_encode($response));
-
-        return fclose($output);
     }
 
     /**
@@ -688,18 +654,18 @@ class Router
     }
 
     /**
-     * @return HeaderExposerInterface
+     * @return PublisherInterface
      */
-    public function getHeaderExposer(): HeaderExposerInterface
+    public function getPublisher(): PublisherInterface
     {
-        return $this->headerExposer;
+        return $this->publisher;
     }
 
     /**
-     * @param HeaderExposerInterface $headerExposer
+     * @param PublisherInterface $publisher
      */
-    public function setHeaderExposer(HeaderExposerInterface $headerExposer)
+    public function setPublisher(PublisherInterface $publisher)
     {
-        $this->headerExposer = $headerExposer;
+        $this->publisher = $publisher;
     }
 }

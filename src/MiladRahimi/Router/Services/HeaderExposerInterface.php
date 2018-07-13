@@ -17,4 +17,11 @@ interface HeaderExposerInterface
      * @param string $value
      */
     public function addHeaderLine(string $name, string $value);
+
+    /**
+     * Set http response code
+     *
+     * @param int $code
+     */
+    public function setResponseCode(int $code);
 }
