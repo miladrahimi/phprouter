@@ -1,0 +1,33 @@
+sudo: required
+
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+branches:
+  only:
+  - master
+
+before_install:
+  - travis_retry composer self-update
+
+before_script:
+  - composer install --no-interaction --no-suggest
+
+script:
+  - composer install
+  - vendor/bin/phpunit
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+notifications:
+  email:
+    recipients:
+      - info@miladrahimi.com
+    on_success: change
+    on_failure: always
