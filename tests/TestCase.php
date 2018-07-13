@@ -29,7 +29,7 @@ class TestCase extends BaseTestCase
      * @param string $method
      * @param string $url
      */
-    protected function mockRequest(string $method, string $url): void
+    protected function mockRequest(string $method, string $url)
     {
         $urlParts = parse_url($url);
 
