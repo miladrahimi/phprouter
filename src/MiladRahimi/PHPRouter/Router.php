@@ -366,7 +366,7 @@ class Router {
      * @param callable|string|null $middleware
      */
     public function map($methods, $routes, $controller, $middleware = null) {
-        if (!isset($methods)) {
+        if ($methods !== null && !isset($methods)) {
             throw new InvalidArgumentException("Methods must be set");
         }
         if (!isset($routes)) {
