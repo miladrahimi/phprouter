@@ -1,478 +1,305 @@
-# PHPRouter
-Free PHP URL router for neat and powerful projects!
+# PhpRouter
+Standalone URL router for PHP projects
 
 ## Overview
-PHPRouter is a free, neat, powerful and stand-alone URL router for PHP projects.
+PhpRouter is a powerful and stand-alone URL router for PHP projects.
 
-It's inspired by [Laravel](http://laravel.com/docs/master/routing) routing system and
-appropriate for no-framework projects and brand new frameworks.
-
-### URL Routing
-URL routing means mapping URLs to controllers.
-
-A URL router is a required part for every project/framework with MVC-based architecture.
-
-PHPRouter as a URL router provides pretty URLs.
-
-See following URL which is provided by a weak router:
-
-```
-http://example.com/index.php?section=blog&page_type=post&id=93
-```
-
-And compare to this one which is provided by PHPRouter:
-
-```
-http://example.com/blog/post/93
-```
-
-In addition, PHPRouter provides pretty API and easy-to-use methods for you.
+The new version is inspired by [Laravel routing system](http://laravel.com/docs/master/routing) and
+it is appropriate for pure PHP projects, and brand new frameworks.
 
 ## Installation
-### Using Composer (Recommended)
-Read
-[How to use composer in php projects](http://miladrahimi.com/blog/2015/04/12/how-to-use-composer-in-php-projects)
-article if you are not familiar with [Composer](http://getcomposer.org).
 
-Run following command in your project root directory:
+Install [Composer](https://getcomposer.org) and run following command in your project's root directory:
 
 ```
 composer require miladrahimi/phprouter
 ```
 
-### Manually
-You may use your own autoloader as long as it follows [PSR-0](http://www.php-fig.org/psr/psr-0) or
-[PSR-4](http://www.php-fig.org/psr/psr-4) standards.
-Just put `src` directory contents in your vendor directory.
+## Configuration
+Certainly, all of your application requests must be handled by only one PHP file like `index.php`.
+To do so, you can follow the instructions below based on your web server software.
+
+### Apache
+If you are using Apache HTTP server,
+you should create `.htaccess` in your project's root directory with the content below.
+
+```
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+```
+
+### NGINX
+If you are using NGINX web server, you should consider following directive in your project's site configuration file.
+
+```
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+```
 
 ## Getting Started
-All of your application requests must be handled by one PHP file like `index.php`.
-Put following directives in your `.htaccess` file to achieve this goal:
+After configuration, you can use PhpRouter in your `index.php` (entry point) file this way:
 
 ```
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*$ index.php [PT,L]
-```
-
-Now you can use `Router` class in the PHP file (here `index.php`) to route your application:
-
-```
-// Use this namespace
 use MiladRahimi\PHPRouter\Router;
 
-// Create brand new Router instance
 $router = new Router();
 
-// Map this function to home page
-$router->get("/", function () {
-    return "This is home page!";
+$router->get('/', function () {
+    return 'This is home page!';
 });
 
-// Dispatch all matched routes and run!
 $router->dispatch();
 ```
 
-* Try the example in your server root directory (do not put it in a sub directory).
-* You will read how to use PHPRouter in projects in subdirectories in the rest of documentation.
+To buy more convenience, most of the controllers in the examples are defined as Closure,
+of course, PhpRouter supports plenty of controller types which will be discussed further.
 
 ## Basic Routing
-To buy more convenience, most of controllers in the examples in this documentation are defined as closure.
-Of course, PHPRouter supports plenty of controller types which you will read in the further sections.
+Following example demonstrates how to define simple routes.
 
-There are some simple routes below.
+```
+use MiladRahimi\PHPRouter\Router;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\JsonResponse;
+
+$router = new Router();
+
+$router->get('/html/1', function () {
+    return '<b>Hello from HTML!</b>';
+});
+
+$router->post('/html/2', function () {
+    return HtmlResponse('<b>Hello from HTML!</b>');
+});
+
+$router->patch('/json', function () {
+    return JsonResponse(['message' => 'Hello from JSON!']);
+});
+
+$router->dispatch();
+```
+
+## HTTP Methods
+
+You can use the following methods defined in PhpRouter to map different HTTP methods to controllers.
 
 ```
 use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
-// Map this function to home page (GET method)
-$router->get("/", function () {
-    return "This is home page!";
+$router->get('/', function () {
+    return '<b>GET method</b>';
 });
 
-// Map this function to /blog URI (GET method)
-$router->get("/blog", function () {
-    return "This is blog!";
+$router->post('/', function () {
+    return '<b>POST method</b>';
 });
 
-// Map this function to /submit URI (POST method)
-$router->post("/submit", function () {
-    return "I'm supposed to catch posted data!";
+$router->patch('/', function () {
+    return '<b>PATCH method</b>';
 });
 
-// Dispatch routes and run!
+$router->put('/', function () {
+    return '<b>PUT method</b>';
+});
+
+$router->delete('/', function () {
+    return '<b>DELETE method</b>';
+});
+
 $router->dispatch();
 ```
 
-*   All of controllers above are closure functions.
-*   The `get()` method map controllers to `GET` request methods.
-*   The `post()` method map controllers to `POST` request methods.
-
-## Request methods
-Both `get()` and `post()` methods in `Router` class are shortcuts for mapping controllers to `GET` and `POST` requests.
-The super method is `map()` which catches request method as its first argument.
+You may need to use other HTTP methods or your custom ones, no worry, there is `map()` method for you.
 
 ```
 use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
-// Alias: $router->get();
-$router->map("GET", "/", function () {
-    return "This is Home!";
+$router->map('GET', '/', function () {
+    return '<b>GET method</b>';
 });
 
-// Alias: $router->post();
-$router->map("POST", "/post_data", function () {
-    return "Data updated!";
+$router->map('POST', '/', function () {
+    return '<b>POST method</b>';
 });
 
-// PUT Request method
-$router->map("PUT", "/put_data", function () {
-    return "Data uploaded!";
+$router->map('OPTIONS', '/', function () {
+    return '<b>OPTIONS method</b>';
 });
 
-// DELETE Request method
-$router->map("DELETE", "/delete_data", function () {
-    return "Data deleted!";
+$router->map('CUSTOM', '/', function () {
+    return '<b>CUSTOM method</b>';
 });
 
-// Dispatch routes and run!
 $router->dispatch();
 ```
 
-## Multiple request methods
-The controller can be mapped to multiple request methods as following example demonstrates:
+If your controller is not sensitive about HTTP methods and
+it is going to respond regardless to what HTTP method is, the method "any" is for you.
 
 ```
 use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
-// Map to GET, POST and DELETE request methods
-$router->map(["GET", "POST", "DELETE"], "/", function () {
-    return "Homepage for GET, POST and DELETE request methods!";
+$router->any('/', function () {
+    return 'This is Home! No matter what the HTTP method is!';
 });
 
 $router->dispatch();
 ```
-
-*   PHP >= 5.4 supports `[]` [syntax for array](http://php.net/manual/en/language.types.array.php).
-    you may use old `array()` syntax.
-
-## Any request method
-If the controller can respond to the route with any request method, you may try this method:
-
-```
-use MiladRahimi\PHPRouter\Router;
-
-$router = new Router();
-
-// Respond to all request methods (GET, POST, PUT, etc)
-$router->any("/", function () {
-    return "This is Home! No matter what the request method is!";
-});
-
-$router->dispatch();
-```
-
-## Multiple routes
-Array of routes is supported too. If the controller can respond to multiple routes,
-the method below may be useful to you.
-
-```
-use MiladRahimi\PHPRouter\Router;
-
-$router = new Router();
-
-$router->map(["GET", "POST"], ["/", "/home"], function () {
-    return "Homepage for GET, POST and DELETE requests!";
-});
-
-$router->dispatch();
-```
-
-*   The controller above will respond to these request methods and routes:
-    *   Method: `GET`   Route: `/`
-    *   Method: `GET`   Route: `/home`
-    *   Method: `POST`  Route: `/`
-    *   Method: `POST`  Route: `/home`
 
 ## Controllers
-Personally, I hate using closure as a controller.
-I believe a controller absolutely must be a method.
-However, following codes shows how to use all kind of controllers.
+PhpRouter supports plenty of controller types, look at following examples.
 
 ```
 use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
-// Closure
-$router->get("/1", function () {
-    return "Closure as controller";
+$router->get('/1', function () {
+    return 'Closure as controller';
 });
 
-// Stored closure
 $closure = function() {
-    return "Stored closure as controller";
+    return 'Stored closure as controller';
 };
-$router->get("/2", $closure);
 
-// Function
+$router->get('/2', $closure);
+
 function func() {
-    return "Function as controller";
+    return 'Function as controller';
 }
-$router->get("/3", "func");
 
-// Method (Recommended)
+$router->get('/3', 'func');
+
+$router->dispatch();
+```
+
+```
+use MiladRahimi\PHPRouter\Router;
+
+$router = new Router();
+
 class Controller
 {
     function method()
     {
-        return "Method as controller";
+        return new HtmlResponse('Method as controller');
     }
 }
-$router->get("/4", "Controller@method");
+
+$router->get('/4', 'Controller@method');
 
 $router->dispatch();
 ```
 
-## Controller class namespaces
-Because of MVC pattern, developers usually declare controllers with namespaces.
-
-PHPRouter doesn't recognize "used namespaces",
-so you have to pass them with the class names.
-
-See following example, `Post` class is declared with `Blog` namespace.
-
 ```
+namespace App\Http\Controllers;
+
 use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
-$router->get("/blog/posts", 'Controllers\Blog\Post@getAll');
-
-$router->dispatch();
-```
-
-An the `Post` class:
-
-```
-<?php namespace Controllers\Blog;
-
-class Post {
-    function getAll() {
-        return "All posts";
-    }
-}
-```
-
-## Route parameters
-PHPRouter is created to help developers to handle dynamic routes easier than ever.
-Let's go back to the first example, I mean this one:
-
-```
-http://example.com/blog/post/93
-```
-
-The post ID (`93` in the example above) is variable.
-Actually we need to handle all the routes with following pattern with only one controller:
-
-```
-http://example.com/blog/post/{id}
-```
-
-Don't worry!
-Because PHPRouter handles it in the easiest way.
-Look at following example:
-
-```
-use MiladRahimi\PHPRouter\Router;
-
-$router = new Router();
-
-$router->get("/blog/post/{id}", function ($id) {
-    return "Show content of post " . $id;
-});
-
-$router->dispatch();
-```
-
-Or you may use a method as the controller:
-
-```
-class Blog
+class Controller
 {
-    function getPost($id)
+    function method()
     {
-        return "Show content of post " . $id;
+        return new HtmlResponse('Method as controller');
     }
 }
 
-use MiladRahimi\PHPRouter\Router;
-
-$router = new Router();
-
-$router->get("/blog/post/{id}", "Blog@getPost");
+$router->get('/5', 'App\Http\Controllers\Controller@method');
 
 $router->dispatch();
 ```
 
-*   You can determine route parameters with `{` and `}` characters.
-*   The Router will extract them and pass their values as arguments to the controller.
-*   Controller parameters must has the same route parameter names.
-*   PHPRouter passes parameters by name not the sequence.
-
-## Optional Parameters
-You may consider one or some of parameters optional.
-
-In this example `id` is optional.
-If the request URI had ID, it would return page with the caught ID.
-If the request URI was without any ID (`/page/`), it would return `All pages!`.
+## Route Parameters
+Some endpoints have variable parts like IDs in URLs.
+We call them the route parameters, and you can catch them with route parameters.
 
 ```
 use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
-$router->get("/page/{id?}", function ($id) {
-    if($id == null)
-        return "All pages!";
-    return "Page $id";
+// Required parameter
+$router->get('/blog/post/{id}', function ($id) {
+    return 'Content of the post: ' . $id;
+});
+
+// Optional parameter
+$router->get('/path/to/{info?}', function ($info = null) {
+    return 'Info may be present an may be null.';
+});
+
+// Optional parameter, Optional Slash!
+$router->get('/path/to/?{info?}', function ($info = null) {
+    return 'Info may be present an may be null.';
+});
+
+// Optional parameter with default value
+$router->get('/path/to/{info?}', function ($info = 'DEFAULT') {
+    return 'Info may be present an may be DEFAULT.';
 });
 
 $router->dispatch();
 ```
 
-*   When optional parameter was not given it would be `null`.
-
-In the example above to see all pages, user must enter `/page/` URI.
-You may consider `/page` for this purpose too.
-To achieve this goal you can use an array of routes or just use following trick:
+In default, route parameters can match any value, but you can define regular expression if you want to.
 
 ```
 use MiladRahimi\PHPRouter\Router;
 
 $router = new Router();
 
-$router->get("/page/?{id?}", function ($id) {
-    if($id == null)
-        return "All pages!";
-    return "Page $id";
+// IDs must be numeric
+$router->defineParameter('id', '[0-9]+');
+
+$router->get('/blog/post/{id}', function ($id) {
+    return 'Content of the post: ' . $id;
 });
 
 $router->dispatch();
 ```
 
-*   `?` makes preceding character optional.
-
-## More customized parameters
-In default, route parameters could be anything (`[^/]+` Regular Expression pattern).
-Sometimes the route parameter must be only a numeric value.
-Sometimes you need them to follow a complex pattern.
-No problem! You can define
-[Regular Expression](http://www.regular-expressions.info/)
-pattern for some or all of the route parameters.
-There are also some predefined pattern which you may use.
+## HTTP Request
+PhpRouter passes a PSR-7 complaint request object to the controllers and middleware.
+It uses "ServerRequestFactory" from the Zend implementation of PSR-7 to create this instance.
+You can catch the request object like the example.
 
 ```
 use MiladRahimi\PHPRouter\Router;
+use Zend\Diactoros\ServerRequest;
 
 $router = new Router();
 
-// 'id' must be a number (number pattern id predefined)
-$router->define("id", Router::NUMERIC);
-
-// 'username' must be an alphanumeric, - is allowed too
-$router->define("username", "[a-z0-9\-]+");
-
-$router->get("/blog/post/{id}", function ($id) {
-    return "Show content of post " . $id;
-});
-
-$router->get("/user/{username}", function ($username) {
-    return "Show info of user with username: " . $username;
+$router->get('/', function (ServerRequest $request) {
+    return new JsonResponse([
+        'method' => $request->getMethod(),
+        'uri' => $request->getUri(),
+        'body' => $request->getBody(),
+        'headers' => $request->getHeaders(),
+    ]);
 });
 
 $router->dispatch();
-```
-
-*   No need to check if ID is a number of not, It will be a number, I promise!
-*   To avoid unwanted results, pattern group characters (`(` and `)`) are disabled.
-*   There are three predefined patterns as `NUMERIC`, `ALPHABETIC` and `ALPHANUMERIC`.
-
-## Request and Response objects
-The Router passes two objects named `$request` and `$response` to the route controller.
-Of course the controller must be considered to catch them too.
-These objects help you in some cases.
-To get these object you must name them (one or both) in the controller parameters.
-Don't worry, PHPRouter is enough flexible to don't care about the order of controller parameters!
-### Request object
-The URL:
-
-```
-http://example.com/blog/post/93?section=comments
-```
-
-The application routing section:
-
-```
-use MiladRahimi\PHPRouter\Request;
-use MiladRahimi\PHPRouter\Router;
-
-$router = new Router();
-
-$router->get("/blog/post/{id}", function ($id, Request $request) {
-    echo $id . "<br>";
-    echo $request->getUrl() . "<br>";
-    echo $request->getUri() . "<br>";
-    echo $request->getWebsite() . "<br>";
-    echo $request->getPage() . "<br>";
-    echo $request->getQueryString() . "<br>";
-    echo $request->getBaseUri() . "<br>";
-    echo $request->getLocalUri() . "<br>";
-    echo $request->getMethod() . "<br>";
-    echo $request->getProtocol() . "<br>";
-    echo $request->getIP() . "<br>";
-    echo $request->getPort() . "<br>";
-});
-
-$router->dispatch();
-```
-
-The output:
-
-```
-93
-example.com/blog/post/93?section=comments
-/blog/post/93?section=comments
-example.com
-/blog/post/93
-section=comments
-
-/blog/post/93
-GET
-HTTP/1.1
-127.0.0.1
-14889
-```
-
-Other methods:
-
-```
-// Return Previous URL (HTTP_REFERRER)
-$request->referer();
-// Following methods will be discussed more!
-$request->get();
-$request->get("key");
-$request->post();
-$request->post("key");
-$request->cookie();
-$request->cookie("name");
 ```
 
 ### Response object
