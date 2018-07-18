@@ -35,6 +35,28 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
+    public function test_simple_routing_with_all_methods()
+    {
+        $this->mockRequest(HttpMethods::GET, 'http://example.com/');
+
+        $router = $this->createRouterWithMockedProperties();
+        $router->any('/', $this->simpleController());
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+
+        $this->mockRequest(HttpMethods::POST, 'http://example.com/');
+
+        $router = $this->createRouterWithMockedProperties();
+        $router->any('/', $this->simpleController());
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
     public function test_multiple_routing()
     {
         $router = $this->createRouterWithMockedProperties();
@@ -201,6 +223,30 @@ class SimpleMappingTest extends TestCase
 
         $router = $this->createRouterWithMockedProperties();
         $router->map('GET', '/', $this->simpleController(), 'UnknownMiddleware');
+        $router->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_simple_routing_with_defined_parameter()
+    {
+        $this->mockRequest(HttpMethods::GET, 'http://example.com/666');
+
+        $router = $this->createRouterWithMockedProperties();
+        $router->defineParameter('id', '[0-9]+');
+        $router->map('GET', '/{id}', $this->simpleController());
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+
+        $this->mockRequest(HttpMethods::GET, 'http://example.com/abc');
+
+        $this->expectException(RouteNotFoundException::class);
+
+        $router = $this->createRouterWithMockedProperties();
+        $router->defineParameter('id', '[0-9]+');
+        $router->map('GET', '/{id}', $this->simpleController());
         $router->dispatch();
     }
 }

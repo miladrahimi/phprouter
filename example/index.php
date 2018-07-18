@@ -19,16 +19,18 @@ require './../vendor/autoload.php';
 
 $router = new Router();
 
-$router->get('/', function (ServerRequest $request) {
+$router->post('/', function (ServerRequest $request) {
     return new JsonResponse([
         'method' => $request->getMethod(),
         'uri' => $request->getUri(),
         'body' => $request->getBody(),
         'headers' => $request->getHeaders(),
+        'attributes' => $request->getAttributes(),
+        'parsed' => file_get_contents('php://input'),
     ]);
 });
 
-$router->post('/', function () {
+$router->post('/post', function () {
     $html = '<html>Object successfully created.</html>';
 
     return new HtmlResponse($html, 201);
@@ -46,6 +48,12 @@ $router->patch('/{id}', function () {
 
 $router->get('/redirect', function () {
     return new RedirectResponse('https://miladrahimi.com');
+});
+
+$router->get('/query', function (ServerRequest $request) {
+    return new JsonResponse([
+        'parameter' => $request->getQueryParams(),
+    ]);
 });
 
 try {

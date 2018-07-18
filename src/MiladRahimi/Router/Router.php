@@ -200,7 +200,9 @@ class Router
         $domain = substr($this->serverRequest->getUri()->getHost(), strlen($scheme . '://'));
         $uri = $this->serverRequest->getUri()->getPath();
 
-        foreach ($this->routes[$method] ?? [] as $route => $routeAttributes) {
+        $routes = array_merge($this->routes[$method] ?? [], $this->routes['*'] ?? []);
+
+        foreach ($routes as $route => $routeAttributes) {
             $routeParameters = [];
 
             if ($this->matchRoute($route, $uri, $routeParameters)) {
@@ -253,8 +255,16 @@ class Router
      */
     private function initializeRequestAndResponse()
     {
-        $this->serverRequest = ServerRequestFactory::fromGlobals();
         $this->response = new Response();
+        $this->serverRequest = ServerRequestFactory::fromGlobals();
+
+        foreach ($_GET ?? [] as $name => $value) {
+            $this->serverRequest = $this->serverRequest->withAttribute($name, $value);
+        }
+
+        foreach ($_POST ?? [] as $name => $value) {
+            $this->serverRequest = $this->serverRequest->withAttribute($name, $value);
+        }
     }
 
     /**
@@ -448,6 +458,25 @@ class Router
     private function match(string $pattern, string $subject): bool
     {
         return preg_match('@^' . $pattern . '$@', $subject);
+    }
+
+    /**
+     * Map given controller to all the methods
+     *
+     * @param string $route
+     * @param Closure|callable|string $controller
+     * @param Middleware|Middleware[] $middleware
+     * @param string|null $domain
+     * @param string|null $name
+     */
+    public function any(
+        string $route,
+        $controller,
+        $middleware = [],
+        string $domain = null,
+        string $name = null
+    ) {
+        $this->map('*', $route, $controller, $middleware, $domain, $name);
     }
 
     /**
