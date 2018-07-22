@@ -1,0 +1,29 @@
+sudo: required
+
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+branches:
+  only:
+  - master
+
+before_install:
+  - travis_retry composer self-update
+
+before_script:
+  - phpenv config-rm xdebug.ini
+  - composer install --no-interaction --no-suggest
+
+script:
+  - vendor/bin/phpunit --no-coverage tests
+
+notifications:
+  email:
+    recipients:
+      - info@miladrahimi.com
+    on_success: change
+    on_failure: always
