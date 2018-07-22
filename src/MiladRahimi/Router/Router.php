@@ -149,7 +149,7 @@ class Router
      * @param string $method
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|Middleware[] $middleware
+     * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
      */
@@ -258,12 +258,16 @@ class Router
         $this->response = new Response();
         $this->serverRequest = ServerRequestFactory::fromGlobals();
 
-        foreach ($_GET ?? [] as $name => $value) {
+        foreach (array_merge($_GET ?? [], $_POST ?? []) as $name => $value) {
             $this->serverRequest = $this->serverRequest->withAttribute($name, $value);
         }
 
-        foreach ($_POST ?? [] as $name => $value) {
-            $this->serverRequest = $this->serverRequest->withAttribute($name, $value);
+        if (is_array($bodyParameters = json_decode(file_get_contents('php://input'), true))) {
+            $this->serverRequest = $this->serverRequest->withParsedBody($bodyParameters);
+
+            foreach ($bodyParameters as $name => $value) {
+                $this->serverRequest = $this->serverRequest->withAttribute($name, $value);
+            }
         }
     }
 
@@ -286,8 +290,12 @@ class Router
             $next = $controllerRunner;
         }
 
-        if (($middleware[$i] instanceof Middleware) == false) {
+        if (is_subclass_of($middleware[$i], Middleware::class) == false) {
             throw new InvalidMiddlewareException('Invalid middleware for route: ' . json_encode($this->currentRoute));
+        }
+
+        if (is_string($middleware[$i])) {
+            $middleware[$i] = new $middleware[$i];
         }
 
         return $middleware[$i]->handle($this->serverRequest, $next);
@@ -389,6 +397,10 @@ class Router
                     return $this->response;
                 }
 
+                if ($parameter->getType() && $parameter->getType()->getName() == Router::class) {
+                    return $this;
+                }
+
                 if ($parameter->isOptional()) {
                     return $parameter->getDefaultValue();
                 }
@@ -465,7 +477,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|Middleware[] $middleware
+     * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
      */
@@ -484,7 +496,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|Middleware[] $middleware
+     * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
      */
@@ -503,7 +515,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|Middleware[] $middleware
+     * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
      */
@@ -522,7 +534,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|Middleware[] $middleware
+     * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
      */
@@ -541,7 +553,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|Middleware[] $middleware
+     * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
      */
@@ -560,7 +572,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|Middleware[] $middleware
+     * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
      */
