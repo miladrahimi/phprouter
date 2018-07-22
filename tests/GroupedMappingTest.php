@@ -58,6 +58,26 @@ class GroupedMappingTest extends TestCase
     /**
      * @throws Throwable
      */
+    public function test_group_routing_with_string_middleware()
+    {
+        $groupAttributes = [
+            RouteAttributes::MIDDLEWARE => SampleMiddleware::class,
+        ];
+
+        $router = $this->createRouterWithMockedProperties();
+
+        $router->group($groupAttributes, function (Router $router) {
+            $router->map('GET', '/', $this->simpleController());
+        });
+
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
     public function test_group_routing_with_a_group_and_a_route_middleware()
     {
         $groupMiddleware = new SampleMiddleware(1001);
