@@ -18,14 +18,14 @@ use MiladRahimi\PhpRouter\Tests\Classes\StopperMiddleware;
 use Throwable;
 use Zend\Diactoros\ServerRequestFactory;
 
-class SimpleMappingTest extends TestCase
+class RoutingTest extends TestCase
 {
     /**
      * @throws Throwable
      */
     public function test_simple_routing()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('GET', '/', $this->simpleController());
         $router->dispatch();
 
@@ -35,11 +35,57 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_with_all_methods()
+    public function test_specific_methods()
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/');
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
+        $router->get('/', $this->simpleController());
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+
+        $this->mockRequest(HttpMethods::POST, 'http://example.com/');
+
+        $router = $this->createRouter();
+        $router->post('/', $this->simpleController());
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+
+        $this->mockRequest(HttpMethods::PATCH, 'http://example.com/');
+
+        $router = $this->createRouter();
+        $router->patch('/', $this->simpleController());
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+
+        $this->mockRequest(HttpMethods::PUT, 'http://example.com/');
+
+        $router = $this->createRouter();
+        $router->put('/', $this->simpleController());
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+
+        $this->mockRequest(HttpMethods::DELETE, 'http://example.com/');
+
+        $router = $this->createRouter();
+        $router->delete('/', $this->simpleController());
+        $router->dispatch();
+
+        $this->assertEquals('Here I am!', $this->getOutput($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_any_method()
+    {
+        $this->mockRequest(HttpMethods::GET, 'http://example.com/');
+
+        $router = $this->createRouter();
         $router->any('/', $this->simpleController());
         $router->dispatch();
 
@@ -47,7 +93,7 @@ class SimpleMappingTest extends TestCase
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/');
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->any('/', $this->simpleController());
         $router->dispatch();
 
@@ -57,9 +103,9 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_multiple_routing()
+    public function test_multiple_routes()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('GET', '/', SampleController::class . '@getNoParameter');
         $router->map('POST', '/{id}', SampleController::class . '@postOneParameter');
         $router->dispatch();
@@ -68,7 +114,9 @@ class SimpleMappingTest extends TestCase
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
 
+        // Reset the server request to consider the new request
         $router->setServerRequest(ServerRequestFactory::fromGlobals());
+
         $router->dispatch();
 
         $this->assertEquals('The id is 666', $this->getOutput($router));
@@ -77,11 +125,11 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_and_a_single_middleware()
+    public function test_single_middleware()
     {
         $middleware = new SampleMiddleware(13);
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('GET', '/', $this->simpleController(), $middleware);
         $router->dispatch();
 
@@ -92,11 +140,11 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_and_a_single_stopper_middleware()
+    public function test_stopper_middleware()
     {
         $middleware = new StopperMiddleware(11);
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('GET', '/', $this->simpleController(), $middleware);
         $router->dispatch();
 
@@ -107,11 +155,11 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_and_some_middleware()
+    public function test_multiple_middleware()
     {
         $middleware = [new SampleMiddleware(32), new SampleMiddleware(64)];
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('GET', '/', $this->simpleController(), $middleware);
         $router->dispatch();
 
@@ -123,11 +171,11 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_with_static_domain()
+    public function test_static_domain()
     {
         $this->mockRequest(HttpMethods::GET, 'http://server.domain.ext/');
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('GET', '/', $this->simpleController(), [], 'server.domain.ext');
         $router->dispatch();
 
@@ -137,11 +185,11 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_with_regex_domain()
+    public function test_regex_domain()
     {
         $this->mockRequest(HttpMethods::GET, 'http://something.domain.ext/');
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('GET', '/', $this->simpleController(), [], '(.*).domain.ext');
         $router->dispatch();
 
@@ -151,9 +199,9 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_with_name_parameter()
+    public function test_named_route()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('GET', '/', $this->simpleController(), [], null, 'TheName');
         $router->dispatch();
 
@@ -164,22 +212,20 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_with_use_name_method_and_check_being_disposal()
+    public function test_use_name_method()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->useName('TheName')->map('GET', '/', $this->simpleController());
         $router->dispatch();
 
         $this->assertEquals('Here I am!', $this->getOutput($router));
         $this->assertTrue($router->isRoute('TheName'));
 
-        ob_clean();
-
         $controller = SampleController::class . '@postOneParameter';
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->map('POST', '/{id}', $controller);
         $router->dispatch();
 
@@ -190,50 +236,11 @@ class SimpleMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_routing_it_should_raise_an_error_when_route_is_not_found()
-    {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/unknowon-page');
-
-        $this->expectException(RouteNotFoundException::class);
-
-        $router = $this->createRouterWithMockedProperties();
-        $router->map('GET', '/', $this->simpleController());
-        $router->dispatch();
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_simple_routing_it_should_raise_an_error_when_controller_class_is_invalid()
-    {
-        $this->expectException(InvalidControllerException::class);
-        $this->expectExceptionMessage('Controller class `UnknownController@method` not found.');
-
-        $router = $this->createRouterWithMockedProperties();
-        $router->map('GET', '/', 'UnknownController@method');
-        $router->dispatch();
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_simple_routing_it_should_raise_an_error_when_middleware_is_invalid()
-    {
-        $this->expectException(InvalidMiddlewareException::class);
-
-        $router = $this->createRouterWithMockedProperties();
-        $router->map('GET', '/', $this->simpleController(), 'UnknownMiddleware');
-        $router->dispatch();
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_simple_routing_with_defined_parameter()
+    public function test_defined_parameters()
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/666');
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->defineParameter('id', '[0-9]+');
         $router->map('GET', '/{id}', $this->simpleController());
         $router->dispatch();
@@ -244,9 +251,48 @@ class SimpleMappingTest extends TestCase
 
         $this->expectException(RouteNotFoundException::class);
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
         $router->defineParameter('id', '[0-9]+');
         $router->map('GET', '/{id}', $this->simpleController());
+        $router->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_routing_raise_an_error_when_route_is_not_found()
+    {
+        $this->mockRequest(HttpMethods::GET, 'http://example.com/unknowon-page');
+
+        $this->expectException(RouteNotFoundException::class);
+
+        $router = $this->createRouter();
+        $router->map('GET', '/', $this->simpleController());
+        $router->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_routing_it_should_raise_an_error_when_controller_class_is_invalid()
+    {
+        $this->expectException(InvalidControllerException::class);
+        $this->expectExceptionMessage('Controller class `UnknownController@method` not found.');
+
+        $router = $this->createRouter();
+        $router->map('GET', '/', 'UnknownController@method');
+        $router->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_routing_it_should_raise_an_error_when_middleware_is_invalid()
+    {
+        $this->expectException(InvalidMiddlewareException::class);
+
+        $router = $this->createRouter();
+        $router->map('GET', '/', $this->simpleController(), 'UnknownMiddleware');
         $router->dispatch();
     }
 }

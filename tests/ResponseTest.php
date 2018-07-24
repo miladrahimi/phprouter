@@ -22,9 +22,9 @@ class ResponseTest extends TestCase
      */
     public function test_empty_response_with_code_204()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
-        $router->map('GET', '/', function() {
+        $router->map('GET', '/', function () {
             return new EmptyResponse(204);
         });
 
@@ -38,9 +38,9 @@ class ResponseTest extends TestCase
      */
     public function test_html_response_with_code_200()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
-        $router->map('GET', '/', function() {
+        $router->map('GET', '/', function () {
             return new HtmlResponse('<html></html>', 200);
         });
 
@@ -55,9 +55,9 @@ class ResponseTest extends TestCase
      */
     public function test_json_response_with_code_201()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
-        $router->map('GET', '/', function() {
+        $router->map('GET', '/', function () {
             return new JsonResponse(['a' => 'x', 'b' => 'y'], 201);
         });
 
@@ -72,9 +72,9 @@ class ResponseTest extends TestCase
      */
     public function test_text_response_with_code_203()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
-        $router->map('GET', '/', function() {
+        $router->map('GET', '/', function () {
             return new TextResponse('Content', 203);
         });
 
@@ -89,9 +89,9 @@ class ResponseTest extends TestCase
      */
     public function test_redirect_response_with_code_203()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
-        $router->map('GET', '/', function() {
+        $router->map('GET', '/', function () {
             return new RedirectResponse('https://miladrahimi.com');
         });
 
