@@ -10,6 +10,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Services\PublisherInterface;
 use MiladRahimi\PhpRouter\Tests\Classes\Publisher;
 use MiladRahimi\PhpRouter\Tests\Classes\SampleController;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -43,7 +44,7 @@ class TestCase extends BaseTestCase
      *
      * @return Router
      */
-    protected function createRouterWithMockedProperties(): Router
+    protected function createRouter(): Router
     {
         $router = new Router();
         $router->setPublisher(new Publisher());
@@ -79,7 +80,7 @@ class TestCase extends BaseTestCase
      * Get router publisher
      *
      * @param Router $router
-     * @return \MiladRahimi\PhpRouter\Services\PublisherInterface|Publisher
+     * @return PublisherInterface|Publisher
      */
     protected function getPublisher(Router $router): Publisher
     {
