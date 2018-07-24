@@ -21,7 +21,7 @@ class HttpMethods
     const TRACE = 'TRACE';
 
     /**
-     * Standardize the http method
+     * Standardize the custom http method
      *
      * @param string $method
      * @return string
