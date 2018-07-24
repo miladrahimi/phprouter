@@ -14,14 +14,14 @@ use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
 use Throwable;
 
-class GroupedMappingTest extends TestCase
+class GroupingTest extends TestCase
 {
     /**
      * @throws Throwable
      */
-    public function test_simple_group_routing()
+    public function test_simple_group()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
         $router->group([], function (Router $router) {
             $router->map('GET', '/', $this->simpleController());
@@ -35,7 +35,7 @@ class GroupedMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_group_routing_with_middleware()
+    public function test_middleware_object()
     {
         $groupMiddleware = new SampleMiddleware(777);
 
@@ -43,7 +43,7 @@ class GroupedMappingTest extends TestCase
             RouteAttributes::MIDDLEWARE => $groupMiddleware,
         ];
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
         $router->group($groupAttributes, function (Router $router) {
             $router->map('GET', '/', $this->simpleController());
@@ -58,13 +58,13 @@ class GroupedMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_group_routing_with_string_middleware()
+    public function test_string_middleware()
     {
         $groupAttributes = [
             RouteAttributes::MIDDLEWARE => SampleMiddleware::class,
         ];
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
         $router->group($groupAttributes, function (Router $router) {
             $router->map('GET', '/', $this->simpleController());
@@ -78,7 +78,7 @@ class GroupedMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_group_routing_with_a_group_and_a_route_middleware()
+    public function test_middleware_it_should_ignore_group_middleware_where_route_middleware_is_present()
     {
         $groupMiddleware = new SampleMiddleware(1001);
         $routeMiddleware = new SampleMiddleware(1002);
@@ -87,7 +87,7 @@ class GroupedMappingTest extends TestCase
             RouteAttributes::MIDDLEWARE => $groupMiddleware,
         ];
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
         $router->group($groupAttributes, function (Router $router) use ($routeMiddleware) {
             $router->map('GET', '/', $this->simpleController(), $routeMiddleware);
@@ -103,7 +103,7 @@ class GroupedMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_group_routing_with_prefix()
+    public function test_prefix()
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/group/page');
 
@@ -111,7 +111,7 @@ class GroupedMappingTest extends TestCase
             RouteAttributes::PREFIX => '/group',
         ];
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
         $router->group($groupAttributes, function (Router $router) {
             $router->map('GET', '/page', $this->simpleController());
@@ -125,7 +125,7 @@ class GroupedMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_group_routing_with_domain()
+    public function test_domain()
     {
         $this->mockRequest(HttpMethods::GET, 'http://sub.domain.tld/');
 
@@ -133,7 +133,7 @@ class GroupedMappingTest extends TestCase
             RouteAttributes::DOMAIN => 'sub.domain.tld',
         ];
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
         $router->group($groupAttributes, function (Router $router) {
             $router->map('GET', '/', $this->simpleController());
@@ -147,7 +147,7 @@ class GroupedMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_group_routing_with_domains_it_should_ignore_group_domain_when_the_route_has_one()
+    public function test_domain_it_should_ignore_group_domain_where_route_domain_is_present()
     {
         $this->mockRequest(HttpMethods::GET, 'http://sub2.domain.tld/');
 
@@ -155,7 +155,7 @@ class GroupedMappingTest extends TestCase
             RouteAttributes::DOMAIN => 'sub1.domain.tld',
         ];
 
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
         $router->group($groupAttributes, function (Router $router) {
             $router->map('GET', '/', $this->simpleController(), [], 'sub2.domain.tld');
@@ -169,9 +169,9 @@ class GroupedMappingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_simple_group_routing_it_should_remove_existing_name_before_the_group()
+    public function test_naming_it_should_remove_existing_name_before_the_group()
     {
-        $router = $this->createRouterWithMockedProperties();
+        $router = $this->createRouter();
 
         $router->useName('NameForNothing');
 
