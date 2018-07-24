@@ -6,7 +6,7 @@
  * Time: 01:31
  */
 
-namespace MiladRahimi\Router;
+namespace MiladRahimi\PhpRouter;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;

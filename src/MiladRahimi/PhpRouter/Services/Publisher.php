@@ -6,7 +6,7 @@
  * Time: 16:23
  */
 
-namespace MiladRahimi\Router\Services;
+namespace MiladRahimi\PhpRouter\Services;
 
 use Psr\Http\Message\ResponseInterface;
 

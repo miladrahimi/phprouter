@@ -6,15 +6,15 @@
  * Time: 01:58
  */
 
-namespace MiladRahimi\Router\Tests;
+namespace MiladRahimi\PhpRouter\Tests;
 
-use MiladRahimi\Router\Enums\HttpMethods;
-use MiladRahimi\Router\Exceptions\InvalidControllerException;
-use MiladRahimi\Router\Exceptions\InvalidMiddlewareException;
-use MiladRahimi\Router\Exceptions\RouteNotFoundException;
-use MiladRahimi\Router\Tests\Classes\SampleController;
-use MiladRahimi\Router\Tests\Classes\SampleMiddleware;
-use MiladRahimi\Router\Tests\Classes\StopperMiddleware;
+use MiladRahimi\PhpRouter\Enums\HttpMethods;
+use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
+use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
+use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+use MiladRahimi\PhpRouter\Tests\Classes\SampleController;
+use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
+use MiladRahimi\PhpRouter\Tests\Classes\StopperMiddleware;
 use Throwable;
 use Zend\Diactoros\ServerRequestFactory;
 

@@ -6,9 +6,9 @@
  * Time: 17:07
  */
 
-namespace MiladRahimi\Router\Tests\Classes;
+namespace MiladRahimi\PhpRouter\Tests\Classes;
 
-use MiladRahimi\Router\Services\PublisherInterface;
+use MiladRahimi\PhpRouter\Services\PublisherInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Publisher implements PublisherInterface

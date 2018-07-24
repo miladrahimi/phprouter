@@ -6,7 +6,7 @@
  * Time: 22:43
  */
 
-namespace MiladRahimi\Router\Services;
+namespace MiladRahimi\PhpRouter\Services;
 
 interface HeaderExposerInterface
 {

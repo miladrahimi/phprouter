@@ -6,12 +6,12 @@
  * Time: 01:57
  */
 
-namespace MiladRahimi\Router\Tests;
+namespace MiladRahimi\PhpRouter\Tests;
 
-use MiladRahimi\Router\Enums\HttpMethods;
-use MiladRahimi\Router\Router;
-use MiladRahimi\Router\Tests\Classes\Publisher;
-use MiladRahimi\Router\Tests\Classes\SampleController;
+use MiladRahimi\PhpRouter\Enums\HttpMethods;
+use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Tests\Classes\Publisher;
+use MiladRahimi\PhpRouter\Tests\Classes\SampleController;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -79,7 +79,7 @@ class TestCase extends BaseTestCase
      * Get router publisher
      *
      * @param Router $router
-     * @return \MiladRahimi\Router\Services\PublisherInterface|Publisher
+     * @return \MiladRahimi\PhpRouter\Services\PublisherInterface|Publisher
      */
     protected function getPublisher(Router $router): Publisher
     {
