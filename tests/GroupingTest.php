@@ -8,8 +8,8 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
+use MiladRahimi\PhpRouter\Enums\GroupAttributes;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
-use MiladRahimi\PhpRouter\Enums\RouteAttributes;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
 use Throwable;
@@ -40,7 +40,7 @@ class GroupingTest extends TestCase
         $groupMiddleware = new SampleMiddleware(777);
 
         $groupAttributes = [
-            RouteAttributes::MIDDLEWARE => $groupMiddleware,
+            GroupAttributes::MIDDLEWARE => $groupMiddleware,
         ];
 
         $router = $this->createRouter();
@@ -61,7 +61,7 @@ class GroupingTest extends TestCase
     public function test_string_middleware()
     {
         $groupAttributes = [
-            RouteAttributes::MIDDLEWARE => SampleMiddleware::class,
+            GroupAttributes::MIDDLEWARE => SampleMiddleware::class,
         ];
 
         $router = $this->createRouter();
@@ -84,7 +84,7 @@ class GroupingTest extends TestCase
         $routeMiddleware = new SampleMiddleware(1002);
 
         $groupAttributes = [
-            RouteAttributes::MIDDLEWARE => $groupMiddleware,
+            GroupAttributes::MIDDLEWARE => $groupMiddleware,
         ];
 
         $router = $this->createRouter();
@@ -108,7 +108,7 @@ class GroupingTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://example.com/group/page');
 
         $groupAttributes = [
-            RouteAttributes::PREFIX => '/group',
+            GroupAttributes::PREFIX => '/group',
         ];
 
         $router = $this->createRouter();
@@ -130,7 +130,7 @@ class GroupingTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://sub.domain.tld/');
 
         $groupAttributes = [
-            RouteAttributes::DOMAIN => 'sub.domain.tld',
+            GroupAttributes::DOMAIN => 'sub.domain.tld',
         ];
 
         $router = $this->createRouter();
@@ -152,7 +152,7 @@ class GroupingTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://sub2.domain.tld/');
 
         $groupAttributes = [
-            RouteAttributes::DOMAIN => 'sub1.domain.tld',
+            GroupAttributes::DOMAIN => 'sub1.domain.tld',
         ];
 
         $router = $this->createRouter();

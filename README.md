@@ -493,6 +493,7 @@ To group the routes you can follow the example below.
 
 ```
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Enums\GroupAttributes;
 
 $router = new Router();
 
@@ -501,9 +502,9 @@ $router->group(['prefix' => '/admin'], function (Router $router) {
 });
 
 $attributes = [
-    RouteAttributes::MIDDLEWARE => SampleMiddleware::class,
-    RouteAttributes::PREFIX => '/shop',
-    RouteAttributes::DOMAIN => 'shop.example.com',
+    GroupAttributes::MIDDLEWARE => SampleMiddleware::class,
+    GroupAttributes::PREFIX => '/shop',
+    GroupAttributes::DOMAIN => 'shop.example.com',
 ];
 
 $router->group($attributes, function (Router $router) {
@@ -513,7 +514,7 @@ $router->group($attributes, function (Router $router) {
 $router->dispatch();
 ```
 
-As you can see in the examples, you can `RouteAttributes` enum instead of memorizing route attribute names!
+As you can see in the examples, you can `GroupAttributes` enum instead of memorizing route attribute names!
 
 ## Base URI
 Your project may be in a subdirectory, so all of your route URIs will starts with the subdirectory name.
