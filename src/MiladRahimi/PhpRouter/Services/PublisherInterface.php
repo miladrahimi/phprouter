@@ -6,7 +6,7 @@
  * Time: 16:22
  */
 
-namespace MiladRahimi\Router\Services;
+namespace MiladRahimi\PhpRouter\Services;
 
 interface PublisherInterface
 {

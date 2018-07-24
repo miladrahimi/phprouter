@@ -6,7 +6,7 @@
  * Time: 16:07
  */
 
-namespace MiladRahimi\Router\Tests\Classes;
+namespace MiladRahimi\PhpRouter\Tests\Classes;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\TextResponse;

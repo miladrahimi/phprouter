@@ -6,7 +6,7 @@
  * Time: 14:39
  */
 
-namespace MiladRahimi\Router\Enums;
+namespace MiladRahimi\PhpRouter\Enums;
 
 class HttpMethods
 {

@@ -6,12 +6,12 @@
  * Time: 13:00
  */
 
-namespace MiladRahimi\Router\Tests;
+namespace MiladRahimi\PhpRouter\Tests;
 
-use MiladRahimi\Router\Enums\HttpMethods;
-use MiladRahimi\Router\Enums\RouteAttributes;
-use MiladRahimi\Router\Router;
-use MiladRahimi\Router\Tests\Classes\SampleMiddleware;
+use MiladRahimi\PhpRouter\Enums\HttpMethods;
+use MiladRahimi\PhpRouter\Enums\RouteAttributes;
+use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
 use Throwable;
 
 class GroupedMappingTest extends TestCase

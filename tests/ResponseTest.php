@@ -6,7 +6,7 @@
  * Time: 18:21
  */
 
-namespace MiladRahimi\Router\Tests;
+namespace MiladRahimi\PhpRouter\Tests;
 
 use Throwable;
 use Zend\Diactoros\Response\EmptyResponse;

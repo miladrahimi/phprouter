@@ -48,7 +48,7 @@ location / {
 After configuration, you can use PhpRouter in your entry point (`index.php`) like this example.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -66,7 +66,7 @@ of course, PhpRouter supports plenty of controller types which will be discussed
 Following example demonstrates how to define simple routes.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
 
@@ -92,7 +92,7 @@ $router->dispatch();
 You can use the following PhpRouter methods to map different HTTP methods to the controllers.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -122,7 +122,7 @@ $router->dispatch();
 You may need to use other HTTP methods or your custom ones, no worry, there is `Router::map()` method for you.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -149,7 +149,7 @@ If your controller is not sensitive about HTTP methods and
 it is going to respond regardless to what HTTP method is, the method `Router::any()` is for you.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -164,7 +164,7 @@ $router->dispatch();
 PhpRouter supports plenty of controller types, just look at following examples.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -190,7 +190,7 @@ $router->dispatch();
 Using a class for controller could be nice:
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -212,7 +212,7 @@ The controller class can also have a namespace:
 ```
 namespace App\Http\Controllers;
 
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -236,7 +236,7 @@ Some endpoints have variable parts like IDs in URLs.
 We call them the route parameters, and you can catch them with controller parameters with the same names.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -266,7 +266,7 @@ $router->dispatch();
 In default, route parameters can match any value, but you can define a regular expression for it if you want to.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 class BlogController
 {
@@ -295,7 +295,7 @@ It uses [Zend implementation](https://github.com/zendframework/zend-diactoros) o
 You can catch the request object like the example.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response\EmptyResponse;
 
@@ -330,7 +330,7 @@ Your controllers can return a string value as the response, it will be considere
 You can also return JSON, plain text and empty responses by provided zend-diactoros package.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -367,7 +367,7 @@ $router->dispatch();
 Your controllers can redirect user to another url as well.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response\RedirectResponse;
 
@@ -427,8 +427,8 @@ it passes the request to next middleware or controller (if there is no more midd
 if the header is absent it returns an empty response with `401 Authorization Failed ` HTTP status code.
 
 ```
-use MiladRahimi\PHPRouter\Router;
-use MiladRahimi\Router\Middleware;
+use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -463,7 +463,7 @@ it may assign subdomain dynamically to users like blog hosting services.
 In this case, you need to specify domain or subdomain in addition to the URIs in your routes.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response\RedirectResponse;
 
@@ -492,7 +492,7 @@ Usually routes can fit in a groups that have common attributes like middleware, 
 To group the routes you can follow the example below.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -521,7 +521,7 @@ In the previous version, there was a `setBaseUri()` method but it's removed in t
 You still can have the same functionality with grouping your routes and using prefix attribute.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -537,7 +537,7 @@ You can name your routes and use their names to get their information or check c
 You can set the route name via `name` parameter or using `useName()` method before defining the route.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
@@ -557,7 +557,7 @@ Since your application runs through the `Router::disptach()` method,
 you should put it in a `try` block and catch exceptions that will be thrown by your application and the router.
 
 ```
-use MiladRahimi\PHPRouter\Router;
+use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 

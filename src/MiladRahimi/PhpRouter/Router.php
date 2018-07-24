@@ -6,15 +6,15 @@
  * Time: 12:23
  */
 
-namespace MiladRahimi\Router;
+namespace MiladRahimi\PhpRouter;
 
 use Closure;
-use MiladRahimi\Router\Enums\RouteAttributes;
-use MiladRahimi\Router\Exceptions\InvalidControllerException;
-use MiladRahimi\Router\Exceptions\InvalidMiddlewareException;
-use MiladRahimi\Router\Exceptions\RouteNotFoundException;
-use MiladRahimi\Router\Services\Publisher;
-use MiladRahimi\Router\Services\PublisherInterface;
+use MiladRahimi\PhpRouter\Enums\RouteAttributes;
+use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
+use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
+use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+use MiladRahimi\PhpRouter\Services\Publisher;
+use MiladRahimi\PhpRouter\Services\PublisherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;

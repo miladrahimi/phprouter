@@ -6,7 +6,7 @@
  * Time: 01:38
  */
 
-namespace MiladRahimi\Router\Enums;
+namespace MiladRahimi\PhpRouter\Enums;
 
 class RouteAttributes
 {

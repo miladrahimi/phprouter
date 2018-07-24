@@ -6,7 +6,7 @@
  * Time: 23:11
  */
 
-namespace MiladRahimi\Router\Exceptions;
+namespace MiladRahimi\PhpRouter\Exceptions;
 
 use Exception;
 

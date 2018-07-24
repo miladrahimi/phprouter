@@ -6,10 +6,10 @@
  * Time: 02:46
  */
 
-namespace MiladRahimi\Router\Tests\Classes;
+namespace MiladRahimi\PhpRouter\Tests\Classes;
 
 use Closure;
-use MiladRahimi\Router\Middleware;
+use MiladRahimi\PhpRouter\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\TextResponse;
