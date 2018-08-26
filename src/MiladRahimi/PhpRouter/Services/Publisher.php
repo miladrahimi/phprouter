@@ -36,6 +36,8 @@ class Publisher implements PublisherInterface
      */
     public function publish($content)
     {
+        $content = empty($content) ? '' : $content;
+
         $output = fopen($this->stream, 'r+');
 
         if ($content instanceof ResponseInterface) {
