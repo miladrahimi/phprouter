@@ -19,6 +19,7 @@
     },
     "require": {
         "php": ">=7.0",
+        "ext-json": "*",
         "zendframework/zend-diactoros": "^1.7"
     },
     "require-dev": {
