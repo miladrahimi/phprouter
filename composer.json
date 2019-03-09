@@ -1,6 +1,6 @@
 {
     "name": "miladrahimi/phprouter",
-    "description": "HTTP URL Router for PHP Projects",
+    "description": "PhpRouter is a powerful and standalone HTTP URL router for PHP projects.",
     "keywords": ["Router", "URL Router", "HTTP Router", "Routing", "URL", "HTTP", "Route"],
     "homepage": "https://github.com/miladrahimi/phprouter",
     "type": "library",
@@ -9,7 +9,7 @@
         {
             "name": "Milad Rahimi",
             "email": "info@miladrahimi.com",
-            "homepage": "http://miladrahimi.com",
+            "homepage": "https://miladrahimi.com",
 			"role": "Developer"
         }
     ],
@@ -18,12 +18,12 @@
         "source": "https://github.com/miladrahimi/phprouter/issues"
     },
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.1",
         "ext-json": "*",
-        "zendframework/zend-diactoros": "^1.7"
+        "zendframework/zend-diactoros": "^2.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6"
+        "phpunit/phpunit": "^7"
     },
     "autoload": {
     	"psr-4": {
