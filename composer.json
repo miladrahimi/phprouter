@@ -1,34 +1,43 @@
 {
-    "name": "miladrahimi/phprouter",
-    "description": "PhpRouter is a powerful and standalone HTTP URL router for PHP projects.",
-    "keywords": ["Router", "URL Router", "HTTP Router", "Routing", "URL", "HTTP", "Route"],
-    "homepage": "https://github.com/miladrahimi/phprouter",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Milad Rahimi",
-            "email": "info@miladrahimi.com",
-            "homepage": "https://miladrahimi.com",
-			"role": "Developer"
-        }
-    ],
-	"support": {
-        "email": "info@miladrahimi.com",
-        "source": "https://github.com/miladrahimi/phprouter/issues"
-    },
-    "require": {
-        "php": ">=7.1",
-        "ext-json": "*",
-        "zendframework/zend-diactoros": "^2.1"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7"
-    },
-    "autoload": {
-    	"psr-4": {
-            "MiladRahimi\\PhpRouter\\": "src/",
-            "MiladRahimi\\PhpRouter\\Tests\\": "tests/"
-        }
+  "name": "miladrahimi/phprouter",
+  "description": "PhpRouter is a powerful and standalone HTTP URL router for PHP projects.",
+  "keywords": [
+    "Router",
+    "URL Router",
+    "HTTP Router",
+    "Routing",
+    "URL",
+    "HTTP",
+    "Route"
+  ],
+  "homepage": "https://github.com/miladrahimi/phprouter",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Milad Rahimi",
+      "email": "info@miladrahimi.com",
+      "homepage": "https://miladrahimi.com",
+      "role": "Developer"
     }
+  ],
+  "support": {
+    "email": "info@miladrahimi.com",
+    "source": "https://github.com/miladrahimi/phprouter/issues"
+  },
+  "require": {
+    "php": ">=7.1",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "zendframework/zend-diactoros": "^2.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7"
+  },
+  "autoload": {
+    "psr-4": {
+      "MiladRahimi\\PhpRouter\\": "src/",
+      "MiladRahimi\\PhpRouter\\Tests\\": "tests/"
+    }
+  }
 }

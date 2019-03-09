@@ -115,7 +115,7 @@ class RoutingTest extends TestCase
         $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
 
         // Reset the server request to consider the new request
-        $router->setServerRequest(ServerRequestFactory::fromGlobals());
+        $router->setRequest(ServerRequestFactory::fromGlobals());
 
         $router->dispatch();
 

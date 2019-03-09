@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 6/5/2018 AD
- * Time: 12:23
- */
 
 namespace MiladRahimi\PhpRouter;
 
@@ -44,6 +38,21 @@ class Router
     private $parameters = [];
 
     /**
+     * @var ServerRequestInterface
+     */
+    private $request;
+
+    /**
+     * @var ResponseInterface
+     */
+    private $response;
+
+    /**
+     * @var PublisherInterface
+     */
+    private $publisher;
+
+    /**
      * @var string|null
      */
     private $currentName = null;
@@ -74,27 +83,15 @@ class Router
     private $currentRouteName = null;
 
     /**
-     * @var ServerRequestInterface
-     */
-    private $serverRequest;
-
-    /**
-     * @var ResponseInterface
-     */
-    private $response;
-
-    /**
-     * @var PublisherInterface
-     */
-    private $publisher;
-
-    /**
      * Router constructor.
+     *
+     * @param PublisherInterface|null $publisher
      */
-    public function __construct()
+    public function __construct(PublisherInterface $publisher = null)
     {
-        $this->initializeRequestAndResponse();
-        $this->publisher = new Publisher();
+        $this->publisher = $publisher ?: new Publisher();
+        $this->response = new Response();
+        $this->request = ServerRequestFactory::fromGlobals();
     }
 
     /**
@@ -103,15 +100,15 @@ class Router
      * @param array $attributes
      * @param Closure $routes
      */
-    public function group($attributes = [], Closure $routes)
+    public function group(array $attributes, Closure $routes)
     {
         // Backup previous group properties
+        $oldName = $this->currentName;
         $oldMiddleware = $this->currentMiddleware;
         $oldPrefix = $this->currentPrefix;
         $oldDomain = $this->currentDomain;
-        $oldName = $this->currentName;
 
-        // There shouldn't be any name!
+        // Empty current name for next steps
         $this->currentName = null;
 
         // Set given middleware for the group
@@ -195,10 +192,10 @@ class Router
      */
     public function dispatch()
     {
-        $method = $this->serverRequest->getMethod();
-        $scheme = $this->serverRequest->getUri()->getScheme();
-        $domain = substr($this->serverRequest->getUri()->getHost(), strlen($scheme . '://'));
-        $uri = $this->serverRequest->getUri()->getPath();
+        $method = $this->request->getMethod();
+        $scheme = $this->request->getUri()->getScheme();
+        $domain = substr($this->request->getUri()->getHost(), strlen($scheme . '://'));
+        $uri = $this->request->getUri()->getPath();
 
         $routes = array_merge($this->routes[$method] ?? [], $this->routes['*'] ?? []);
 
@@ -251,27 +248,6 @@ class Router
     }
 
     /**
-     * Initialize http request and response
-     */
-    private function initializeRequestAndResponse()
-    {
-        $this->response = new Response();
-        $this->serverRequest = ServerRequestFactory::fromGlobals();
-
-        foreach (array_merge($_GET ?? [], $_POST ?? []) as $name => $value) {
-            $this->serverRequest = $this->serverRequest->withAttribute($name, $value);
-        }
-
-        if (is_array($bodyParameters = json_decode(file_get_contents('php://input'), true))) {
-            $this->serverRequest = $this->serverRequest->withParsedBody($bodyParameters);
-
-            foreach ($bodyParameters as $name => $value) {
-                $this->serverRequest = $this->serverRequest->withAttribute($name, $value);
-            }
-        }
-    }
-
-    /**
      * Run the controller through the middleware
      *
      * @param Middleware[] $middleware
@@ -298,7 +274,7 @@ class Router
             $middleware[$i] = new $middleware[$i];
         }
 
-        return $middleware[$i]->handle($this->serverRequest, $next);
+        return $middleware[$i]->handle($this->request, $next);
     }
 
     /**
@@ -387,7 +363,7 @@ class Router
                     ($parameter->getType() && $parameter->getType()->getName() == ServerRequestInterface::class) ||
                     $parameter->getName() == 'request'
                 ) {
-                    return $this->serverRequest;
+                    return $this->request;
                 }
 
                 if (
@@ -675,19 +651,19 @@ class Router
      *
      * @return ServerRequestInterface
      */
-    public function getServerRequest(): ServerRequestInterface
+    public function getRequest(): ServerRequestInterface
     {
-        return $this->serverRequest;
+        return $this->request;
     }
 
     /**
      * Set my own http request instance
      *
-     * @param ServerRequestInterface $serverRequest
+     * @param ServerRequestInterface $request
      */
-    public function setServerRequest(ServerRequestInterface $serverRequest)
+    public function setRequest(ServerRequestInterface $request)
     {
-        $this->serverRequest = $serverRequest;
+        $this->request = $request;
     }
 
     /**
