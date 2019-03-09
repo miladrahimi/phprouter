@@ -60,17 +60,17 @@ class Router
     /**
      * @var array
      */
-    private $currentMiddleware = [];
+    private $groupMiddleware = [];
 
     /**
      * @var string
      */
-    private $currentPrefix = '';
+    private $groupPrefix = '';
 
     /**
      * @var string|null
      */
-    private $currentDomain = null;
+    private $groupDomain = null;
 
     /**
      * @var array|null
@@ -104,9 +104,9 @@ class Router
     {
         // Backup previous group properties
         $oldName = $this->currentName;
-        $oldMiddleware = $this->currentMiddleware;
-        $oldPrefix = $this->currentPrefix;
-        $oldDomain = $this->currentDomain;
+        $oldMiddleware = $this->groupMiddleware;
+        $oldPrefix = $this->groupPrefix;
+        $oldDomain = $this->groupDomain;
 
         // Empty current name for next steps
         $this->currentName = null;
@@ -117,17 +117,17 @@ class Router
                 $attributes[RouteAttributes::MIDDLEWARE] = [$attributes[RouteAttributes::MIDDLEWARE]];
             }
 
-            $this->currentMiddleware = array_merge($attributes[RouteAttributes::MIDDLEWARE], $this->currentMiddleware);
+            $this->groupMiddleware = array_merge($attributes[RouteAttributes::MIDDLEWARE], $this->groupMiddleware);
         }
 
         // Set given prefix for the group
         if (isset($attributes[RouteAttributes::PREFIX])) {
-            $this->currentPrefix = $attributes[RouteAttributes::PREFIX] . $this->currentPrefix;
+            $this->groupPrefix = $attributes[RouteAttributes::PREFIX] . $this->groupPrefix;
         }
 
         // Set given domain for the group
         if (isset($attributes[RouteAttributes::DOMAIN])) {
-            $this->currentDomain = $attributes[RouteAttributes::DOMAIN];
+            $this->groupDomain = $attributes[RouteAttributes::DOMAIN];
         }
 
         // Run group body closure
@@ -135,9 +135,9 @@ class Router
 
         // Revert to previous group properties using the backups
         $this->currentName = $oldName;
-        $this->currentDomain = $oldDomain;
-        $this->currentPrefix = $oldPrefix;
-        $this->currentMiddleware = $oldMiddleware;
+        $this->groupDomain = $oldDomain;
+        $this->groupPrefix = $oldPrefix;
+        $this->groupMiddleware = $oldMiddleware;
     }
 
     /**
@@ -158,7 +158,7 @@ class Router
         string $domain = null,
         string $name = null
     ) {
-        $route = $this->currentPrefix . $route;
+        $route = $this->groupPrefix . $route;
         $middleware = is_array($middleware) ? $middleware : [$middleware];
 
         // Add the route to route list
@@ -166,8 +166,8 @@ class Router
             RouteAttributes::METHOD => $method,
             RouteAttributes::URI => $route,
             RouteAttributes::CONTROLLER => $controller,
-            RouteAttributes::MIDDLEWARE => array_merge($this->currentMiddleware, $middleware),
-            RouteAttributes::DOMAIN => $domain ?: $this->currentDomain,
+            RouteAttributes::MIDDLEWARE => array_merge($this->groupMiddleware, $middleware),
+            RouteAttributes::DOMAIN => $domain ?: $this->groupDomain,
         ];
 
         // Add the route to named route list
@@ -634,6 +634,29 @@ class Router
         }
 
         return null;
+    }
+
+    /**
+     * generate URL for given route name
+     *
+     * @param string $routeName
+     * @param array $parameters
+     * @return string
+     * @throws RouteNotFoundException
+     */
+    public function url(string $routeName, array $parameters = []): string
+    {
+        if (isset($this->routeNames[$routeName]) == false) {
+            throw new RouteNotFoundException();
+        }
+
+        $uri = $this->routeNames[$routeName];
+
+        foreach ($parameters as $parameter) {
+            $uri = preg_replace('/\??\{' . $parameter . '\??\}', $parameter, $uri);
+        }
+
+        return $uri;
     }
 
     /**
