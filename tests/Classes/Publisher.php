@@ -1,16 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 7/13/2018 AD
- * Time: 17:07
- */
 
 namespace MiladRahimi\PhpRouter\Tests\Classes;
 
 use MiladRahimi\PhpRouter\Services\PublisherInterface;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class Publisher
+ *
+ * @package MiladRahimi\PhpRouter\Tests\Classes
+ */
 class Publisher implements PublisherInterface
 {
     /**
@@ -31,14 +30,16 @@ class Publisher implements PublisherInterface
     /**
      * @inheritdoc
      */
-    public function publish($content)
+    public function publish($content): void
     {
+        $content = empty($content) ? '' : $content;
+
         if ($content instanceof ResponseInterface) {
             $this->responseCode = $content->getStatusCode();
 
             foreach ($content->getHeaders() as $name => $values) {
                 $value = $content->getHeaderLine($name);
-                $this->headerLines[] = $name . ': ' . $value;
+                $this->headerLines[] = $name.': '.$value;
             }
 
             $this->output = $content->getBody();
@@ -47,5 +48,25 @@ class Publisher implements PublisherInterface
         } else {
             $this->output = json_encode($content);
         }
+    }
+
+    /**
+     * Set output stream
+     *
+     * @param string $stream
+     */
+    public function setStream(string $stream): void
+    {
+        // Nada
+    }
+
+    /**
+     * Get output stream
+     *
+     * @return string
+     */
+    public function getStream(): string
+    {
+        return 'variable';
     }
 }

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 6/23/2018 AD
- * Time: 01:31
- */
 
 namespace MiladRahimi\PhpRouter;
 
@@ -12,14 +6,19 @@ use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Interface Middleware
+ *
+ * @package MiladRahimi\PhpRouter
+ */
 interface Middleware
 {
     /**
-     * Handle user request
+     * Handle request and response
      *
      * @param ServerRequestInterface $request
      * @param Closure $next
-     * @return ResponseInterface
+     * @return ResponseInterface|mixed
      */
     public function handle(ServerRequestInterface $request, Closure $next);
 }

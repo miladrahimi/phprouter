@@ -1,25 +1,23 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 6/23/2018 AD
- * Time: 02:46
- */
 
 namespace MiladRahimi\PhpRouter\Tests\Classes;
 
 use Closure;
 use MiladRahimi\PhpRouter\Middleware;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\TextResponse;
 
+/**
+ * Class StopperMiddleware
+ *
+ * @package MiladRahimi\PhpRouter\Tests\Classes
+ */
 class StopperMiddleware implements Middleware
 {
     /**
-     * @var int
+     * @var string
      */
-    public $id;
+    public $content;
 
     /**
      * @var array
@@ -28,23 +26,19 @@ class StopperMiddleware implements Middleware
 
     /**
      * SampleMiddleware constructor.
-     * @param int $id
+     * @param string $content
      */
-    public function __construct(int $id = 0)
+    public function __construct(string $content = null)
     {
-        $this->id = $id;
+        $this->content = $content ?: mt_rand(1, 9999999);
     }
 
     /**
-     * Handle user request
-     *
-     * @param ServerRequestInterface $request
-     * @param Closure $next
-     * @return ResponseInterface
+     * @inheritdoc
      */
     public function handle(ServerRequestInterface $request, Closure $next)
     {
-        static::$output[] = $this->id;
+        static::$output[] = $this->content;
 
         return new TextResponse('Stopped in middleware.');
     }

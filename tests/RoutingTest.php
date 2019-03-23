@@ -1,103 +1,122 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 6/23/2018 AD
- * Time: 01:58
- */
 
 namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
-use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-use MiladRahimi\PhpRouter\Tests\Classes\SampleController;
-use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
-use MiladRahimi\PhpRouter\Tests\Classes\StopperMiddleware;
+use MiladRahimi\PhpRouter\Router;
+use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
-use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\ServerRequest;
 
+/**
+ * Class RoutingTest
+ *
+ * @package MiladRahimi\PhpRouter\Tests
+ */
 class RoutingTest extends TestCase
 {
     /**
      * @throws Throwable
      */
-    public function test_simple_routing()
+    public function test_a_simple_get_route()
     {
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController());
+        $this->mockRequest(HttpMethods::GET, 'http://example.com/');
+
+        $router = $this->router();
+        $router->map('GET', '/', $this->controller());
         $router->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
+        $this->assertEquals('OK', $this->extract($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_specific_methods()
+    public function test_a_simple_post_route()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/');
-
-        $router = $this->createRouter();
-        $router->get('/', $this->simpleController());
-        $router->dispatch();
-
-        $this->assertEquals('Here I am!', $this->getOutput($router));
-
         $this->mockRequest(HttpMethods::POST, 'http://example.com/');
 
-        $router = $this->createRouter();
-        $router->post('/', $this->simpleController());
-        $router->dispatch();
+        $router = $this->router()->post('/', $this->controller())->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
+        $this->assertEquals('OK', $this->extract($router));
+    }
 
-        $this->mockRequest(HttpMethods::PATCH, 'http://example.com/');
-
-        $router = $this->createRouter();
-        $router->patch('/', $this->simpleController());
-        $router->dispatch();
-
-        $this->assertEquals('Here I am!', $this->getOutput($router));
-
+    /**
+     * @throws Throwable
+     */
+    public function test_a_simple_put_route()
+    {
         $this->mockRequest(HttpMethods::PUT, 'http://example.com/');
 
-        $router = $this->createRouter();
-        $router->put('/', $this->simpleController());
-        $router->dispatch();
+        $router = $this->router()->put('/', $this->controller())->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
-
-        $this->mockRequest(HttpMethods::DELETE, 'http://example.com/');
-
-        $router = $this->createRouter();
-        $router->delete('/', $this->simpleController());
-        $router->dispatch();
-
-        $this->assertEquals('Here I am!', $this->getOutput($router));
+        $this->assertEquals('OK', $this->extract($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_any_method()
+    public function test_a_simple_patch_route()
+    {
+        $this->mockRequest(HttpMethods::PATCH, 'http://example.com/');
+
+        $router = $this->router()->patch('/', $this->controller())->dispatch();
+
+        $this->assertEquals('OK', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_a_simple_delete_route()
+    {
+        $this->mockRequest(HttpMethods::DELETE, 'http://example.com/');
+
+        $router = $this->router()->delete('/', $this->controller())->dispatch();
+
+        $this->assertEquals('OK', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_a_route_with_custom_method()
+    {
+        $method = "SCREW";
+
+        $this->mockRequest($method, 'http://example.com/');
+
+        $router = $this->router()->map($method, '/', $this->controller())->dispatch();
+
+        $this->assertEquals('OK', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_the_any_method()
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/');
 
-        $router = $this->createRouter();
-        $router->any('/', $this->simpleController());
-        $router->dispatch();
+        $router = $this->router()
+            ->any('/', function () {
+                return 'Test any-get method';
+            })
+            ->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
+        $this->assertEquals('Test any-get method', $this->extract($router));
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/');
 
-        $router = $this->createRouter();
-        $router->any('/', $this->simpleController());
-        $router->dispatch();
+        $router = $this->router()
+            ->any('/', function () {
+                return 'Test any-post method';
+            })
+            ->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
+        $this->assertEquals('Test any-post method', $this->extract($router));
     }
 
     /**
@@ -105,194 +124,294 @@ class RoutingTest extends TestCase
      */
     public function test_multiple_routes()
     {
-        $router = $this->createRouter();
-        $router->map('GET', '/', SampleController::class . '@getNoParameter');
-        $router->map('POST', '/{id}', SampleController::class . '@postOneParameter');
-        $router->dispatch();
-
-        $this->assertEquals('Here I am!', $this->getOutput($router));
-
         $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
 
-        // Reset the server request to consider the new request
-        $router->setServerRequest(ServerRequestFactory::fromGlobals());
+        $router = $this->router()
+            ->get('/', function () {
+                return 'Home';
+            })
+            ->post('/{id}', function ($id) {
+                return $id;
+            })
+            ->dispatch();
 
-        $router->dispatch();
-
-        $this->assertEquals('The id is 666', $this->getOutput($router));
+        $this->assertEquals('666', $this->extract($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_single_middleware()
+    public function test_duplicate_routes_with_different_controllers()
     {
-        $middleware = new SampleMiddleware(13);
+        $router = $this->router()
+            ->get('/', function () {
+                return 'Home';
+            })
+            ->get('/', function () {
+                return 'Home again!';
+            })
+            ->dispatch();
 
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController(), $middleware);
-        $router->dispatch();
-
-        $this->assertEquals('Here I am!', $this->getOutput($router));
-        $this->assertContains(13, SampleMiddleware::$output);
+        $this->assertEquals('Home again!', $this->extract($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_stopper_middleware()
+    public function test_multiple_http_methods()
     {
-        $middleware = new StopperMiddleware(11);
+        $this->mockRequest(HttpMethods::POST, 'http://example.com/');
 
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController(), $middleware);
-        $router->dispatch();
+        $router = $this->router()
+            ->get('/', function () {
+                return 'Get';
+            })
+            ->post('/', function () {
+                return 'Post';
+            })
+            ->delete('/', function () {
+                return 'Delete';
+            })
+            ->dispatch();
 
-        $this->assertEquals('Stopped in middleware.', $this->getOutput($router));
-        $this->assertContains(11, StopperMiddleware::$output);
+        $this->assertEquals('Post', $this->extract($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_multiple_middleware()
+    public function test_initial_prefix()
     {
-        $middleware = [new SampleMiddleware(32), new SampleMiddleware(64)];
+        $this->mockRequest(HttpMethods::POST, 'http://example.com/app/page');
 
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController(), $middleware);
-        $router->dispatch();
+        $router = $this->router('/app')
+            ->post('/page', $this->controller())
+            ->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
-        $this->assertContains(32, SampleMiddleware::$output);
-        $this->assertContains(64, SampleMiddleware::$output);
+        $this->assertEquals('OK', $this->extract($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_static_domain()
+    public function test_with_a_required_parameter()
+    {
+        $this->mockRequest(HttpMethods::GET, 'http://web.com/666');
+
+        $router = $this->router()
+            ->get('/{id}', function ($id) {
+                return $id;
+            })
+            ->dispatch();
+
+        $this->assertEquals('666', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_a_optional_parameter_when_it_is_present()
+    {
+        $this->mockRequest(HttpMethods::GET, 'http://web.com/666');
+
+        $router = $this->router()
+            ->get('/{id?}', function ($id) {
+                return $id;
+            })
+            ->dispatch();
+
+        $this->assertEquals('666', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_a_optional_parameter_when_it_is_not_present()
+    {
+        $this->mockRequest(HttpMethods::GET, 'http://web.com/');
+
+        $router = $this->router()
+            ->get('/{id?}', function ($id) {
+                return $id ?: 'Default';
+            })
+            ->dispatch();
+
+        $this->assertEquals('Default', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_a_static_domain()
     {
         $this->mockRequest(HttpMethods::GET, 'http://server.domain.ext/');
 
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController(), [], 'server.domain.ext');
-        $router->dispatch();
+        $router = $this->router()
+            ->get('/', $this->controller(), [], 'server.domain.ext')
+            ->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
+        $this->assertEquals('OK', $this->extract($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_regex_domain()
+    public function test_with_a_domain_pattern()
     {
         $this->mockRequest(HttpMethods::GET, 'http://something.domain.ext/');
 
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController(), [], '(.*).domain.ext');
-        $router->dispatch();
+        $router = $this->router()
+            ->get('/', $this->controller(), [], '(.*).domain.ext')
+            ->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
+        $this->assertEquals('OK', $this->extract($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_named_route()
-    {
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController(), [], null, 'TheName');
-        $router->dispatch();
-
-        $this->assertEquals('Here I am!', $this->getOutput($router));
-        $this->assertTrue($router->isRoute('TheName'));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_use_name_method()
-    {
-        $router = $this->createRouter();
-        $router->useName('TheName')->map('GET', '/', $this->simpleController());
-        $router->dispatch();
-
-        $this->assertEquals('Here I am!', $this->getOutput($router));
-        $this->assertTrue($router->isRoute('TheName'));
-
-        $controller = SampleController::class . '@postOneParameter';
-
-        $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
-
-        $router = $this->createRouter();
-        $router->map('POST', '/{id}', $controller);
-        $router->dispatch();
-
-        $this->assertEquals('The id is 666', $this->getOutput($router));
-        $this->assertFalse($router->isRoute('TheName'));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_defined_parameters()
+    public function test_with_defined_parameters()
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/666');
 
-        $router = $this->createRouter();
-        $router->defineParameter('id', '[0-9]+');
-        $router->map('GET', '/{id}', $this->simpleController());
-        $router->dispatch();
+        $router = $this->router()
+            ->define('id', '[0-9]+')
+            ->get('/{id}', $this->controller())
+            ->dispatch();
 
-        $this->assertEquals('Here I am!', $this->getOutput($router));
+        $this->assertEquals('OK', $this->extract($router));
 
         $this->mockRequest(HttpMethods::GET, 'http://example.com/abc');
 
         $this->expectException(RouteNotFoundException::class);
 
-        $router = $this->createRouter();
-        $router->defineParameter('id', '[0-9]+');
-        $router->map('GET', '/{id}', $this->simpleController());
-        $router->dispatch();
+        $this->router()
+            ->define('id', '[0-9]+')
+            ->get('/{id}', $this->controller())
+            ->dispatch();
     }
 
     /**
      * @throws Throwable
      */
-    public function test_routing_raise_an_error_when_route_is_not_found()
+    public function test_injection_of_request_by_name()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/unknowon-page');
+        $router = $this->router()
+            ->get('/', function ($request) {
+                /** @var ServerRequest $request */
+                return $request->getMethod();
+            })
+            ->dispatch();
+
+        $this->assertEquals('GET', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_injection_of_request_by_interface()
+    {
+        $router = $this->router()
+            ->get('/', function (ServerRequestInterface $r) {
+                return $r->getMethod();
+            })
+            ->dispatch();
+
+        $this->assertEquals('GET', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_injection_of_request_by_type()
+    {
+        $router = $this->router()
+            ->get('/', function (ServerRequest $r) {
+                return $r->getMethod();
+            })
+            ->dispatch();
+
+        $this->assertEquals('GET', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_injection_of_router_by_name()
+    {
+        $router = $this->router()
+            ->name('home')
+            ->get('/', function ($router) {
+                /** @var Router $router */
+                return $router->currentRoute()->getName();
+            })
+            ->dispatch();
+
+        $this->assertEquals('home', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_injection_of_router_by_type()
+    {
+        $router = $this->router()
+            ->name('home')
+            ->get('/', function (Router $r) {
+                return $r->currentRoute()->getName();
+            })
+            ->dispatch();
+
+        $this->assertEquals('home', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_fully_namespaced_controller()
+    {
+        $c = 'MiladRahimi\PhpRouter\Tests\Classes\SampleController@home';
+
+        $router = $this->router()
+            ->get('/', $c)
+            ->dispatch();
+
+        $this->assertEquals('Home', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_preserved_namespaced_controller()
+    {
+        $namespace = 'MiladRahimi\PhpRouter\Tests\Classes';
+
+        $router = $this->router('', $namespace)
+            ->get('/', 'SampleController@home')
+            ->dispatch();
+
+        $this->assertEquals('Home', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_not_found_error()
+    {
+        $this->mockRequest(HttpMethods::GET, 'http://example.com/unknowon');
 
         $this->expectException(RouteNotFoundException::class);
 
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController());
-        $router->dispatch();
+        $this->router()->get('/', $this->controller())->dispatch();
     }
 
     /**
      * @throws Throwable
      */
-    public function test_routing_it_should_raise_an_error_when_controller_class_is_invalid()
+    public function test_with_invalid_controller()
     {
         $this->expectException(InvalidControllerException::class);
-        $this->expectExceptionMessage('Controller class `UnknownController@method` not found.');
 
-        $router = $this->createRouter();
-        $router->map('GET', '/', 'UnknownController@method');
-        $router->dispatch();
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_routing_it_should_raise_an_error_when_middleware_is_invalid()
-    {
-        $this->expectException(InvalidMiddlewareException::class);
-
-        $router = $this->createRouter();
-        $router->map('GET', '/', $this->simpleController(), 'UnknownMiddleware');
-        $router->dispatch();
+        $this->router()->get('/', 'UnknownController@method')->dispatch();
     }
 }
