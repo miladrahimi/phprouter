@@ -79,19 +79,19 @@ $router
     ->get('/', function () {
         return '<b>GET method</b>';
     });
-	->post('/', function () {
-		return '<b>POST method</b>';
-	});
-	->patch('/', function () {
+    ->post('/', function () {
+        return '<b>POST method</b>';
+    });
+    ->patch('/', function () {
         return '<b>PATCH method</b>';
-	});
-	->put('/', function () {
-		return '<b>PUT method</b>';
-	});
-	->delete('/', function () {
-		return '<b>DELETE method</b>';
-	})
-	->dispatch();
+    });
+    ->put('/', function () {
+        return '<b>PUT method</b>';
+    });
+    ->delete('/', function () {
+        return '<b>DELETE method</b>';
+    })
+    ->dispatch();
 ```
 
 You may want to use your custom http methods so take look at this example:
@@ -289,7 +289,7 @@ $router->post('/blog/posts', function (ServerRequest $request) {
     $post->title = $request->getQueryParams()['title'];
     $post->content = $request->getQueryParams()['content'];
     $post->save();
-    
+
     return new EmptyResponse(201);
 });
 
@@ -325,9 +325,9 @@ $router
     ->get('/empty', function () {
         return new EmptyResponse();
     })
-  	->get('/empty', function () {
+    ->get('/empty', function () {
         return new EmptyResponse();
-    })
+    });
 
 $router->dispatch();
 
@@ -347,8 +347,7 @@ $router
     ->get('/redirect', function () {
         return new RedirectResponse('https://miladrahimi.com');
     })
-  	->dispatch();
-
+    ->dispatch();
 ```
 
 ### More about HTTP Request and Response
@@ -451,19 +450,19 @@ use MiladRahimi\PhpRouter\Enums\GroupAttributes;
 $router = new Router();
 
 $router->group(['prefix' => '/admin'], function (Router $router) {
-  	// URI: /admin/setting
+      // URI: /admin/setting
     $router->get('/setting', 'AdminController@getSetting');
 });
 
 $attributes = [
-    'prefix'		=> '/products',
-    'namespace'		=> 'App\Controllers',
-    'domain'		=> 'shop.example.com',
-    'middleware'	=> SampleMiddleware::class,
+    'prefix'        => '/products',
+    'namespace'     => 'App\Controllers',
+    'domain'        => 'shop.example.com',
+    'middleware'    => SampleMiddleware::class,
 ];
 
 $router->group($attributes, function (Router $router) {
-	// URI: http://shop.example.com/products/{id}
+    // URI: http://shop.example.com/products/{id}
     // Controller: App\Controllers\ShopController@getProduct
     // Domain: shop.example.com
     // Middleware: SampleMiddleware
@@ -538,7 +537,7 @@ $router->name('home')->get('/', function (Router $router) {
         "current_page_name" => $router->currentRoute()->getName() /* home */
         "current_page_uri" => $router->currentRoute()->getUri() /* /home */
         "current_page_method" => $router->currentRoute()->getMethod() /* GET */
-      	"current_page_domain" => $router->currentRoute()->getDomain() /* NULL */
+        "current_page_domain" => $router->currentRoute()->getDomain() /* NULL */
     ]);
 });
 
