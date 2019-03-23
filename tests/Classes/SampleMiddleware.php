@@ -1,24 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 6/23/2018 AD
- * Time: 02:46
- */
 
 namespace MiladRahimi\PhpRouter\Tests\Classes;
 
 use Closure;
 use MiladRahimi\PhpRouter\Middleware;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class SampleMiddleware
+ *
+ * @package MiladRahimi\PhpRouter\Tests\Classes
+ */
 class SampleMiddleware implements Middleware
 {
     /**
-     * @var int
+     * @var string
      */
-    public $id;
+    public $content;
 
     /**
      * @var array
@@ -27,23 +25,22 @@ class SampleMiddleware implements Middleware
 
     /**
      * SampleMiddleware constructor.
-     * @param int $id
+     *
+     * @param string|null $content
      */
-    public function __construct(int $id = 0)
+    public function __construct(string $content = null)
     {
-        $this->id = $id;
+        static::$output = [];
+
+        $this->content = $content ?: mt_rand(1, 9999999);
     }
 
     /**
-     * Handle user request
-     *
-     * @param ServerRequestInterface $request
-     * @param Closure $next
-     * @return ResponseInterface
+     * @inheritdoc
      */
     public function handle(ServerRequestInterface $request, Closure $next)
     {
-        static::$output[] = $this->id;
+        static::$output[] = $this->content;
 
         return $next($request);
     }

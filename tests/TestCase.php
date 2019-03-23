@@ -1,20 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 6/23/2018 AD
- * Time: 01:57
- */
 
 namespace MiladRahimi\PhpRouter\Tests;
 
+use Closure;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\PublisherInterface;
 use MiladRahimi\PhpRouter\Tests\Classes\Publisher;
-use MiladRahimi\PhpRouter\Tests\Classes\SampleController;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
+/**
+ * Class TestCase
+ *
+ * @package MiladRahimi\PhpRouter\Tests
+ */
 class TestCase extends BaseTestCase
 {
     protected function setUp()
@@ -34,19 +33,21 @@ class TestCase extends BaseTestCase
     {
         $urlParts = parse_url($url);
 
-        $_SERVER['SERVER_NAME'] = $urlParts['scheme'] . '://' . $urlParts['host'];
-        $_SERVER['REQUEST_URI'] = ($urlParts['path'] ?? '/') . '?' . ($urlParts['query'] ?? '');
+        $_SERVER['SERVER_NAME'] = $urlParts['scheme'].'://'.$urlParts['host'];
+        $_SERVER['REQUEST_URI'] = ($urlParts['path'] ?? '/').'?'.($urlParts['query'] ?? '');
         $_SERVER['REQUEST_METHOD'] = $method;
     }
 
     /**
      * Get router instance with mocked properties
      *
+     * @param string $prefix
+     * @param string $namespace
      * @return Router
      */
-    protected function createRouter(): Router
+    protected function router(string $prefix = '', string $namespace = ''): Router
     {
-        $router = new Router();
+        $router = new Router($prefix, $namespace);
         $router->setPublisher(new Publisher());
 
         return $router;
@@ -55,11 +56,13 @@ class TestCase extends BaseTestCase
     /**
      * Get the simplest controller
      *
-     * @return string
+     * @return Closure
      */
-    protected function simpleController(): string
+    protected function controller(): Closure
     {
-        return SampleController::class . '@getNoParameter';
+        return function () {
+            return 'OK';
+        };
     }
 
     /**
@@ -68,7 +71,7 @@ class TestCase extends BaseTestCase
      * @param Router $router
      * @return string
      */
-    protected function getOutput(Router $router)
+    protected function extract(Router $router)
     {
         /** @var Publisher $publisher */
         $publisher = $router->getPublisher();
@@ -82,7 +85,7 @@ class TestCase extends BaseTestCase
      * @param Router $router
      * @return PublisherInterface|Publisher
      */
-    protected function getPublisher(Router $router): Publisher
+    protected function publisherOf(Router $router): Publisher
     {
         return $router->getPublisher();
     }

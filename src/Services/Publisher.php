@@ -1,15 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 7/13/2018 AD
- * Time: 16:23
- */
 
 namespace MiladRahimi\PhpRouter\Services;
 
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class Publisher
+ *
+ * @package MiladRahimi\PhpRouter\Services
+ */
 class Publisher implements PublisherInterface
 {
     /**
@@ -18,34 +17,30 @@ class Publisher implements PublisherInterface
     private $stream;
 
     /**
-     * @var HeaderExposerInterface
-     */
-    private $headerExposer;
-
-    /**
      * Publisher constructor.
+     *
+     * @param string $stream
      */
-    public function __construct()
+    public function __construct(string $stream = 'php://output')
     {
-        $this->setStream('php://output');
-        $this->headerExposer = new HeaderExposer();
+        $this->setStream($stream);
     }
 
     /**
      * @inheritdoc
      */
-    public function publish($content)
+    public function publish($content): void
     {
         $content = empty($content) ? '' : $content;
 
-        $output = fopen($this->stream, 'r+');
+        $output = fopen($this->stream, 'a');
 
         if ($content instanceof ResponseInterface) {
-            $this->headerExposer->setResponseCode($content->getStatusCode());
+            http_response_code($content->getStatusCode());
 
             foreach ($content->getHeaders() as $name => $values) {
                 $value = $content->getHeaderLine($name);
-                $this->headerExposer->addHeaderLine($name, $value);
+                header($name.': '.$value);
             }
 
             fwrite($output, $content->getBody());
@@ -59,27 +54,7 @@ class Publisher implements PublisherInterface
     }
 
     /**
-     * Set header exposer
-     *
-     * @param HeaderExposerInterface $headerExposer
-     */
-    public function setHeaderExposer(HeaderExposerInterface $headerExposer)
-    {
-        $this->headerExposer = $headerExposer;
-    }
-
-    /**
-     * Get header exposer
-     *
-     * @return HeaderExposerInterface
-     */
-    public function getHeaderExposer(): HeaderExposerInterface
-    {
-        return $this->headerExposer;
-    }
-
-    /**
-     * @return string
+     * @inheritdoc
      */
     public function getStream(): string
     {
@@ -87,9 +62,9 @@ class Publisher implements PublisherInterface
     }
 
     /**
-     * @param string $stream
+     * @inheritdoc
      */
-    public function setStream(string $stream)
+    public function setStream(string $stream): void
     {
         $this->stream = $stream;
     }

@@ -1,16 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Milad Rahimi <info@miladrahimi.com>
- * Date: 6/23/2018 AD
- * Time: 01:38
- */
 
 namespace MiladRahimi\PhpRouter\Enums;
 
+/**
+ * Class GroupAttributes
+ *
+ * @package MiladRahimi\PhpRouter\Enums
+ */
 class GroupAttributes
 {
-    const MIDDLEWARE = RouteAttributes::MIDDLEWARE;
-    const DOMAIN = RouteAttributes::DOMAIN;
-    const PREFIX = RouteAttributes::PREFIX;
-}
+    const MIDDLEWARE = 'middleware';
+    const PREFIX = 'prefix';
+    const NAMESPACE = 'namespace';
+    const DOMAIN = 'domain';}

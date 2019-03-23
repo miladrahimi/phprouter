@@ -5,10 +5,10 @@
     "Router",
     "URL Router",
     "HTTP Router",
+    "Route",
     "Routing",
     "URL",
-    "HTTP",
-    "Route"
+    "HTTP"
   ],
   "homepage": "https://github.com/miladrahimi/phprouter",
   "type": "library",
