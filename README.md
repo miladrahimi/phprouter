@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/miladrahimi/phprouter.svg?branch=master)](https://travis-ci.org/miladrahimi/phprouter)
+
 # PhpRouter
 PhpRouter is a powerful and standalone URL router for PHP projects.
 
