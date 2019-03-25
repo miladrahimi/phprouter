@@ -52,11 +52,11 @@ use Zend\Diactoros\Response\JsonResponse;
 $router = new Router();
 
 $router->get('/', function () {
-    return HtmlResponse('<p>This is homepage!</p>');
+    return '<p>This is homepage!</p>';
 });
 
 $router->post('/blog/post/{id}', function ($id) {
-    return 'This is a post with id ' . $id;
+    return HtmlResponse("<p>This is a post $id</p>");
 });
 
 $router->patch('/json', function () {
