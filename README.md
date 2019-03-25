@@ -46,6 +46,8 @@ After configurations above, you can start using PhpRouter in your entry point (`
 
 ```php
 use MiladRahimi\PhpRouter\Router;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\JsonResponse;
 
 $router = new Router();
 
@@ -158,6 +160,7 @@ Using PHP classes for controllers could be a nice idea.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
+use Zend\Diactoros\Response\HtmlResponse;
 
 $router = new Router();
 
@@ -269,6 +272,7 @@ You can catch the request object like this example:
 use MiladRahimi\PhpRouter\Router;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response\EmptyResponse;
+use Zend\Diactoros\Response\JsonResponse;
 
 $router = new Router();
 
@@ -314,16 +318,13 @@ $router
         return '<html>This is an HTML response</html>';
     })
     ->get('/html/2', function () {
-        return new HtmlResponse('<html>This is also an HTML response</html>');
+        return new HtmlResponse('<html>This is also an HTML response</html>', 200);
     })
     ->get('/json', function () {
-        return new JsonResponse(['message' => 'I am a JSON!']);
+        return new JsonResponse(['message' => 'Unauthorized!'], 401);
     })
     ->get('/text', function () {
         return new TextResponse('This is a plain text...');
-    })
-    ->get('/empty', function () {
-        return new EmptyResponse();
     })
     ->get('/empty', function () {
         return new EmptyResponse();
@@ -420,8 +421,6 @@ Your application may serve different services on different domains/subdomains or
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Response\RedirectResponse;
 
 $router = new Router();
 
@@ -445,7 +444,6 @@ Usually routes can fit in a groups that have common attributes like middleware, 
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Enums\GroupAttributes;
 
 $router = new Router();
 
@@ -550,6 +548,7 @@ Your application runs through the `Router::disptach()` method, you should put it
 
 ```php
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 
 $router = new Router();
 
