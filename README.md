@@ -266,7 +266,7 @@ $router->dispatch();
 
 PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) package (version 2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) complaint request and response objects to your controllers and middleware.
 
-###Request
+### Request
 
 You can catch the request object like this example:
 
