@@ -11,5 +11,5 @@ use Exception;
  */
 class InvalidMiddlewareException extends Exception
 {
-    // Nada
+    //
 }
