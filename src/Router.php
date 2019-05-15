@@ -20,6 +20,12 @@ use Throwable;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 
+/**
+ * Class Router
+ * Router is the main class in the package, it is responsible for defining and dispatching routes
+ *
+ * @package MiladRahimi\PhpRouter
+ */
 class Router
 {
     /**
