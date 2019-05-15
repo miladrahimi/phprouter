@@ -11,5 +11,5 @@ use Exception;
  */
 class InvalidControllerException extends Exception
 {
-    // Nada
+    //
 }
