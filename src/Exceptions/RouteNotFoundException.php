@@ -11,5 +11,5 @@ use Exception;
  */
 class RouteNotFoundException extends Exception
 {
-    // Nada
+    //
 }
