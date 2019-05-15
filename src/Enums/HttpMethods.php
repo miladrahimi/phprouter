@@ -18,4 +18,16 @@ class HttpMethods
     const HEAD = 'HEAD';
     const CONNECT = 'CONNECT';
     const TRACE = 'TRACE';
+
+    /**
+     * Standardize custom http method name
+     * For the methods that are not defined in this enum
+     *
+     * @param string $method
+     * @return string
+     */
+    public static function custom(string $method): string
+    {
+        return strtoupper($method);
+    }
 }
