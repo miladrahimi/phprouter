@@ -12,4 +12,5 @@ class GroupAttributes
     const MIDDLEWARE = 'middleware';
     const PREFIX = 'prefix';
     const NAMESPACE = 'namespace';
-    const DOMAIN = 'domain';}
+    const DOMAIN = 'domain';
+}
