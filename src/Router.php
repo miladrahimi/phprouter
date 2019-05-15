@@ -7,7 +7,7 @@ use MiladRahimi\PhpRouter\Enums\GroupAttributes;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
 use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-use MiladRahimi\PhpRouter\Services\Publisher;
+use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\PublisherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -672,7 +672,7 @@ class Router
         }
 
         if ($this->publisher == null) {
-            $this->publisher = new Publisher();
+            $this->publisher = new HttpPublisher();
         }
     }
 

@@ -5,27 +5,13 @@ namespace MiladRahimi\PhpRouter\Services;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class Publisher
+ * Class StreamPublisher
+ * StreamPublisher publishes the given resp
  *
  * @package MiladRahimi\PhpRouter\Services
  */
-class Publisher implements PublisherInterface
+class HttpPublisher implements PublisherInterface
 {
-    /**
-     * @var string
-     */
-    private $stream;
-
-    /**
-     * Publisher constructor.
-     *
-     * @param string $stream
-     */
-    public function __construct(string $stream = 'php://output')
-    {
-        $this->setStream($stream);
-    }
-
     /**
      * @inheritdoc
      */
@@ -33,7 +19,7 @@ class Publisher implements PublisherInterface
     {
         $content = empty($content) ? '' : $content;
 
-        $output = fopen($this->stream, 'a');
+        $output = fopen('php://output', 'a');
 
         if ($content instanceof ResponseInterface) {
             http_response_code($content->getStatusCode());
@@ -51,21 +37,5 @@ class Publisher implements PublisherInterface
         }
 
         fclose($output);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getStream(): string
-    {
-        return $this->stream;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setStream(string $stream): void
-    {
-        $this->stream = $stream;
     }
 }
