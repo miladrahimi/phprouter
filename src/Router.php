@@ -39,7 +39,7 @@ class Router
     private $names = [];
 
     /**
-     * @var array
+     * @var string[]string
      */
     private $parameters = [];
 
