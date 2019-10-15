@@ -1,0 +1,21 @@
+<phpunit
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	>
+	<testsuites>
+		<testsuite name="unit" suffix=".php">
+			<directory>./tests</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<whitelist processUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">./src</directory>
+            <directory suffix=".php">./tests</directory>
+            <directory suffix=".php">./examples</directory>
+		</whitelist>
+	</filter>
+	<log type="coverage-clover" target="build/logs/clover.xml"/>
+</phpunit>
