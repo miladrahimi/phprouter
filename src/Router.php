@@ -29,11 +29,15 @@ use Zend\Diactoros\ServerRequestFactory;
 class Router
 {
     /**
+     * Collection of defined routes
+     *
      * @var Route[]string
      */
     private $routes = [];
 
     /**
+     * Collection of defined names mapped to related routes
+     *
      * @var Route[]string
      */
     private $names = [];
@@ -49,36 +53,50 @@ class Router
     private $request;
 
     /**
+     * The publisher that is going to publish controller output
+     *
      * @var PublisherInterface
      */
     private $publisher;
 
     /**
+     * Name for the next route
+     *
      * @var string|null
      */
-    private $currentName = null;
+    private $name = null;
 
     /**
+     * Middleware (single or multiple) for upcoming routes
+     *
      * @var array
      */
-    private $currentMiddleware = [];
+    private $middleware = [];
 
     /**
+     * Prefix of URIs of upcoming routes
+     *
      * @var string
      */
-    private $currentPrefix;
+    private $prefix;
 
     /**
+     * Controller namespace prefix for upcoming routes
+     *
      * @var string
      */
-    private $currentNamespace;
+    private $namespace;
 
     /**
+     * Domain for upcoming routes
+     *
      * @var string|null
      */
-    private $currentDomain = null;
+    private $domain = null;
 
     /**
+     * Current route that is recognized for current request
+     *
      * @var Route|null
      */
     private $currentRoute = null;
@@ -91,8 +109,8 @@ class Router
      */
     public function __construct(string $prefix = '', string $namespace = '')
     {
-        $this->currentPrefix = $prefix;
-        $this->currentNamespace = $namespace;
+        $this->prefix = $prefix;
+        $this->namespace = $namespace;
     }
 
     /**
@@ -100,18 +118,18 @@ class Router
      *
      * @param array $attributes
      * @param Closure $routes
-     * @return $this
+     * @return self
      */
-    public function group(array $attributes, Closure $routes): Router
+    public function group(array $attributes, Closure $routes): self
     {
         // Backup current properties
-        $oldName = $this->currentName;
-        $oldMiddleware = $this->currentMiddleware;
-        $oldNamespace = $this->currentNamespace;
-        $oldPrefix = $this->currentPrefix;
-        $oldDomain = $this->currentDomain;
+        $oldName = $this->name;
+        $oldMiddleware = $this->middleware;
+        $oldNamespace = $this->namespace;
+        $oldPrefix = $this->prefix;
+        $oldDomain = $this->domain;
 
-        $this->currentName = null;
+        $this->name = null;
 
         // Set middleware for the group
         if (isset($attributes[GroupAttributes::MIDDLEWARE])) {
@@ -119,33 +137,33 @@ class Router
                 $attributes[GroupAttributes::MIDDLEWARE] = [$attributes[GroupAttributes::MIDDLEWARE]];
             }
 
-            $this->currentMiddleware = array_merge($attributes[GroupAttributes::MIDDLEWARE], $this->currentMiddleware);
+            $this->middleware = array_merge($attributes[GroupAttributes::MIDDLEWARE], $this->middleware);
         }
 
         // Set namespace for the group
         if (isset($attributes[GroupAttributes::NAMESPACE])) {
-            $this->currentNamespace = $attributes[GroupAttributes::NAMESPACE];
+            $this->namespace = $attributes[GroupAttributes::NAMESPACE];
         }
 
         // Set prefix for the group
         if (isset($attributes[GroupAttributes::PREFIX])) {
-            $this->currentPrefix = $this->currentPrefix.$attributes[GroupAttributes::PREFIX];
+            $this->prefix = $this->prefix . $attributes[GroupAttributes::PREFIX];
         }
 
         // Set domain for the group
         if (isset($attributes[GroupAttributes::DOMAIN])) {
-            $this->currentDomain = $attributes[GroupAttributes::DOMAIN];
+            $this->domain = $attributes[GroupAttributes::DOMAIN];
         }
 
         // Run the group body closure
         call_user_func($routes, $this);
 
         // Restore properties
-        $this->currentName = $oldName;
-        $this->currentDomain = $oldDomain;
-        $this->currentPrefix = $oldPrefix;
-        $this->currentMiddleware = $oldMiddleware;
-        $this->currentNamespace = $oldNamespace;
+        $this->name = $oldName;
+        $this->domain = $oldDomain;
+        $this->prefix = $oldPrefix;
+        $this->middleware = $oldMiddleware;
+        $this->namespace = $oldNamespace;
 
         return $this;
     }
@@ -159,22 +177,23 @@ class Router
      * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
-     * @return $this
+     * @return self
      */
     public function map(
         ?string $method,
         string $route,
         $controller,
         $middleware = [],
-        string $domain = null,
-        string $name = null
-    ): Router {
-        $name = $name ?: $this->currentName;
-        $uri = $this->currentPrefix.$route;
+        ?string $domain = null,
+        ?string $name = null
+    ): self
+    {
+        $name = $name ?: $this->name;
+        $uri = $this->prefix . $route;
         $middleware = is_array($middleware) ? $middleware : [$middleware];
 
         if (is_string($controller) && is_callable($controller) == false) {
-            $controller = $this->currentNamespace."\\".$controller;
+            $controller = $this->namespace . "\\" . $controller;
         }
 
         $route = new Route(
@@ -182,15 +201,15 @@ class Router
             $uri,
             $method,
             $controller,
-            array_merge($this->currentMiddleware, $middleware),
-            $domain ?: $this->currentDomain
+            array_merge($this->middleware, $middleware),
+            $domain ?: $this->domain
         );
 
         $this->routes[] = $route;
 
         if ($name) {
             $this->names[$name] = $route;
-            $this->currentName = null;
+            $this->name = null;
         }
 
         return $this;
@@ -199,17 +218,17 @@ class Router
     /**
      * Dispatch routes and run the application
      *
-     * @return $this
+     * @return self
      * @throws RouteNotFoundException
      * @throws Throwable
      */
-    public function dispatch(): Router
+    public function dispatch(): self
     {
         $this->prepare();
 
         $method = $this->request->getMethod();
         $scheme = $this->request->getUri()->getScheme();
-        $domain = substr($this->request->getUri()->getHost(), strlen($scheme.'://'));
+        $domain = substr($this->request->getUri()->getHost(), strlen($scheme . '://'));
         $uri = $this->request->getUri()->getPath();
 
         sort($this->routes, SORT_DESC);
@@ -254,7 +273,7 @@ class Router
      */
     private function compareDomain(?string $routeDomain, string $requestDomain): bool
     {
-        return $routeDomain == null || preg_match('@^'.$routeDomain.'$@', $requestDomain);
+        return $routeDomain == null || preg_match('@^' . $routeDomain . '$@', $requestDomain);
     }
 
     /**
@@ -267,7 +286,7 @@ class Router
      */
     private function compareUri(string $routeUri, string $requestUri, array &$parameters): bool
     {
-        $pattern = '@^'.$this->regexUri($routeUri).'$@';
+        $pattern = '@^' . $this->regexUri($routeUri) . '$@';
 
         return preg_match($pattern, $requestUri, $parameters);
     }
@@ -312,7 +331,8 @@ class Router
         ServerRequestInterface $request,
         Closure $controllerRunner,
         $i = 0
-    ) {
+    )
+    {
         if (isset($middleware[$i + 1])) {
             $next = function (ServerRequestInterface $request) use ($middleware, $controllerRunner, $i) {
                 return $this->runControllerThroughMiddleware($middleware, $request, $controllerRunner, $i + 1);
@@ -333,7 +353,7 @@ class Router
             return $middleware[$i]->handle($request, $next);
         }
 
-        throw new InvalidMiddlewareException('Invalid middleware for route: '.$this->currentRoute);
+        throw new InvalidMiddlewareException('Invalid middleware for route: ' . $this->currentRoute);
     }
 
     /**
@@ -367,7 +387,7 @@ class Router
             } elseif (is_callable($controller)) {
                 $parameters = $this->arrangeFunctionParameters($controller, $parameters, $request);
             } else {
-                throw new InvalidControllerException('Invalid controller: '.$controller);
+                throw new InvalidControllerException('Invalid controller: ' . $controller);
             }
 
             return call_user_func_array($controller, $parameters);
@@ -405,7 +425,8 @@ class Router
         string $method,
         array $parameters,
         ServerRequestInterface $request
-    ) {
+    )
+    {
         return $this->arrangeParameters(new ReflectionMethod($class, $method), $parameters, $request);
     }
 
@@ -421,7 +442,8 @@ class Router
         ReflectionFunctionAbstract $reflection,
         array $parameters,
         ServerRequestInterface $request
-    ) {
+    )
+    {
         return array_map(
             function (ReflectionParameter $parameter) use ($parameters, $request) {
                 if (isset($parameters[$parameter->getName()])) {
@@ -484,7 +506,7 @@ class Router
 
         $pattern = $this->parameters[$name] ?? '[^/]+';
 
-        return '(?<'.$name.'>'.$pattern.')'.$suffix;
+        return '(?<' . $name . '>' . $pattern . ')' . $suffix;
     }
 
     /**
@@ -495,15 +517,16 @@ class Router
      * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
-     * @return $this
+     * @return self
      */
     public function any(
         string $route,
         $controller,
         $middleware = [],
-        string $domain = null,
-        string $name = null
-    ): Router {
+        ?string $domain = null,
+        ?string $name = null
+    ): self
+    {
         return $this->map(null, $route, $controller, $middleware, $domain, $name);
     }
 
@@ -515,15 +538,16 @@ class Router
      * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
-     * @return $this
+     * @return self
      */
     public function get(
         string $route,
         $controller,
         $middleware = [],
-        string $domain = null,
-        string $name = null
-    ): Router {
+        ?string $domain = null,
+        ?string $name = null
+    ): self
+    {
         return $this->map('GET', $route, $controller, $middleware, $domain, $name);
     }
 
@@ -535,15 +559,16 @@ class Router
      * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
-     * @return $this
+     * @return self
      */
     public function post(
         string $route,
         $controller,
         $middleware = [],
-        string $domain = null,
-        string $name = null
-    ): Router {
+        ?string $domain = null,
+        ?string $name = null
+    ): self
+    {
         return $this->map('POST', $route, $controller, $middleware, $domain, $name);
     }
 
@@ -555,15 +580,16 @@ class Router
      * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
-     * @return $this
+     * @return self
      */
     public function put(
         string $route,
         $controller,
         $middleware = [],
-        string $domain = null,
-        string $name = null
-    ): Router {
+        ?string $domain = null,
+        ?string $name = null
+    ): self
+    {
         return $this->map('PUT', $route, $controller, $middleware, $domain, $name);
     }
 
@@ -575,15 +601,16 @@ class Router
      * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
-     * @return $this
+     * @return self
      */
     public function patch(
         string $route,
         $controller,
         $middleware = [],
-        string $domain = null,
-        string $name = null
-    ): Router {
+        ?string $domain = null,
+        ?string $name = null
+    ): self
+    {
         return $this->map('PATCH', $route, $controller, $middleware, $domain, $name);
     }
 
@@ -595,15 +622,16 @@ class Router
      * @param Middleware|string|Middleware[]|string[] $middleware
      * @param string|null $domain
      * @param string|null $name
-     * @return $this
+     * @return self
      */
     public function delete(
         string $route,
         $controller,
         $middleware = [],
-        string $domain = null,
-        string $name = null
-    ): Router {
+        ?string $domain = null,
+        ?string $name = null
+    ): self
+    {
         return $this->map('DELETE', $route, $controller, $middleware, $domain, $name);
     }
 
@@ -611,11 +639,11 @@ class Router
      * Use given name for the next route mapping
      *
      * @param string $name
-     * @return $this
+     * @return self
      */
-    public function name(string $name): Router
+    public function name(string $name): self
     {
-        $this->currentName = $name;
+        $this->name = $name;
 
         return $this;
     }
@@ -625,9 +653,9 @@ class Router
      *
      * @param string $name
      * @param string $pattern
-     * @return $this
+     * @return self
      */
-    public function define(string $name, string $pattern): Router
+    public function define(string $name, string $pattern): self
     {
         $this->parameters[$name] = $pattern;
 
@@ -651,10 +679,10 @@ class Router
         $uri = $this->names[$routeName]->getUri();
 
         foreach ($parameters as $name => $value) {
-            $uri = preg_replace('/\??\{'.$name.'\??\}/', $value, $uri);
+            $uri = preg_replace('/\??{' . $name . '\??}/', $value, $uri);
         }
 
-        $uri = preg_replace('/{[^\}]+\?\}/', '', $uri);
+        $uri = preg_replace('/{[^}]+\?}/', '', $uri);
         $uri = str_replace('/?', '', $uri);
 
         return $uri;
