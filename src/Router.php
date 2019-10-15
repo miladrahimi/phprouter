@@ -29,20 +29,22 @@ use Zend\Diactoros\ServerRequestFactory;
 class Router
 {
     /**
-     * Collection of defined routes
+     * List of defined routes
      *
      * @var Route[]string
      */
     private $routes = [];
 
     /**
-     * Collection of defined names mapped to related routes
+     * List of defined names mapped to related routes
      *
      * @var Route[]string
      */
     private $names = [];
 
     /**
+     * List of defined route parameters and their regex patterns
+     *
      * @var string[]string
      */
     private $parameters = [];
