@@ -11,16 +11,13 @@ branches:
   only:
   - master
 
-before_install:
-  - travis_retry composer self-update
-
 before_script:
   - composer install --no-interaction --no-suggest
   - composer require php-coveralls/php-coveralls
 
 script:
   - mkdir -p build/logs
-  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml tests
+  - vendor/bin/phpunit --debug --coverage-clover build/logs/clover.xml tests
   - ls -l build/logs
   - cat build/logs/clover.xml
 
