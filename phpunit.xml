@@ -14,7 +14,6 @@
 		<whitelist processUncoveredFilesFromWhitelist="true">
 			<directory suffix=".php">./src</directory>
             <directory suffix=".php">./tests</directory>
-            <directory suffix=".php">./examples</directory>
 		</whitelist>
 	</filter>
 	<logging>
