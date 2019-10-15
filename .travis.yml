@@ -17,6 +17,7 @@ before_install:
 before_script:
   - phpenv config-rm xdebug.ini
   - composer install --no-interaction --no-suggest
+  - composer require php-coveralls/php-coveralls
 
 script:
   - mkdir -p build/logs
