@@ -231,6 +231,8 @@ class Router
         $domain = substr($this->request->getUri()->getHost(), strlen($scheme . '://'));
         $uri = $this->request->getUri()->getPath();
 
+        sort($this->routes, SORT_DESC);
+
         foreach ($this->routes as $route) {
             $parameters = [];
 
