@@ -368,6 +368,55 @@ class RoutingTest extends TestCase
     /**
      * @throws Throwable
      */
+    public function test_injection_of_default_value()
+    {
+        $router = $this->router()
+            ->get('/', function ($default = "Default") {
+                return $default;
+            })
+            ->dispatch();
+
+        $this->assertEquals('Default', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_set_and_get_request()
+    {
+        $router = $this->router();
+
+        $router->get('/', function () use ($router) {
+            $newRequest = $router->getRequest()->withMethod('CUSTOM');
+            $router->setRequest($newRequest);
+
+            return $router->getRequest()->getMethod();
+        })->dispatch();
+
+        $this->assertEquals('CUSTOM', $this->extract($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_default_publisher()
+    {
+        ob_start();
+
+        $router = new Router();
+
+        $router->get('/', function () {
+            return 'home';
+        })->dispatch();
+
+        $this->assertEquals('home', ob_get_contents());
+
+        ob_end_clean();
+    }
+
+    /**
+     * @throws Throwable
+     */
     public function test_with_fully_namespaced_controller()
     {
         $c = 'MiladRahimi\PhpRouter\Tests\Classes\SampleController@home';
@@ -408,10 +457,33 @@ class RoutingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_with_invalid_controller()
+    public function test_with_class_method_but_invalid_controller_class()
     {
         $this->expectException(InvalidControllerException::class);
 
         $this->router()->get('/', 'UnknownController@method')->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_invalid_controller_class()
+    {
+        $this->expectException(InvalidControllerException::class);
+
+        $this->router()->get('/', 666)->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_invalid_controller_method()
+    {
+        $this->expectException(InvalidControllerException::class);
+
+        $namespace = 'MiladRahimi\PhpRouter\Tests\Classes';
+        $this->router('', $namespace)
+            ->get('/', 'SampleController@invalidMethod')
+            ->dispatch();
     }
 }

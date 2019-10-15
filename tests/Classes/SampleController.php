@@ -6,6 +6,7 @@ namespace MiladRahimi\PhpRouter\Tests\Classes;
  * Class SampleController
  *
  * @package Classes
+ * @codeCoverageIgnore
  */
 class SampleController
 {

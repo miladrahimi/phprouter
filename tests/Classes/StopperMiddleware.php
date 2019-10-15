@@ -11,6 +11,7 @@ use Zend\Diactoros\Response\TextResponse;
  * Class StopperMiddleware
  *
  * @package MiladRahimi\PhpRouter\Tests\Classes
+ * @codeCoverageIgnore
  */
 class StopperMiddleware implements Middleware
 {

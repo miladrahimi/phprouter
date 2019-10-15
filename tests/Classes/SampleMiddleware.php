@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class SampleMiddleware
  *
  * @package MiladRahimi\PhpRouter\Tests\Classes
+ * @codeCoverageIgnore
  */
 class SampleMiddleware implements Middleware
 {

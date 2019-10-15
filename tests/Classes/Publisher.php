@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
  * Class Publisher
  *
  * @package MiladRahimi\PhpRouter\Tests\Classes
+ * @codeCoverageIgnore
  */
 class Publisher implements PublisherInterface
 {

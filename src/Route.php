@@ -113,27 +113,11 @@ class Route
     }
 
     /**
-     * @param string|null $name
-     */
-    public function setName(?string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
      * @return string
      */
     public function getUri(): string
     {
         return $this->uri;
-    }
-
-    /**
-     * @param string $uri
-     */
-    public function setUri(string $uri): void
-    {
-        $this->uri = $uri;
     }
 
     /**
@@ -145,27 +129,11 @@ class Route
     }
 
     /**
-     * @param string|null $method
-     */
-    public function setMethod(?string $method): void
-    {
-        $this->method = $method;
-    }
-
-    /**
      * @return callable|string
      */
     public function getController()
     {
         return $this->controller;
-    }
-
-    /**
-     * @param callable|string $controller
-     */
-    public function setController($controller): void
-    {
-        $this->controller = $controller;
     }
 
     /**
@@ -177,26 +145,10 @@ class Route
     }
 
     /**
-     * @param callable[]|string[] $middleware
-     */
-    public function setMiddleware($middleware): void
-    {
-        $this->middleware = $middleware;
-    }
-
-    /**
      * @return string|null
      */
     public function getDomain(): ?string
     {
         return $this->domain;
-    }
-
-    /**
-     * @param string|null $domain
-     */
-    public function setDomain(?string $domain): void
-    {
-        $this->domain = $domain;
     }
 }

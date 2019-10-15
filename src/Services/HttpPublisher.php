@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
  * StreamPublisher publishes the given resp
  *
  * @package MiladRahimi\PhpRouter\Services
+ * @codeCoverageIgnore
  */
 class HttpPublisher implements PublisherInterface
 {
@@ -26,7 +27,7 @@ class HttpPublisher implements PublisherInterface
 
             foreach ($content->getHeaders() as $name => $values) {
                 $value = $content->getHeaderLine($name);
-                header($name.': '.$value);
+                header($name . ': ' . $value);
             }
 
             fwrite($output, $content->getBody());
