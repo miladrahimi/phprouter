@@ -17,7 +17,7 @@ before_script:
 
 script:
   - mkdir -p build/logs
-  - vendor/bin/phpunit --debug --coverage-clover build/logs/clover.xml tests
+  - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml tests
   - ls -l build/logs
   - cat build/logs/clover.xml
 
