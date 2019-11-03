@@ -50,24 +50,4 @@ class Publisher implements PublisherInterface
             $this->output = json_encode($content);
         }
     }
-
-    /**
-     * Set output stream
-     *
-     * @param string $stream
-     */
-    public function setStream(string $stream): void
-    {
-        // Nada
-    }
-
-    /**
-     * Get output stream
-     *
-     * @return string
-     */
-    public function getStream(): string
-    {
-        return 'variable';
-    }
 }
