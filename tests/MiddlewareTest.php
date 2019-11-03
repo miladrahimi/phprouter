@@ -19,9 +19,9 @@ class MiddlewareTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_with_a_single_middleware_in_an_object()
+    public function test_with_a_single_middleware_as_an_object()
     {
-        $middleware = new SampleMiddleware(mt_rand(1, 9999999));
+        $middleware = new SampleMiddleware(666);
 
         $router = $this->router()
             ->get('/', $this->controller(), $middleware)
@@ -34,7 +34,7 @@ class MiddlewareTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_with_a_single_middleware_in_a_string()
+    public function test_with_a_single_middleware_as_a_string()
     {
         $middleware = SampleMiddleware::class;
 
@@ -49,12 +49,10 @@ class MiddlewareTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_with_a_single_middleware_in_a_closure()
+    public function test_with_a_single_middleware_as_a_closure()
     {
         $middleware = function (ServerRequest $request, Closure $next) {
-            $request = $request->withAttribute('Middleware', 666);
-
-            return $next($request);
+            return $next($request->withAttribute('Middleware', 666));
         };
 
         $router = $this->router()
@@ -71,7 +69,7 @@ class MiddlewareTest extends TestCase
      */
     public function test_with_a_stopper_middleware()
     {
-        $middleware = new StopperMiddleware(mt_rand(1, 9999999));
+        $middleware = new StopperMiddleware(666);
 
         $router = $this->router()
             ->get('/', $this->controller(), $middleware)
@@ -88,22 +86,22 @@ class MiddlewareTest extends TestCase
     {
         $middleware = [
             function (ServerRequest $request, $next) {
-                $request = $request->withAttribute('t1', microtime(true));
+                $request = $request->withAttribute('a', 'It');
                 return $next($request);
             },
             function (ServerRequest $request, $next) {
-                $request = $request->withAttribute('t2', microtime(true));
+                $request = $request->withAttribute('b', 'works!');
                 return $next($request);
             },
         ];
 
         $router = $this->router()
             ->get('/', function (ServerRequest $request) {
-                return $request->getAttribute('t2') - $request->getAttribute('t1');
+                return $request->getAttribute('a') . ' ' . $request->getAttribute('b');
             }, $middleware)
             ->dispatch();
 
-        $this->assertGreaterThan(0, $this->outputOf($router));
+        $this->assertEquals('It works!', $this->outputOf($router));
     }
 
     /**
