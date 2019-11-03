@@ -46,7 +46,7 @@ class ResponseTest extends TestCase
         $router->dispatch();
 
         $this->assertEquals(200, $this->publisherOf($router)->responseCode);
-        $this->assertEquals('<html lang="fa"></html>', $this->extract($router));
+        $this->assertEquals('<html lang="fa"></html>', $this->outputOf($router));
     }
 
     /**
@@ -63,7 +63,7 @@ class ResponseTest extends TestCase
         $router->dispatch();
 
         $this->assertEquals(201, $this->publisherOf($router)->responseCode);
-        $this->assertEquals(json_encode(['a' => 'x', 'b' => 'y']), $this->extract($router));
+        $this->assertEquals(json_encode(['a' => 'x', 'b' => 'y']), $this->outputOf($router));
     }
 
     /**
@@ -80,7 +80,7 @@ class ResponseTest extends TestCase
         $router->dispatch();
 
         $this->assertEquals(203, $this->publisherOf($router)->responseCode);
-        $this->assertEquals('Content', $this->extract($router));
+        $this->assertEquals('Content', $this->outputOf($router));
     }
 
     /**
@@ -97,7 +97,7 @@ class ResponseTest extends TestCase
         $router->dispatch();
 
         $this->assertEquals(302, $this->publisherOf($router)->responseCode);
-        $this->assertEquals('', $this->extract($router));
+        $this->assertEquals('', $this->outputOf($router));
         $this->assertContains('location: https://miladrahimi.com', $this->publisherOf($router)->headerLines);
     }
 }

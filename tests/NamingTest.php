@@ -21,7 +21,7 @@ class NamingTest extends TestCase
             ->get('/', $this->controller(), [], null, 'Home')
             ->dispatch();
 
-        $this->assertEquals('OK', $this->extract($router));
+        $this->assertEquals('OK', $this->outputOf($router));
         $this->assertTrue($router->currentRoute()->getName() == 'Home');
     }
 
@@ -35,7 +35,7 @@ class NamingTest extends TestCase
             ->get('/', $this->controller())
             ->dispatch();
 
-        $this->assertEquals('OK', $this->extract($router));
+        $this->assertEquals('OK', $this->outputOf($router));
         $this->assertTrue($router->currentRoute()->getName() == 'Home');
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
@@ -46,7 +46,7 @@ class NamingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('666', $this->extract($router));
+        $this->assertEquals('666', $this->outputOf($router));
         $this->assertFalse($router->currentRoute()->getName() == 'Home');
     }
 

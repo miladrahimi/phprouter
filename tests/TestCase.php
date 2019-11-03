@@ -71,7 +71,7 @@ class TestCase extends BaseTestCase
      * @param Router $router
      * @return string
      */
-    protected function extract(Router $router)
+    protected function outputOf(Router $router)
     {
         /** @var Publisher $publisher */
         $publisher = $router->getPublisher();
