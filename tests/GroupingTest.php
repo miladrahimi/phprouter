@@ -19,11 +19,10 @@ class GroupingTest extends TestCase
      */
     public function test_with_no_attribute()
     {
-        $router = $this->router();
-
-        $router->group([], function (Router $router) {
-            $router->get('/', $this->controller());
-        })->dispatch();
+        $router = $this->router()
+            ->group([], function (Router $router) {
+                $router->get('/', $this->controller());
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
     }
@@ -35,11 +34,10 @@ class GroupingTest extends TestCase
     {
         $middleware = new SampleMiddleware(666);
 
-        $router = $this->router();
-
-        $router->group(['middleware' => $middleware], function (Router $router) {
-            $router->get('/', $this->controller());
-        })->dispatch();
+        $router = $this->router()
+            ->group(['middleware' => $middleware], function (Router $router) {
+                $router->get('/', $this->controller());
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
         $this->assertContains($middleware->content, SampleMiddleware::$output);
@@ -53,11 +51,10 @@ class GroupingTest extends TestCase
         $groupMiddleware = new SampleMiddleware(13);
         $routeMiddleware = new SampleMiddleware(666);
 
-        $router = $this->router();
-
-        $router->group(['middleware' => $groupMiddleware], function (Router $router) use ($routeMiddleware) {
-            $router->get('/', $this->controller(), $routeMiddleware);
-        })->dispatch();
+        $router = $this->router()
+            ->group(['middleware' => $groupMiddleware], function (Router $router) use ($routeMiddleware) {
+                $router->get('/', $this->controller(), $routeMiddleware);
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
         $this->assertContains($groupMiddleware->content, SampleMiddleware::$output);
@@ -72,13 +69,12 @@ class GroupingTest extends TestCase
         $group1Middleware = new SampleMiddleware(mt_rand(1, 9999999));
         $group2Middleware = new SampleMiddleware(mt_rand(1, 9999999));
 
-        $router = $this->router();
-
-        $router->group(['middleware' => $group1Middleware], function (Router $router) use ($group2Middleware) {
-            $router->group(['middleware' => $group2Middleware], function (Router $router) {
-                $router->get('/', $this->controller());
-            });
-        })->dispatch();
+        $router = $this->router()
+            ->group(['middleware' => $group1Middleware], function (Router $router) use ($group2Middleware) {
+                $router->group(['middleware' => $group2Middleware], function (Router $router) {
+                    $router->get('/', $this->controller());
+                });
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
         $this->assertContains($group1Middleware->content, SampleMiddleware::$output);
@@ -92,11 +88,10 @@ class GroupingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/group/page');
 
-        $router = $this->router();
-
-        $router->group(['prefix' => '/group'], function (Router $router) {
-            $router->get('/page', $this->controller());
-        })->dispatch();
+        $router = $this->router()
+            ->group(['prefix' => '/group'], function (Router $router) {
+                $router->get('/page', $this->controller());
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
     }
@@ -108,13 +103,12 @@ class GroupingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/group1/group2/page');
 
-        $router = $this->router();
-
-        $router->group(['prefix' => '/group1'], function (Router $router) {
-            $router->group(['prefix' => '/group2'], function (Router $router) {
-                $router->get('/page', $this->controller());
-            });
-        })->dispatch();
+        $router = $this->router()
+            ->group(['prefix' => '/group1'], function (Router $router) {
+                $router->group(['prefix' => '/group2'], function (Router $router) {
+                    $router->get('/page', $this->controller());
+                });
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
     }
@@ -126,11 +120,10 @@ class GroupingTest extends TestCase
     {
         $namespace = 'MiladRahimi\PhpRouter\Tests\Classes';
 
-        $router = $this->router();
-
-        $router->group(['namespace' => $namespace], function (Router $router) {
-            $router->get('/', 'SampleController@home');
-        })->dispatch();
+        $router = $this->router()
+            ->group(['namespace' => $namespace], function (Router $router) {
+                $router->get('/', 'SampleController@home');
+            })->dispatch();
 
         $this->assertEquals('Home', $this->outputOf($router));
     }
@@ -142,11 +135,10 @@ class GroupingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::GET, 'http://sub.domain.tld/');
 
-        $router = $this->router();
-
-        $router->group(['domain' => 'sub.domain.tld'], function (Router $router) {
-            $router->get('/', $this->controller());
-        })->dispatch();
+        $router = $this->router()
+            ->group(['domain' => 'sub.domain.tld'], function (Router $router) {
+                $router->get('/', $this->controller());
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
     }
@@ -158,11 +150,10 @@ class GroupingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::GET, 'http://sub2.domain.com/');
 
-        $router = $this->router();
-
-        $router->group(['domain' => 'sub1.domain.com'], function (Router $router) {
-            $router->get('/', $this->controller(), [], 'sub2.domain.com');
-        })->dispatch();
+        $router = $this->router()
+            ->group(['domain' => 'sub1.domain.com'], function (Router $router) {
+                $router->get('/', $this->controller(), [], 'sub2.domain.com');
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
     }
@@ -174,14 +165,13 @@ class GroupingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::GET, 'http://sub2.domain.com/');
 
-        $router = $this->router();
+        $router = $this->router()
+            ->group(['domain' => 'sub1.domain.com'], function (Router $router) {
+                $router->group(['domain' => 'sub2.domain.com'], function (Router $router) {
+                    $router->get('/', $this->controller());
 
-        $router->group(['domain' => 'sub1.domain.com'], function (Router $router) {
-            $router->group(['domain' => 'sub2.domain.com'], function (Router $router) {
-                $router->get('/', $this->controller());
-
-            });
-        })->dispatch();
+                });
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
     }
@@ -191,13 +181,11 @@ class GroupingTest extends TestCase
      */
     public function test_naming_it_should_remove_existing_name_before_the_group()
     {
-        $router = $this->router();
-
-        $router->name('NameForNothing');
-
-        $router->group([], function (Router $router) {
-            $router->get('/', $this->controller());
-        })->dispatch();
+        $router = $this->router()
+            ->name('NameForNothing')
+            ->group([], function (Router $router) {
+                $router->get('/', $this->controller());
+            })->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
         $this->assertFalse($router->currentRoute()->getName() == 'NameForNothing');
