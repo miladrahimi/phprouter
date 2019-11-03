@@ -18,7 +18,7 @@ interface Middleware
      *
      * @param ServerRequestInterface $request
      * @param Closure $next
-     * @return ResponseInterface|mixed
+     * @return ResponseInterface|mixed|null
      */
     public function handle(ServerRequestInterface $request, Closure $next);
 }
