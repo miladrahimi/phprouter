@@ -13,11 +13,9 @@ composer require miladrahimi/phprouter "4.*"
 ```
 
 ## Configuration
-First of all, you need to configure your web server to handle all the HTTP requests with a single PHP file like `index.php`. Here you can see required configurations for Apache HTTP Server and NGINX.
+First of all, you need to configure your web server to handle all the HTTP requests with a single PHP file like `index.php`. Here you can see sample configurations for Apache HTTP Server and NGINX.
 
 ### Apache
-If you are using Apache HTTP server, you must have a file named `.htaccess` in your project's root directory contains following content.
-
 ```
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
@@ -36,8 +34,6 @@ If you are using Apache HTTP server, you must have a file named `.htaccess` in y
 ```
 
 ### NGINX
-If you are using NGINX web server, you should consider following directive in your site configuration file.
-
 ```nginx
 location / {
     try_files $uri $uri/ /index.php?$query_string;
@@ -45,7 +41,7 @@ location / {
 ```
 
 ## Getting Started
-After configurations above, you can start using PhpRouter in your entry point (`index.php`) like this example:
+After configurations above, you can start using PhpRouter in your entry point file (`index.php`) like this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -59,21 +55,17 @@ $router->get('/', function () {
 });
 
 $router->post('/blog/post/{id}', function ($id) {
-    return HtmlResponse("<p>This is a post $id</p>");
-});
-
-$router->patch('/json', function () {
-    return JsonResponse(['message' => 'This is a JSON response!']);
+    return JsonResponse(["message" => "This is a post $id"]);
 });
 
 $router->dispatch();
 ```
 
-There are also some examples [here](https://github.com/miladrahimi/phprouter/blob/master/examples/index.php).
+There are more examples [here](https://github.com/miladrahimi/phprouter/blob/master/examples/index.php).
 
 ## HTTP Methods
 
-Here you can see how to declare different routes with different http methods:
+Here you can see how to declare different routes for different http methods:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -96,6 +88,9 @@ $router
     ->delete('/', function () {
         return '<b>DELETE method</b>';
     })
+    ->any('/page', function () {
+         return 'This is the Page! No matter what the HTTP method is!';
+    })
     ->dispatch();
 ```
 
@@ -117,20 +112,6 @@ $router
         return '<b>CUSTOM method</b>';
     })
     ->dispatch();
-```
-
-You also may want to respond to all the http methods so this one is for you:
-
-```php
-use MiladRahimi\PhpRouter\Router;
-
-$router = new Router();
-
-$router->any('/', function () {
-    return 'This is Home! No matter what the HTTP method is!';
-});
-
-$router->dispatch();
 ```
 
 ## Controllers
@@ -240,7 +221,7 @@ $router->get('/path/to/{info?}', function ($info = 'Default') {
 $router->dispatch();
 ```
 
-In default, route parameters can match any value, but you can define a regular expression for them and it applys to all of them in all the routes.
+In default, route parameters can match any value, but you can define regex pattern for them.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -281,12 +262,12 @@ $router = new Router();
 
 $router->get('/', function (ServerRequest $request) {
     return new JsonResponse([
-        'method' => $request->getMethod(),
-        'uri' => $request->getUri(),
+        'method' => $request->getMethod(), // "GET"
+        'uri' => $request->getUri(), // "/"
         'body' => $request->getBody(),
         'parsedBody' => $request->getParsedBody(),
         'headers' => $request->getHeaders(),
-        'queryParameters' => $request->getQueryParams(),
+        'queryParameters' => $request->getQueryParams(), // Query strings
         'attributes' => $request->getAttributes(),
     ]);
 });
@@ -297,7 +278,7 @@ $router->post('/blog/posts', function (ServerRequest $request) {
     $post->content = $request->getQueryParams()['content'];
     $post->save();
 
-    return new EmptyResponse(201);
+    return new EmptyResponse(204);
 });
 
 $router->dispatch();
@@ -330,28 +311,13 @@ $router
         return new TextResponse('This is a plain text...');
     })
     ->get('/empty', function () {
-        return new EmptyResponse();
+        return new EmptyResponse(); // HTTP Status: 204
+    })
+    ->get('/redirect', function () {
+        return new RedirectResponse('https://miladrahimi.com');
     });
 
 $router->dispatch();
-
-```
-
-#### Redirection Response
-
-In case of needing to redirecting user to another URL:
-
-```php
-use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\RedirectResponse;
-
-$router = new Router();
-
-$router
-    ->get('/redirect', function () {
-        return new RedirectResponse('https://miladrahimi.com');
-    })
-    ->dispatch();
 ```
 
 ### More about HTTP Request and Response
