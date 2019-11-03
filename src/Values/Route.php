@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter;
+namespace MiladRahimi\PhpRouter\Values;
 
 /**
  * Class Route
