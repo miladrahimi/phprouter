@@ -323,7 +323,7 @@ class Router
     /**
      * Run the controller through the middleware (list)
      *
-     * @param Middleware[] $middleware
+     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param ServerRequestInterface $request
      * @param Closure $controllerRunner
      * @param int $i
@@ -518,7 +518,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|string|Middleware[]|string[] $middleware
+     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param string|null $domain
      * @param string|null $name
      * @return self
@@ -539,7 +539,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|string|Middleware[]|string[] $middleware
+     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param string|null $domain
      * @param string|null $name
      * @return self
@@ -560,7 +560,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|string|Middleware[]|string[] $middleware
+     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param string|null $domain
      * @param string|null $name
      * @return self
@@ -581,7 +581,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|string|Middleware[]|string[] $middleware
+     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param string|null $domain
      * @param string|null $name
      * @return self
@@ -602,7 +602,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|string|Middleware[]|string[] $middleware
+     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param string|null $domain
      * @param string|null $name
      * @return self
@@ -623,7 +623,7 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|string|Middleware[]|string[] $middleware
+     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param string|null $domain
      * @param string|null $name
      * @return self
