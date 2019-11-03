@@ -315,9 +315,9 @@ class Router
             };
 
             return $this->runControllerThroughMiddleware($middleware, $this->request, $controllerRunner);
-        } else {
-            return $this->runController($controller, $parameters, $this->request);
         }
+
+        return $this->runController($controller, $parameters, $this->request);
     }
 
     /**
