@@ -301,7 +301,7 @@ class Router
      *
      * @param Route $route
      * @param array $parameters
-     * @return mixed|ResponseInterface
+     * @return ResponseInterface|mixed|null
      * @throws InvalidControllerException
      * @throws InvalidMiddlewareException
      * @throws Throwable
@@ -328,7 +328,7 @@ class Router
      * @param ServerRequestInterface $request
      * @param Closure $controllerRunner
      * @param int $i
-     * @return ResponseInterface|null
+     * @return ResponseInterface|mixed|null
      * @throws InvalidMiddlewareException
      */
     private function runControllerThroughMiddleware(
@@ -367,7 +367,7 @@ class Router
      * @param Closure|callable|string $controller
      * @param array $parameters
      * @param ServerRequestInterface $request
-     * @return ResponseInterface|null
+     * @return ResponseInterface|mixed|null
      * @throws InvalidControllerException
      */
     private function runController($controller, array $parameters, ServerRequestInterface $request)
@@ -410,7 +410,7 @@ class Router
      * @return array
      * @throws ReflectionException
      */
-    private function arrangeFunctionParameters($function, array $parameters, ServerRequestInterface $request)
+    private function arrangeFunctionParameters($function, array $parameters, ServerRequestInterface $request): array
     {
         return $this->arrangeParameters(new ReflectionFunction($function), $parameters, $request);
     }
@@ -430,7 +430,7 @@ class Router
         string $method,
         array $parameters,
         ServerRequestInterface $request
-    )
+    ): array
     {
         return $this->arrangeParameters(new ReflectionMethod($class, $method), $parameters, $request);
     }
@@ -447,7 +447,7 @@ class Router
         ReflectionFunctionAbstract $reflection,
         array $parameters,
         ServerRequestInterface $request
-    )
+    ): array
     {
         return array_map(
             function (ReflectionParameter $parameter) use ($parameters, $request) {
