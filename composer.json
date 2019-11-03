@@ -37,7 +37,8 @@
   "autoload": {
     "psr-4": {
       "MiladRahimi\\PhpRouter\\": "src/",
-      "MiladRahimi\\PhpRouter\\Tests\\": "tests/"
+      "MiladRahimi\\PhpRouter\\Tests\\": "tests/",
+      "MiladRahimi\\PhpRouter\\Examples\\": "examples/"
     }
   }
 }

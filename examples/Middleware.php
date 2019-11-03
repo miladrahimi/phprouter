@@ -1,5 +1,8 @@
 <?php
 
+namespace MiladRahimi\PhpRouter\Examples;
+
+use Closure;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Middleware implements \MiladRahimi\PhpRouter\Middleware

@@ -1,6 +1,6 @@
 <?php
 
-use MiladRahimi\PhpRouter\Enums\GroupAttributes;
+use MiladRahimi\PhpRouter\Examples\Middleware;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router;
 use Zend\Diactoros\Response\EmptyResponse;
@@ -12,12 +12,10 @@ use Zend\Diactoros\Response\XmlResponse;
 use Zend\Diactoros\ServerRequest;
 
 require('../vendor/autoload.php');
-require('Controller.php');
-require('Middleware.php');
 
-$router = new Router();
+$router = new Router('', 'MiladRahimi\PhpRouter\Examples');
 
-// Simple home page
+// The home page
 $router->get('/', function () {
     return 'Homepage!';
 });
