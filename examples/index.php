@@ -117,9 +117,9 @@ $router->group(['prefix' => '/g', 'middleware' => Middleware::class], function (
 });
 
 // Grouping with common domain or sub-domain
-$router->group(['domain' => 'server2.com'], function (Router $router) {
+$router->group(['domain' => 'sub.localhost'], function (Router $router) {
     $router->get('/page', function () {
-        return 'This page will be displayed when domain is server2.com!';
+        return 'This page will be displayed when domain is sub.localhost!';
     });
 });
 
