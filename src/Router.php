@@ -31,21 +31,21 @@ class Router
     /**
      * List of defined routes
      *
-     * @var Route[]string
+     * @var Route[]
      */
     private $routes = [];
 
     /**
-     * List of defined names mapped to related routes
+     * List of named routes
      *
-     * @var Route[]string
+     * @var Route[]|array[string]Route
      */
     private $names = [];
 
     /**
-     * List of defined route parameters and their regex patterns
+     * List of defined route parameters
      *
-     * @var string[]string
+     * @var string[]|array[string]string
      */
     private $parameters = [];
 
@@ -55,7 +55,7 @@ class Router
     private $request;
 
     /**
-     * The publisher that is going to publish controller output
+     * The publisher that is going to publish outputs of controllers
      *
      * @var PublisherInterface
      */
@@ -69,28 +69,28 @@ class Router
     private $name = null;
 
     /**
-     * Middleware (single or multiple) for upcoming routes
+     * Middleware (one or more) for next routes
      *
-     * @var array
+     * @var string[]|callable[]
      */
     private $middleware = [];
 
     /**
-     * Prefix of URIs of upcoming routes
+     * URI prefix for next routes
      *
      * @var string
      */
     private $prefix;
 
     /**
-     * Controller namespace prefix for upcoming routes
+     * Controller namespace prefix for next routes
      *
      * @var string
      */
     private $namespace;
 
     /**
-     * Domain for upcoming routes
+     * Domain for next routes
      *
      * @var string|null
      */
@@ -106,13 +106,13 @@ class Router
     /**
      * Router constructor.
      *
-     * @param string $prefix
-     * @param string $namespace
+     * @param string $uriPrefix
+     * @param string $namespacePrefix
      */
-    public function __construct(string $prefix = '', string $namespace = '')
+    public function __construct(string $uriPrefix = '', string $namespacePrefix = '')
     {
-        $this->prefix = $prefix;
-        $this->namespace = $namespace;
+        $this->prefix = $uriPrefix;
+        $this->namespace = $namespacePrefix;
     }
 
     /**
