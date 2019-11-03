@@ -11,7 +11,7 @@ use MiladRahimi\PhpRouter\Enums\HttpMethods;
  */
 class HttpMethodsTest extends TestCase
 {
-    public function test_custom_method_it_should_return_standardized_name()
+    public function test_custom_method_it_should_standardize_the_method()
     {
         $actual = HttpMethods::custom('append');
 
