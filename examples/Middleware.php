@@ -5,6 +5,12 @@ namespace MiladRahimi\PhpRouter\Examples;
 use Closure;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class Middleware
+ * Sample middleware used in examples
+ *
+ * @package MiladRahimi\PhpRouter\Examples
+ */
 class Middleware implements \MiladRahimi\PhpRouter\Middleware
 {
     /**
