@@ -9,14 +9,6 @@ namespace MiladRahimi\PhpRouter;
  */
 class Route
 {
-    const URI = 'uri';
-    const METHOD = 'method';
-    const CONTROLLER = 'controller';
-    const MIDDLEWARE = 'middleware';
-    const DOMAIN = 'domain';
-    const PREFIX = 'prefix';
-    const NAME = 'name';
-
     /**
      * @var string|null
      */

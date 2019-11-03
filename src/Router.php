@@ -135,7 +135,7 @@ class Router
 
         // Set middleware for the group
         if (isset($attributes[GroupAttributes::MIDDLEWARE])) {
-            if (is_array($attributes[Route::MIDDLEWARE]) == false) {
+            if (is_array($attributes[GroupAttributes::MIDDLEWARE]) == false) {
                 $attributes[GroupAttributes::MIDDLEWARE] = [$attributes[GroupAttributes::MIDDLEWARE]];
             }
 
