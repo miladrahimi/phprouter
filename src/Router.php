@@ -232,8 +232,7 @@ class Router
         $this->prepare();
 
         $method = $this->request->getMethod();
-        $scheme = $this->request->getUri()->getScheme();
-        $domain = substr($this->request->getUri()->getHost(), strlen($scheme . '://'));
+        $domain = $this->request->getUri()->getHost();
         $uri = $this->request->getUri()->getPath();
 
         sort($this->routes, SORT_DESC);
