@@ -2,6 +2,9 @@
 
 namespace MiladRahimi\PhpRouter\Values;
 
+use Closure;
+use MiladRahimi\PhpRouter\Middleware;
+
 /**
  * Class Route
  *
@@ -25,12 +28,12 @@ class Route
     private $method;
 
     /**
-     * @var string|callable
+     * @var Closure|callable|string
      */
     private $controller;
 
     /**
-     * @var string[]|callable[]
+     * @var string[]|callable[]|Closure[]|Middleware[]
      */
     private $middleware;
 
@@ -45,8 +48,8 @@ class Route
      * @param string|null $name
      * @param string $uri
      * @param string|null $method
-     * @param $controller
-     * @param $middleware
+     * @param Closure|callable|string $controller
+     * @param string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param string|null $domain
      */
     public function __construct(
@@ -121,7 +124,7 @@ class Route
     }
 
     /**
-     * @return callable|string
+     * @return Closure|callable|string
      */
     public function getController()
     {
@@ -129,7 +132,7 @@ class Route
     }
 
     /**
-     * @return callable[]|string[]
+     * @return string[]|callable[]|Closure[]|Middleware[]
      */
     public function getMiddleware()
     {
