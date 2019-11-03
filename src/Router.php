@@ -553,7 +553,7 @@ class Router
         ?string $name = null
     ): self
     {
-        return $this->map('GET', $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::GET, $route, $controller, $middleware, $domain, $name);
     }
 
     /**
@@ -574,7 +574,7 @@ class Router
         ?string $name = null
     ): self
     {
-        return $this->map('POST', $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::POST, $route, $controller, $middleware, $domain, $name);
     }
 
     /**
@@ -595,7 +595,7 @@ class Router
         ?string $name = null
     ): self
     {
-        return $this->map('PUT', $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::PUT, $route, $controller, $middleware, $domain, $name);
     }
 
     /**
@@ -616,7 +616,7 @@ class Router
         ?string $name = null
     ): self
     {
-        return $this->map('PATCH', $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::PATCH, $route, $controller, $middleware, $domain, $name);
     }
 
     /**
