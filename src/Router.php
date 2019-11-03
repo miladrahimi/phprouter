@@ -396,7 +396,7 @@ class Router
 
             return call_user_func_array($controller, $parameters);
         } catch (ReflectionException $e) {
-            throw new InvalidControllerException('', 0, $e);
+            throw new InvalidControllerException('Reflection error', 0, $e);
         }
     }
 
