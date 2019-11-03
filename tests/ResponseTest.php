@@ -21,13 +21,11 @@ class ResponseTest extends TestCase
      */
     public function test_empty_response_with_code_204()
     {
-        $router = $this->router();
-
-        $router->get('/', function () {
-            return new EmptyResponse(204);
-        });
-
-        $router->dispatch();
+        $router = $this->router()
+            ->get('/', function () {
+                return new EmptyResponse(204);
+            })
+            ->dispatch();
 
         $this->assertEquals(204, $this->publisherOf($router)->responseCode);
     }
@@ -37,13 +35,11 @@ class ResponseTest extends TestCase
      */
     public function test_html_response_with_code_200()
     {
-        $router = $this->router();
-
-        $router->get('/', function () {
-            return new HtmlResponse('<html lang="fa"></html>', 200);
-        });
-
-        $router->dispatch();
+        $router = $this->router()
+            ->get('/', function () {
+                return new HtmlResponse('<html lang="fa"></html>', 200);
+            })
+            ->dispatch();
 
         $this->assertEquals(200, $this->publisherOf($router)->responseCode);
         $this->assertEquals('<html lang="fa"></html>', $this->outputOf($router));
@@ -54,13 +50,11 @@ class ResponseTest extends TestCase
      */
     public function test_json_response_with_code_201()
     {
-        $router = $this->router();
-
-        $router->get('/', function () {
-            return new JsonResponse(['a' => 'x', 'b' => 'y'], 201);
-        });
-
-        $router->dispatch();
+        $router = $this->router()
+            ->get('/', function () {
+                return new JsonResponse(['a' => 'x', 'b' => 'y'], 201);
+            })
+            ->dispatch();
 
         $this->assertEquals(201, $this->publisherOf($router)->responseCode);
         $this->assertEquals(json_encode(['a' => 'x', 'b' => 'y']), $this->outputOf($router));
@@ -71,13 +65,11 @@ class ResponseTest extends TestCase
      */
     public function test_text_response_with_code_203()
     {
-        $router = $this->router();
-
-        $router->get('/', function () {
-            return new TextResponse('Content', 203);
-        });
-
-        $router->dispatch();
+        $router = $this->router()
+            ->get('/', function () {
+                return new TextResponse('Content', 203);
+            })
+            ->dispatch();
 
         $this->assertEquals(203, $this->publisherOf($router)->responseCode);
         $this->assertEquals('Content', $this->outputOf($router));
@@ -88,13 +80,11 @@ class ResponseTest extends TestCase
      */
     public function test_redirect_response_with_code_203()
     {
-        $router = $this->router();
-
-        $router->get('/', function () {
-            return new RedirectResponse('https://miladrahimi.com');
-        });
-
-        $router->dispatch();
+        $router = $this->router()
+            ->get('/', function () {
+                return new RedirectResponse('https://miladrahimi.com');
+            })
+            ->dispatch();
 
         $this->assertEquals(302, $this->publisherOf($router)->responseCode);
         $this->assertEquals('', $this->outputOf($router));
