@@ -724,7 +724,7 @@ class Router
      *
      * @param ServerRequestInterface $request
      */
-    public function setRequest(ServerRequestInterface $request)
+    public function setRequest(ServerRequestInterface $request): void
     {
         $this->request = $request;
     }
