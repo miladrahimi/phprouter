@@ -5,8 +5,8 @@ namespace MiladRahimi\PhpRouter\Services;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class StreamPublisher
- * StreamPublisher publishes the given resp
+ * Class HttpPublisher
+ * HttpPublisher publishes controller responses as an HTTP response.
  *
  * @package MiladRahimi\PhpRouter\Services
  * @codeCoverageIgnore
