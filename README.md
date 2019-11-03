@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/miladrahimi/phprouter/badge.png?branch=master)](https://coveralls.io/github/miladrahimi/phprouter?branch=master)
 
 # PhpRouter
-PhpRouter is a powerful and standalone URL router for PHP projects.
+PhpRouter is a powerful and standalone URL router for PHP projects. It supports middleware, grouping, multiple domains, route parameters, route naming, route-aware URL generating, and many other features. It uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) to provide PSR-7 HTTP request and response.
 
 ## Installation
 
