@@ -24,9 +24,7 @@ class RoutingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/');
 
-        $router = $this->router();
-        $router->map('GET', '/', $this->controller());
-        $router->dispatch();
+        $router = $this->router()->map('GET', '/', $this->controller())->dispatch();
 
         $this->assertEquals('OK', $this->outputOf($router));
     }
@@ -100,23 +98,21 @@ class RoutingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/');
 
-        $router = $this->router()
-            ->any('/', function () {
-                return 'Test any-get method';
-            })
-            ->dispatch();
+        $router = $this->router()->any('/', function () {
+            return 'Test any for get';
+        })->dispatch();
 
-        $this->assertEquals('Test any-get method', $this->outputOf($router));
+        $this->assertEquals('Test any for get', $this->outputOf($router));
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/');
 
         $router = $this->router()
             ->any('/', function () {
-                return 'Test any-post method';
+                return 'Test any for post';
             })
             ->dispatch();
 
-        $this->assertEquals('Test any-post method', $this->outputOf($router));
+        $this->assertEquals('Test any for post', $this->outputOf($router));
     }
 
     /**
