@@ -4,6 +4,7 @@ namespace MiladRahimi\PhpRouter;
 
 use Closure;
 use MiladRahimi\PhpRouter\Enums\GroupAttributes;
+use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
 use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
@@ -653,7 +654,7 @@ class Router
     }
 
     /**
-     * Define a parameter pattern
+     * Define a route parameter pattern
      *
      * @param string $name
      * @param string $pattern
@@ -668,7 +669,7 @@ class Router
 
     /**
      * Generate URL for given route name
-     * It returns Null if route with given name is not found.
+     * It returns null if route with given name is not found.
      *
      * @param string $routeName
      * @param string[] $parameters
