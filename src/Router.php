@@ -637,7 +637,7 @@ class Router
         ?string $name = null
     ): self
     {
-        return $this->map('DELETE', $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::DELETE, $route, $controller, $middleware, $domain, $name);
     }
 
     /**
