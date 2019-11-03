@@ -21,7 +21,6 @@ class HttpMethods
 
     /**
      * Standardize custom http method name
-     * For the methods that are not defined in this enum
      *
      * @param string $method
      * @return string
