@@ -226,20 +226,14 @@ In default, route parameters can match any value, but you can define regex patte
 ```php
 use MiladRahimi\PhpRouter\Router;
 
-class BlogController
-{
-    function getPost(int $id)
-    {
-        return 'Content of the post: ' . $id;
-    }
-}
-
 $router = new Router();
 
 // ID must be a numeric value
 $router->define('id', '[0-9]+');
 
-$router->get('/blog/post/{id}', 'BlogController@getPost');
+$router->get('/blog/post/{id}', function($id) {
+    return $id;
+});
 
 $router->dispatch();
 ```
@@ -530,7 +524,7 @@ try {
 } catch (RouteNotFoundException $e) {
     $router->getPublisher()->publish(new EmptyResponse(404));
 } catch (Throwable $e) {
-    // other exceptions...
+    // your controller exceptions...
 }
 ```
 
