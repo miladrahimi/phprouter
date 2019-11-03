@@ -72,7 +72,7 @@ class Router
     /**
      * Middleware (one or more) for next routes
      *
-     * @var string[]|callable[]
+     * @var string[]|callable[]|Closure[]|Middleware[]
      */
     private $middleware = [];
 
@@ -177,7 +177,7 @@ class Router
      * @param string $method
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param Middleware|string|Middleware[]|string[] $middleware
+     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
      * @param string|null $domain
      * @param string|null $name
      * @return self
@@ -223,7 +223,9 @@ class Router
      *
      * @return self
      * @throws RouteNotFoundException
-     * @throws Throwable
+     * @throws InvalidControllerException
+     * @throws InvalidMiddlewareException
+     * @throws Throwable (the controller might throw any kind of exception)
      */
     public function dispatch(): self
     {
