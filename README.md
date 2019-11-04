@@ -1,7 +1,5 @@
-<p align="center">
 [![Build Status](https://travis-ci.org/miladrahimi/phprouter.svg?branch=master)](https://travis-ci.org/miladrahimi/phprouter)
 [![Coverage Status](https://coveralls.io/repos/github/miladrahimi/phprouter/badge.svg?branch=master)](https://coveralls.io/github/miladrahimi/phprouter?branch=master)
-</p>
 
 # PhpRouter
 
