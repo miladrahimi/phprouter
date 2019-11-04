@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/miladrahimi/phprouter/badge.png?branch=master)](https://coveralls.io/github/miladrahimi/phprouter?branch=master)
 
 # PhpRouter
-PhpRouter is a powerful and standalone URL router for PHP projects. It supports middleware, grouping, multiple domains, route parameters, route naming, route-aware URL generating, and many other features. It uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) to provide PSR-7 HTTP request and response.
+PhpRouter is a powerful and standalone HTTP URL router for PHP projects. It supports middleware, grouping, multiple domains, route parameters, route naming, route-aware URL generating, and many other features. It uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) to provide PSR-7 HTTP request and response.
 
 ## Installation
 
@@ -15,30 +15,30 @@ composer require miladrahimi/phprouter "4.*"
 ## Configuration
 First of all, you need to configure your web server to handle all the HTTP requests with a single PHP file like `index.php`. Here you can see sample configurations for Apache HTTP Server and NGINX.
 
-### Apache
-```
-<IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews
+* Apache `.htaccess` sample:
+    ```
+    <IfModule mod_rewrite.c>
+        <IfModule mod_negotiation.c>
+            Options -MultiViews
+        </IfModule>
+
+        RewriteEngine On
+
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^ index.php [L]
     </IfModule>
+    ```
 
-    RewriteEngine On
-
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
-
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
-</IfModule>
-```
-
-### NGINX
-```nginx
-location / {
-    try_files $uri $uri/ /index.php?$query_string;
-}
-```
+* NGINX configuration sample:
+    ```nginx
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    ```
 
 ## Getting Started
 After configurations above, you can start using PhpRouter in your entry point file (`index.php`) like this example:
@@ -54,8 +54,8 @@ $router->get('/', function () {
     return '<p>This is homepage!</p>';
 });
 
-$router->post('/blog/post/{id}', function ($id) {
-    return JsonResponse(["message" => "This is a post $id"]);
+$router->post('/api/user/{id}', function ($id) {
+    return JsonResponse(["message" => "posted data to user: $id"]);
 });
 
 $router->dispatch();
