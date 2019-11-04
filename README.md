@@ -10,14 +10,16 @@ PhpRouter is a powerful and standalone HTTP URL router for PHP projects.
 
 Supported features:
 * Multiple controller types (class, closure, and function)
-* Route Parameters
+* Route parameters
 * Predefined route parameter regex patterns
 * Middleware
-* Route groups
+* Route groups (URI prefix, namespace prefix, middleware, and domain)
 * Route names
 * Multiple domains or subdomains (regex pattern)
 * Custom HTTP methods
 * PSR-7 requests and responses
+* Request, response and router instance injection
+* Dependecy injection (soon)
 
 ## Installation
 
