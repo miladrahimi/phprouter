@@ -6,7 +6,18 @@
 
 # PhpRouter
 
-PhpRouter is a powerful and standalone HTTP URL router for PHP projects. It supports middleware, grouping, multiple domains, route parameters, route naming, route-aware URL generating, and many other features. It uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) to provide PSR-7 HTTP request and response.
+PhpRouter is a powerful and standalone HTTP URL router for PHP projects.
+
+Supported features:
+* Multiple controller types (class, closure, and function)
+* Route Parameters
+* Predefined route parameter regex patterns
+* Middleware
+* Route groups
+* Route names
+* Multiple domains or subdomains (regex pattern)
+* Custom HTTP methods
+* PSR-7 requests and responses
 
 ## Installation
 
