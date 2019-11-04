@@ -21,6 +21,13 @@ Supported features:
 * Request, response and router instance injection
 * Dependecy injection (soon)
 
+## Versions
+
+* **v4.x.x (LTS)**
+* v3.x.x (Unsupported)
+
+The versions *v2* and *v1* are not available in this repository, please consider an upgrade to the new versions if you are still using them.
+
 ## Installation
 
 Install [Composer](https://getcomposer.org) and run following command in your project's root directory:
