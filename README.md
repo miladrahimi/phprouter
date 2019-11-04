@@ -2,6 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/miladrahimi/phprouter/badge.png?branch=master)](https://coveralls.io/github/miladrahimi/phprouter?branch=master)
 
 # PhpRouter
+
 PhpRouter is a powerful and standalone HTTP URL router for PHP projects. It supports middleware, grouping, multiple domains, route parameters, route naming, route-aware URL generating, and many other features. It uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) to provide PSR-7 HTTP request and response.
 
 ## Installation
@@ -13,7 +14,8 @@ composer require miladrahimi/phprouter "4.*"
 ```
 
 ## Configuration
-First of all, you need to configure your web server to handle all the HTTP requests with a single PHP file like `index.php`. Here you can see sample configurations for Apache HTTP Server and NGINX.
+
+First of all, you need to configure your webserver to handle all the HTTP requests with a single PHP file like `index.php`. Here you can see sample configurations for Apache HTTP Server and NGINX.
 
 * Apache `.htaccess` sample:
     ```
@@ -41,7 +43,8 @@ First of all, you need to configure your web server to handle all the HTTP reque
     ```
 
 ## Getting Started
-After configurations above, you can start using PhpRouter in your entry point file (`index.php`) like this example:
+
+After the configurations mentioned above, you can start using PhpRouter in your entry point file (`index.php`) like this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -65,7 +68,7 @@ There are more examples [here](https://github.com/miladrahimi/phprouter/blob/mas
 
 ## HTTP Methods
 
-Here you can see how to declare different routes for different http methods:
+Here you can see how to declare different routes for different HTTP methods:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -94,7 +97,7 @@ $router
     ->dispatch();
 ```
 
-You may want to use your custom http methods so take look at this example:
+You may want to use your custom HTTP methods, so take a look at this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -116,35 +119,29 @@ $router
 
 ## Controllers
 
-PhpRouter supports plenty of controller types, just look at following examples.
+PhpRouter supports plenty of controller types, just look at the following examples.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
-$router->get('/1', function () {
+$router->get('/closure', function () {
     return 'Closure as a controller';
 });
-
-$closure = function() {
-    return 'Stored closure as a controller';
-};
-$router->get('/2', $closure);
 
 function func() {
     return 'Function as a controller';
 }
-$router->get('/3', 'func');
+$router->get('/function', 'func');
 
 $router->dispatch();
 ```
 
-Using PHP classes for controllers could be a nice idea.
+And class controllers:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\HtmlResponse;
 
 $router = new Router();
 
@@ -152,46 +149,46 @@ class Controller
 {
     function method()
     {
-        return new HtmlResponse('Method as a controller');
+        return 'Class method as a controller';
     }
 }
 
-$router->get('/4', 'Controller@method');
+$router->get('/method', 'Controller@method');
 
 $router->dispatch();
 ```
 
-And if your controller class has a namespace:
+If your controller class has a namespace:
 
 ```php
-use App\Controllers\TheController;
+use App\Controllers\HomeController;
 use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
-$router->get('/5', 'App\Controllers\TheController@method');
+$router->get('/', 'App\Controllers\HomeController@show');
 // OR
-$router->get('/5', TheController::class . '@method');
+$router->get('/', HomeController::class . '@show');
 
 $router->dispatch();
 ```
 
-Or you can pass the namespace to the Router instance and only write the controller name in the routes this way:
+If your controllers have the same namespace or namespace prefix, you can pass it to the router constructor like this:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
 
 $router = new Router('', 'App\Controllers');
 
-$router->get('/5', 'TheController@method');
-// PhpRouter looks for App\Controllers\TheController@method
+$router->get('/', 'HomeController@show');
+$router->get('/blog/posts', 'Blog\PostController@index');
 
 $router->dispatch();
 ```
 
 ## Route Parameters
 
-Some endpoints might have variable parts like post id in a post URL. We call them route parameters, and you can catch them by controller parameters with the same names.
+A URL might have one or more variable parts like the id in a blog post URL. We call it the route parameter. You can catch them by controller parameters with the same names.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -221,16 +218,16 @@ $router->get('/path/to/{info?}', function ($info = 'Default') {
 $router->dispatch();
 ```
 
-In default, route parameters can match any value, but you can define regex pattern for them.
+In default, route parameters can be any value, but you can define regex patterns for each of them.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
-// ID must be a numeric value
 $router->define('id', '[0-9]+');
 
+// It matches "/blog/post/13" but not match "/blog/post/abc"
 $router->get('/blog/post/{id}', function($id) {
     return $id;
 });
@@ -244,7 +241,7 @@ PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros)
 
 ### Request
 
-You can catch the request object like this example:
+You can catch the PSR-7 request object in your controllers like this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -256,8 +253,8 @@ $router = new Router();
 
 $router->get('/', function (ServerRequest $request) {
     return new JsonResponse([
-        'method' => $request->getMethod(), // "GET"
-        'uri' => $request->getUri(), // "/"
+        'method' => $request->getMethod(),
+        'uri' => $request->getUri(),
         'body' => $request->getBody(),
         'parsedBody' => $request->getParsedBody(),
         'headers' => $request->getHeaders(),
@@ -280,7 +277,7 @@ $router->dispatch();
 
 ### Response
 
-The example below illustrates supported kinds of responses.
+The example below illustrates the built-in responses.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -314,23 +311,21 @@ $router
 $router->dispatch();
 ```
 
-### More about HTTP Request and Response
-
-Since PhpRouter uses [zendframework/zend-diactoros](https://github.com/zendframework/zend-diactoros) for http request and responses, you should read its documentation to see all of its functionality.
+Of course, you can return any scalar value, array, object and PSR-7 responses in your controllers.
 
 ## Middleware
 
-PhpRouter supports middleware, you can use it for different purposes like authentication, authorization, throttles and so forth. Middleware run before controllers and it can check and manipulate http requests.
+PhpRouter supports middleware. You can use it for different purposes such as authentication, authorization, throttles and so forth. Middleware runs before controllers and it can check and manipulate the request and response.
 
 Here you can see the request lifecycle considering some middleware:
 
 ```
- Input --[Request]↦ Router ↦ Middleware 1 ↦ ... ↦ Middleware N ↦ Controller
-                                                                      ↧
-Output ↤[Response]- Router ↤ Middleware 1 ↤ ... ↤ Middleware N ↤ [Response]
+[Request] ↦ Router ↦ Middleware 1 ↦ ... ↦ Middleware N ↦ Controller
+                                                             ↧
+          ↤ Router ↤ Middleware 1 ↤ ... ↤ Middleware N ↤ [Response]
 ```
 
-To declare a middleware, you must implements Middleware interface. See the interface:
+To declare a middleware, you must implement the Middleware interface. Here is the Middleware interface:
 
 ```php
 interface Middleware
@@ -346,10 +341,9 @@ interface Middleware
 }
 ```
 
-As you can see, middleware must have a `handle()` method that catches http request and a closure (which runs the next middleware or the controller) and it returns a response at the end. Middleware can break the lifecycle and return a response itself or it can run the `$next` closure to continue lifecycle.
+As you can see, a middleware must have a `handle()` method that catches the request and a Closure (which is responsible for running the next middleware or the controller). It must return a response, as well. A middleware can break the lifecycle and return the response or it can run the `$next` closure to continue the lifecycle.
 
-For example see the following snippet. In this snippet, if there was a `Authorization` header in the request,
-it passes the request to the next middleware or the controller (if there is no more middleware left) and if the header is absent it returns an empty response with `401 Authorization Failed ` HTTP status code.
+See the following example. In this snippet, if there is an `Authorization` header in the request, it passes the request to the next middleware or the controller (if there is no more middleware left) and if the header is absent, it returns an empty response with `401 Authorization Failed ` HTTP status code.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -371,7 +365,7 @@ class AuthMiddleware implements Middleware
 
 $router = new Router();
 
-$router->get('/auth', function () { return 'OK' }, AuthMiddleware::class);
+$router->get('/profile', 'Users\ProfileController@show', AuthMiddleware::class);
 
 $router->dispatch();
 ```
@@ -380,11 +374,9 @@ Middleware can be implemented using closures but it doesn’t make scense to do 
 
 ## Domain and Subdomain
 
-Your application may serve different services on different domains/subdomains or it may assign subdomain dynamically to users or services. In this case, you need to specify domain or subdomain in addition to the URIs in your routes.
+Your application may serve different services on different domains or subdomains. In this case, you can specify the domain or subdomain for your routes. See this example:
 
 ```php
-use MiladRahimi\PhpRouter\Router;
-
 $router = new Router();
 
 // Domain
@@ -393,51 +385,48 @@ $router->get('/', 'Controller@method', [], 'domain2.com');
 // Subdomain
 $router->get('/', 'Controller@method', [], 'server2.domain.com');
 
-// Subdomain regex pattern
+// Subdomain with regex pattern
 $router->get('/', 'Controller@method', [], '(.*).domain.com');
 
 $router->dispatch();
 ```
 
-Notice that domain parameter receives a regex pattern not a simple string.
-
 ## Route Groups
 
-Usually routes can fit in a groups that have common attributes like middleware, domain/subdomain and prefix. To group routes you can follow the example below.
+Application routes can be categorized into groups if they have common attributes like middleware, domain, or prefix. The following example shows how to group routes:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Enums\GroupAttributes;
 
 $router = new Router();
 
+// A group of routes with the same prefix
 $router->group(['prefix' => '/admin'], function (Router $router) {
-      // URI: /admin/setting
-    $router->get('/setting', 'AdminController@getSetting');
+    $router->get('/dashboard', 'AdminController@dashboard');
+    $router->get('/setting', 'AdminController@setting');
 });
 
+// A group of routes with many attributes in common
 $attributes = [
-    'prefix'        => '/products',
-    'namespace'     => 'App\Controllers',
-    'domain'        => 'shop.example.com',
-    'middleware'    => SampleMiddleware::class,
+    GroupAttributes::PREFIX        => '/shop',
+    GroupAttributes::NAMESPACE     => 'App\Controllers\Shop',
+    GroupAttributes::DOMAIN        => 'shop.example.com',
+    GroupAttributes::MIDDLEWARE    => SampleMiddleware::class,
 ];
-
 $router->group($attributes, function (Router $router) {
-    // URI: http://shop.example.com/products/{id}
-    // Controller: App\Controllers\ShopController@getProduct
-    // Domain: shop.example.com
-    // Middleware: SampleMiddleware
-    $router->get('/{id}', 'ShopController@getProduct');
+    $router->get('/products', 'ProductController@index');
+    $router->get('/products/{id}', 'ProductController@show');
+    $router->get('/categories', 'CategoryController@index');
+    $router->get('/categories/{slug}', 'CategoryController@show');
 });
 
 $router->dispatch();
 ```
 
-As you can see in the examples, you can use `GroupAttributes` enum instead of memorizing attribute names!
+## URI Prefix
 
-## Base URI
-
-Your project may be in a subdirectory, so all of your route URIs will starts with the subdirectory name. You can pass this subdirectory name as the initialize prefix to the PhpRouter this way:
+Your project might be in a subdirectory, or all of your routes might start with the same prefix. You can pass this prefix as the constructor like this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -445,16 +434,17 @@ use MiladRahimi\PhpRouter\Router;
 $router = new Router('/shop');
 
 // URI: /shop/about
-$router->get('/about', 'ShopController@getAbout');
+$router->get('/about', 'ShopController@about');
 
 // URI: /shop/product/{id}
-$router->get('/product/{id}', 'ShopController@getProduct');
+$router->get('/product/{id}', 'Shop\ProductController@show');
 
 $router->dispatch();
 ```
 
 ## Route Name
-You can name your routes and use the names in your controllers and views instead of the URLs so you can change URI patterns without breaking links. See this example:
+
+You can define names for your routes and use them in your codes instead of the URLs. See this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -465,18 +455,14 @@ $router = new Router();
 $router->name('about')->get('/about', function () {
     return 'About me!'
 });
-$router->name('help')->get('/help', function () {
-    return 'Help me!'
-});
-$router->name('page')->get('/page/{id}', function ($id) {
-    return 'Content of the page: ' . $id;
+$router->name('post')->get('/post/{id}', function ($id) {
+    return 'Content of the post: ' . $id;
 });
 $router->name('home')->get('/', function (Router $router) {
     return new JsonResponse([
-        "link_about" => $router->url('about'), /* /about */
-        "link_help" => $router->url('help') /* /help */
-        "link_page_1" => $router->url('page', ['id' => 1]), /* /page/1 */
-        "link_page_2" => $router->url('page', ['id' => 2]) /* /page/2 */
+        "about"  => $router->url('about'),             /* /about */
+        "post_1" => $router->url('post', ['id' => 1]), /* /page/1 */
+        "post_2" => $router->url('post', ['id' => 2])  /* /page/2 */
     ]);
 });
 
@@ -485,7 +471,7 @@ $router->dispatch();
 
 ## Current Route
 
-You might want to get information about current route in your controller. This example shows how to get this information
+You might want to get information about the current route in your controller. This example shows how to get this information.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -496,7 +482,7 @@ $router = new Router();
 $router->name('home')->get('/', function (Router $router) {
     return JsonResponse([
         "current_page_name" => $router->currentRoute()->getName() /* home */
-        "current_page_uri" => $router->currentRoute()->getUri() /* /home */
+        "current_page_uri" => $router->currentRoute()->getUri() /* / */
         "current_page_method" => $router->currentRoute()->getMethod() /* GET */
         "current_page_domain" => $router->currentRoute()->getDomain() /* NULL */
     ]);
@@ -507,7 +493,7 @@ $router->dispatch();
 
 ## Error Handling
 
-Your application runs through the `Router::disptach()` method, you should put it in a `try` block and catch exceptions that will be thrown by your application and the router.
+Your application runs through the `Router::dispatch()` method. You should put it in a `try` block and catch exceptions that will be thrown by your application and PhpRouter.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -524,21 +510,21 @@ try {
 } catch (RouteNotFoundException $e) {
     $router->getPublisher()->publish(new EmptyResponse(404));
 } catch (Throwable $e) {
-    // your controller exceptions...
+    // other execptions...
 }
 ```
 
-The router also throws following exceptions:
+PhpRouter also throws the following exceptions:
 
-* `RouteNotFoundException` if cannot find any route for the user request.
-* `InvalidControllerException` if the controller is neither callable nor class method.
-* `InvalidMiddlewareException` if the middleware is neither callable nor an instance of `Middleware`.
+* `RouteNotFoundException` if PhpRouter cannot find any route that matches the user request.
+* `InvalidControllerException` if PhpRouter cannot invoke the controller.
+* `InvalidMiddlewareException` if PhpRouter cannot invoke the middleware.
 
 The `RouteNotFoundException` should be considered `404 Not found` error.
 
-The `InvalidControllerException` and `InvalidMiddlewareException` exceptions should never be thrown, they should be considered `500 Internal Error` if these exceptions be thrown.
+The `InvalidControllerException` and `InvalidMiddlewareException` exceptions should never be thrown normally, so they should be considered `500 Internal Error`.
 
 ## License
 
-PhpRouter is initially created by [Milad Rahimi](http://miladrahimi.com) and released under the [MIT License](http://opensource.org/licenses/mit-license.php).
+PhpRouter is initially created by [Milad Rahimi](https://miladrahimi.com) and released under the [MIT License](http://opensource.org/licenses/mit-license.php).
 
