@@ -19,7 +19,6 @@ Supported features:
 * Custom HTTP methods
 * PSR-7 requests and responses
 * Request, response and router instance injection
-* Dependecy injection (soon)
 
 ## Versions
 
