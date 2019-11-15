@@ -25,7 +25,7 @@ class UrlTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('/', $this->outputOf($router));
+        $this->assertEquals('/', $this->output($router));
     }
 
     /**
@@ -44,7 +44,7 @@ class UrlTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('/page', $this->outputOf($router));
+        $this->assertEquals('/page', $this->output($router));
     }
 
     /**
@@ -61,7 +61,7 @@ class UrlTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('/13', $this->outputOf($router));
+        $this->assertEquals('/13', $this->output($router));
     }
 
     /**
@@ -78,7 +78,7 @@ class UrlTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('/13', $this->outputOf($router));
+        $this->assertEquals('/13', $this->output($router));
     }
 
     /**
@@ -95,7 +95,7 @@ class UrlTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('/', $this->outputOf($router));
+        $this->assertEquals('/', $this->output($router));
     }
 
     /**
@@ -112,7 +112,7 @@ class UrlTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('/page', $this->outputOf($router));
+        $this->assertEquals('/page', $this->output($router));
     }
 
     /**
@@ -129,7 +129,7 @@ class UrlTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('/page', $this->outputOf($router));
+        $this->assertEquals('/page', $this->output($router));
     }
 
     /**
@@ -145,6 +145,6 @@ class UrlTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('', $this->outputOf($router));
+        $this->assertEquals('', $this->output($router));
     }
 }

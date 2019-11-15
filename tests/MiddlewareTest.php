@@ -27,7 +27,7 @@ class MiddlewareTest extends TestCase
             ->get('/', $this->controller(), $middleware)
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertContains($middleware->content, SampleMiddleware::$output);
     }
 
@@ -42,7 +42,7 @@ class MiddlewareTest extends TestCase
             ->get('/', $this->controller(), $middleware)
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertCount(1, SampleMiddleware::$output);
     }
 
@@ -61,7 +61,7 @@ class MiddlewareTest extends TestCase
             }, $middleware)
             ->dispatch();
 
-        $this->assertEquals('666', $this->outputOf($router));
+        $this->assertEquals('666', $this->output($router));
     }
 
     /**
@@ -75,7 +75,7 @@ class MiddlewareTest extends TestCase
             ->get('/', $this->controller(), $middleware)
             ->dispatch();
 
-        $this->assertEquals('Stopped in middleware.', $this->outputOf($router));
+        $this->assertEquals('Stopped in middleware.', $this->output($router));
         $this->assertContains($middleware->content, StopperMiddleware::$output);
     }
 
@@ -101,7 +101,7 @@ class MiddlewareTest extends TestCase
             }, $middleware)
             ->dispatch();
 
-        $this->assertEquals('It works!', $this->outputOf($router));
+        $this->assertEquals('It works!', $this->output($router));
     }
 
     /**

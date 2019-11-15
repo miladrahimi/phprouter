@@ -7,11 +7,6 @@ use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
 use Throwable;
 
-/**
- * Class GroupingTest
- *
- * @package MiladRahimi\PhpRouter\Tests
- */
 class GroupingTest extends TestCase
 {
     /**
@@ -24,7 +19,7 @@ class GroupingTest extends TestCase
                 $router->get('/', $this->controller());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -39,7 +34,7 @@ class GroupingTest extends TestCase
                 $router->get('/', $this->controller());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertContains($middleware->content, SampleMiddleware::$output);
     }
 
@@ -56,7 +51,7 @@ class GroupingTest extends TestCase
                 $router->get('/', $this->controller(), $routeMiddleware);
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertContains($groupMiddleware->content, SampleMiddleware::$output);
         $this->assertContains($routeMiddleware->content, SampleMiddleware::$output);
     }
@@ -76,7 +71,7 @@ class GroupingTest extends TestCase
                 });
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertContains($group1Middleware->content, SampleMiddleware::$output);
         $this->assertContains($group2Middleware->content, SampleMiddleware::$output);
     }
@@ -93,7 +88,7 @@ class GroupingTest extends TestCase
                 $router->get('/page', $this->controller());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -110,7 +105,7 @@ class GroupingTest extends TestCase
                 });
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -125,7 +120,7 @@ class GroupingTest extends TestCase
                 $router->get('/', 'SampleController@home');
             })->dispatch();
 
-        $this->assertEquals('Home', $this->outputOf($router));
+        $this->assertEquals('Home', $this->output($router));
     }
 
     /**
@@ -140,7 +135,7 @@ class GroupingTest extends TestCase
                 $router->get('/', $this->controller());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -155,7 +150,7 @@ class GroupingTest extends TestCase
                 $router->get('/', $this->controller(), [], 'sub2.domain.com');
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -173,7 +168,7 @@ class GroupingTest extends TestCase
                 });
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -187,7 +182,7 @@ class GroupingTest extends TestCase
                 $router->get('/', $this->controller());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertFalse($router->currentRoute()->getName() == 'NameForNothing');
     }
 }
