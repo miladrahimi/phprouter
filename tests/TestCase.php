@@ -84,4 +84,15 @@ class TestCase extends BaseTestCase
     {
         return $router->getPublisher();
     }
+
+    /**
+     * Get the HTTP status code of the dispatched route of the given router
+     *
+     * @param Router $router
+     * @return int
+     */
+    protected function status(Router $router): int
+    {
+        return $this->publisher($router)->responseCode;
+    }
 }

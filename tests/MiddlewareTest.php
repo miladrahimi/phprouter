@@ -9,11 +9,6 @@ use MiladRahimi\PhpRouter\Tests\Testing\StopperMiddleware;
 use Throwable;
 use Zend\Diactoros\ServerRequest;
 
-/**
- * Class MiddlewareTest
- *
- * @package MiladRahimi\PhpRouter\Testing
- */
 class MiddlewareTest extends TestCase
 {
     /**
@@ -43,7 +38,7 @@ class MiddlewareTest extends TestCase
             ->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
-        $this->assertCount(1, SampleMiddleware::$output);
+        $this->assertEquals('empty', SampleMiddleware::$output[0]);
     }
 
     /**

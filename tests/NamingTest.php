@@ -5,11 +5,6 @@ namespace MiladRahimi\PhpRouter\Tests;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use Throwable;
 
-/**
- * Class NamingTest
- *
- * @package MiladRahimi\PhpRouter\Testing
- */
 class NamingTest extends TestCase
 {
     /**
@@ -53,7 +48,7 @@ class NamingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_duplicate_naming()
+    public function test_duplicate_naming_it_should_set_the_name_for_all_routes()
     {
         $router = $this->router()
             ->get('/', $this->OkController(), [], null, 'Home')

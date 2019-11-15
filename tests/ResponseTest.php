@@ -9,11 +9,6 @@ use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\TextResponse;
 
-/**
- * Class ResponseTest
- *
- * @package MiladRahimi\PhpRouter\Testing
- */
 class ResponseTest extends TestCase
 {
     /**
@@ -27,7 +22,7 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(204, $this->publisher($router)->responseCode);
+        $this->assertEquals(204, $this->status($router));
     }
 
     /**
@@ -41,7 +36,7 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(200, $this->publisher($router)->responseCode);
+        $this->assertEquals(200, $this->status($router));
         $this->assertEquals('<html lang="fa"></html>', $this->output($router));
     }
 
@@ -56,7 +51,7 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(201, $this->publisher($router)->responseCode);
+        $this->assertEquals(201, $this->status($router));
         $this->assertEquals(json_encode(['a' => 'x', 'b' => 'y']), $this->output($router));
     }
 
@@ -71,7 +66,7 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(203, $this->publisher($router)->responseCode);
+        $this->assertEquals(203, $this->status($router));
         $this->assertEquals('Content', $this->output($router));
     }
 
@@ -86,7 +81,7 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(302, $this->publisher($router)->responseCode);
+        $this->assertEquals(302, $this->status($router));
         $this->assertEquals('', $this->output($router));
         $this->assertContains('location: https://miladrahimi.com', $this->publisher($router)->headerLines);
     }

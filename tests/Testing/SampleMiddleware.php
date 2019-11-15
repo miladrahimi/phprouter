@@ -27,7 +27,7 @@ class SampleMiddleware implements Middleware
     {
         static::$output = [];
 
-        $this->content = $content ?: mt_rand(1, 9999999);
+        $this->content = $content ?: 'empty';
     }
 
     /**

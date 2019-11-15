@@ -10,11 +10,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Zend\Diactoros\ServerRequest;
 
-/**
- * Class RoutingTest
- *
- * @package MiladRahimi\PhpRouter\Testing
- */
 class RoutingTest extends TestCase
 {
     /**

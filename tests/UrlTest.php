@@ -6,11 +6,6 @@ use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use Throwable;
 
-/**
- * Class UrlTest
- *
- * @package MiladRahimi\PhpRouter\Testing
- */
 class UrlTest extends TestCase
 {
     /**
