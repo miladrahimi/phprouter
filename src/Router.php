@@ -8,6 +8,7 @@ use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
 use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Values\Route;
@@ -670,16 +671,16 @@ class Router
 
     /**
      * Generate URL for given route name
-     * It returns null if route with given name is not found.
      *
      * @param string $routeName
      * @param string[] $parameters
-     * @return string|null
+     * @return string
+     * @throws UndefinedRouteException
      */
-    public function url(string $routeName, array $parameters = []): ?string
+    public function url(string $routeName, array $parameters = []): string
     {
         if (isset($this->names[$routeName]) == false) {
-            return null;
+            throw new UndefinedRouteException("There is no route with name `$routeName`.");
         }
 
         $uri = $this->names[$routeName]->getUri();

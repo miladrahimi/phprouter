@@ -537,6 +537,7 @@ PhpRouter also throws the following exceptions:
 * `RouteNotFoundException` if PhpRouter cannot find any route that matches the user request.
 * `InvalidControllerException` if PhpRouter cannot invoke the controller.
 * `InvalidMiddlewareException` if PhpRouter cannot invoke the middleware.
+* `UndefinedRouteException` if `Router::url()` cannot find any route with the given name.
 
 The `RouteNotFoundException` should be considered `404 Not found` error.
 
