@@ -32,7 +32,7 @@ class TestCase extends BaseTestCase
         $urlParts = parse_url($url);
 
         $_SERVER['SERVER_NAME'] = $urlParts['host'];
-        $_SERVER['REQUEST_URI'] = $urlParts['path'] . '?' . $urlParts['query'] ?? '';
+        $_SERVER['REQUEST_URI'] = $urlParts['path'] . '?' . ($urlParts['query'] ?? '');
         $_SERVER['REQUEST_METHOD'] = $method;
     }
 
