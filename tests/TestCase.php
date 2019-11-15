@@ -6,7 +6,7 @@ use Closure;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Tests\Classes\TestPublisher;
+use MiladRahimi\PhpRouter\Tests\Tests\TestPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -52,11 +52,11 @@ class TestCase extends BaseTestCase
     }
 
     /**
-     * Get the sample controller
+     * Get a sample controller that returns an 'OK' string
      *
      * @return Closure
      */
-    protected function controller(): Closure
+    protected function OkController(): Closure
     {
         return function () {
             return 'OK';

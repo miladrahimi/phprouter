@@ -1,18 +1,13 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests\Classes;
+namespace MiladRahimi\PhpRouter\Tests\Tests;
 
 use Closure;
 use MiladRahimi\PhpRouter\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\TextResponse;
 
-/**
- * Class SampleMiddleware
- *
- * @package MiladRahimi\PhpRouter\Tests\Classes
- * @codeCoverageIgnore
- */
-class SampleMiddleware implements Middleware
+class StopperMiddleware implements Middleware
 {
     /**
      * @var string
@@ -26,13 +21,10 @@ class SampleMiddleware implements Middleware
 
     /**
      * SampleMiddleware constructor.
-     *
-     * @param string|null $content
+     * @param string $content
      */
     public function __construct(string $content = null)
     {
-        static::$output = [];
-
         $this->content = $content ?: mt_rand(1, 9999999);
     }
 
@@ -43,6 +35,6 @@ class SampleMiddleware implements Middleware
     {
         static::$output[] = $this->content;
 
-        return $next($request);
+        return new TextResponse('Stopped in middleware.');
     }
 }

@@ -4,8 +4,8 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use Closure;
 use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
-use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
-use MiladRahimi\PhpRouter\Tests\Classes\StopperMiddleware;
+use MiladRahimi\PhpRouter\Tests\Tests\SampleMiddleware;
+use MiladRahimi\PhpRouter\Tests\Tests\StopperMiddleware;
 use Throwable;
 use Zend\Diactoros\ServerRequest;
 
@@ -24,7 +24,7 @@ class MiddlewareTest extends TestCase
         $middleware = new SampleMiddleware(666);
 
         $router = $this->router()
-            ->get('/', $this->controller(), $middleware)
+            ->get('/', $this->OkController(), $middleware)
             ->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
@@ -39,7 +39,7 @@ class MiddlewareTest extends TestCase
         $middleware = SampleMiddleware::class;
 
         $router = $this->router()
-            ->get('/', $this->controller(), $middleware)
+            ->get('/', $this->OkController(), $middleware)
             ->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
@@ -72,7 +72,7 @@ class MiddlewareTest extends TestCase
         $middleware = new StopperMiddleware(666);
 
         $router = $this->router()
-            ->get('/', $this->controller(), $middleware)
+            ->get('/', $this->OkController(), $middleware)
             ->dispatch();
 
         $this->assertEquals('Stopped in middleware.', $this->output($router));
@@ -112,7 +112,7 @@ class MiddlewareTest extends TestCase
         $this->expectException(InvalidMiddlewareException::class);
 
         $this->router()
-            ->get('/', $this->controller(), 'UnknownMiddleware')
+            ->get('/', $this->OkController(), 'UnknownMiddleware')
             ->dispatch();
     }
 }

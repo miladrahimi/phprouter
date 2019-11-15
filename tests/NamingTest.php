@@ -18,7 +18,7 @@ class NamingTest extends TestCase
     public function test_a_named_route()
     {
         $router = $this->router()
-            ->get('/', $this->controller(), [], null, 'Home')
+            ->get('/', $this->OkController(), [], null, 'Home')
             ->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
@@ -32,7 +32,7 @@ class NamingTest extends TestCase
     {
         $router = $this->router()
             ->name('Home')
-            ->get('/', $this->controller())
+            ->get('/', $this->OkController())
             ->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
@@ -56,8 +56,8 @@ class NamingTest extends TestCase
     public function test_duplicate_naming()
     {
         $router = $this->router()
-            ->get('/', $this->controller(), [], null, 'Home')
-            ->get('/home', $this->controller(), [], null, 'Home')
+            ->get('/', $this->OkController(), [], null, 'Home')
+            ->get('/home', $this->OkController(), [], null, 'Home')
             ->dispatch();
 
         $this->assertTrue($router->currentRoute()->getName() == 'Home');
