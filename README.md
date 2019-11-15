@@ -6,7 +6,7 @@
 
 # PhpRouter
 
-PhpRouter is a powerful, standalone and very fast HTTP URL router for PHP projects.
+PhpRouter is a powerful, standalone, and very fast HTTP URL router for PHP projects.
 
 Supported features:
 * Multiple controller types (class, closure, and function)
