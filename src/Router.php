@@ -24,7 +24,8 @@ use Zend\Diactoros\ServerRequestFactory;
 
 /**
  * Class Router
- * Router is the main class in the package, it is responsible for defining and dispatching routes
+ * Router is the main class in the package.
+ * It's responsible for defining and dispatching routes.
  *
  * @package MiladRahimi\PhpRouter
  */

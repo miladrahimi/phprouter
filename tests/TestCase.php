@@ -6,7 +6,7 @@ use Closure;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Tests\Classes\Publisher;
+use MiladRahimi\PhpRouter\Tests\Classes\TestPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 /**
@@ -48,7 +48,7 @@ class TestCase extends BaseTestCase
     protected function router(string $prefix = '', string $namespace = ''): Router
     {
         $router = new Router($prefix, $namespace);
-        $router->setPublisher(new Publisher());
+        $router->setPublisher(new TestPublisher());
 
         return $router;
     }

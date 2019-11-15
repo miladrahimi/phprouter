@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
  * @package MiladRahimi\PhpRouter\Tests\Classes
  * @codeCoverageIgnore
  */
-class Publisher implements Publisher
+class TestPublisher implements Publisher
 {
     /**
      * @var string
