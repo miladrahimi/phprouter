@@ -25,7 +25,7 @@ Supported features:
 * **v4.x.x (LTS)**
 * v3.x.x (Unsupported)
 
-The versions *v2* and *v1* are not available in this repository, please consider an upgrade to the new versions if you are still using them.
+The versions *v2* and *v1* are not available in this repository, please consider an upgrade to the newer versions if you are still using them.
 
 ## Installation
 
@@ -217,24 +217,20 @@ use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
-// Required parameter
 $router->get('/blog/post/{id}', function ($id) {
-    return 'Content of the post: ' . $id;
+    return 'id is required.';
 });
 
-// Optional parameter
-$router->get('/path/to/{info?}', function ($info = null) {
-    return 'Info may be present or may be NULL.';
+$router->get('/blog/post/{id?}', function ($id = null) {
+    return 'id is optional.';
 });
 
-// Optional parameter, Optional Slash!
-$router->get('/path/to/?{info?}', function ($info = null) {
-    return 'info may be present or may be NULL.';
+$router->get('/blog/post/?{id?}', function ($id = null) {
+    return 'id and / both are optional!';
 });
 
-// Optional parameter with default value
-$router->get('/path/to/{info?}', function ($info = 'Default') {
-    return 'info may be present or may be Default.';
+$router->get('/blog/post/{id?}', function ($id = 'Default') {
+    return 'id is optional and have a default value.';
 });
 
 $router->dispatch();
@@ -249,7 +245,7 @@ $router = new Router();
 
 $router->define('id', '[0-9]+');
 
-// It matches "/blog/post/13" but not match "/blog/post/abc"
+// For example, it matches "/blog/post/13" but not match "/blog/post/abc"
 $router->get('/blog/post/{id}', function($id) {
     return $id;
 });
@@ -259,7 +255,7 @@ $router->dispatch();
 
 ## HTTP Request and Request
 
-PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) package (version 2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) complaint request and response objects to your controllers and middleware.
+PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) package (v2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) complaint request and response objects to your controllers and middleware.
 
 ### Request
 
@@ -280,12 +276,12 @@ $router->get('/', function (ServerRequest $request) {
         'body' => $request->getBody(),
         'parsedBody' => $request->getParsedBody(),
         'headers' => $request->getHeaders(),
-        'queryParameters' => $request->getQueryParams(), // Query strings
+        'queryStrings' => $request->getQueryParams(),
         'attributes' => $request->getAttributes(),
     ]);
 });
 
-$router->post('/blog/posts', function (ServerRequest $request) {
+$router->post('/blog/post', function (ServerRequest $request) {
     $post = new \App\Models\Post();
     $post->title = $request->getQueryParams()['title'];
     $post->content = $request->getQueryParams()['content'];
@@ -347,7 +343,7 @@ Here you can see the request lifecycle considering some middleware:
           ↤ Router ↤ Middleware 1 ↤ ... ↤ Middleware N ↤ [Response]
 ```
 
-To declare a middleware, you must implement the Middleware interface. Here is the Middleware interface:
+To declare a middleware, you must implement the `Middleware` interface. Here is the Middleware interface:
 
 ```php
 interface Middleware
