@@ -8,7 +8,7 @@ use Throwable;
 /**
  * Class NamingTest
  *
- * @package MiladRahimi\PhpRouter\Tests
+ * @package MiladRahimi\PhpRouter\Testing
  */
 class NamingTest extends TestCase
 {

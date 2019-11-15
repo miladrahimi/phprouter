@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Testing;
 
 class SampleController
 {

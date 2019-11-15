@@ -12,7 +12,7 @@ use Zend\Diactoros\Response\TextResponse;
 /**
  * Class ResponseTest
  *
- * @package MiladRahimi\PhpRouter\Tests
+ * @package MiladRahimi\PhpRouter\Testing
  */
 class ResponseTest extends TestCase
 {

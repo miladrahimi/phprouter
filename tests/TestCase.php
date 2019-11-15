@@ -6,7 +6,7 @@ use Closure;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Tests\Tests\TestPublisher;
+use MiladRahimi\PhpRouter\Tests\Testing\TestPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase

@@ -9,7 +9,7 @@ use Throwable;
 /**
  * Class UrlTest
  *
- * @package MiladRahimi\PhpRouter\Tests
+ * @package MiladRahimi\PhpRouter\Testing
  */
 class UrlTest extends TestCase
 {

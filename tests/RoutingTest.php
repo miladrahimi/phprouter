@@ -13,7 +13,7 @@ use Zend\Diactoros\ServerRequest;
 /**
  * Class RoutingTest
  *
- * @package MiladRahimi\PhpRouter\Tests
+ * @package MiladRahimi\PhpRouter\Testing
  */
 class RoutingTest extends TestCase
 {
@@ -415,7 +415,7 @@ class RoutingTest extends TestCase
      */
     public function test_with_fully_namespaced_controller()
     {
-        $c = 'MiladRahimi\PhpRouter\Tests\Tests\SampleController@home';
+        $c = 'MiladRahimi\PhpRouter\Tests\Testing\SampleController@home';
 
         $router = $this->router()
             ->get('/', $c)
@@ -429,7 +429,7 @@ class RoutingTest extends TestCase
      */
     public function test_with_preserved_namespaced_controller()
     {
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Tests';
+        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
 
         $router = $this->router('', $namespace)
             ->get('/', 'SampleController@home')
@@ -477,7 +477,7 @@ class RoutingTest extends TestCase
     {
         $this->expectException(InvalidControllerException::class);
 
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Classes';
+        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
         $this->router('', $namespace)
             ->get('/', 'SampleController@invalidMethod')
             ->dispatch();

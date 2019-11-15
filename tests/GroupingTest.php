@@ -4,7 +4,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Tests\Tests\SampleMiddleware;
+use MiladRahimi\PhpRouter\Tests\Testing\SampleMiddleware;
 use Throwable;
 
 class GroupingTest extends TestCase
@@ -113,7 +113,7 @@ class GroupingTest extends TestCase
      */
     public function test_with_namespace()
     {
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Tests';
+        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
 
         $router = $this->router()
             ->group(['namespace' => $namespace], function (Router $router) {

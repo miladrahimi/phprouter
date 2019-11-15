@@ -4,15 +4,15 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use Closure;
 use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
-use MiladRahimi\PhpRouter\Tests\Tests\SampleMiddleware;
-use MiladRahimi\PhpRouter\Tests\Tests\StopperMiddleware;
+use MiladRahimi\PhpRouter\Tests\Testing\SampleMiddleware;
+use MiladRahimi\PhpRouter\Tests\Testing\StopperMiddleware;
 use Throwable;
 use Zend\Diactoros\ServerRequest;
 
 /**
  * Class MiddlewareTest
  *
- * @package MiladRahimi\PhpRouter\Tests
+ * @package MiladRahimi\PhpRouter\Testing
  */
 class MiddlewareTest extends TestCase
 {
