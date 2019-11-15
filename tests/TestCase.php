@@ -5,7 +5,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 use Closure;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Services\PublisherInterface;
+use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Classes\Publisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
@@ -83,7 +83,7 @@ class TestCase extends BaseTestCase
      * Get router publisher
      *
      * @param Router $router
-     * @return PublisherInterface|Publisher
+     * @return Publisher|Publisher
      */
     protected function publisherOf(Router $router): Publisher
     {

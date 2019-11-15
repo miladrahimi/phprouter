@@ -9,7 +9,7 @@ use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
 use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
-use MiladRahimi\PhpRouter\Services\PublisherInterface;
+use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Values\Route;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -59,7 +59,7 @@ class Router
     /**
      * The publisher that is going to publish outputs of controllers
      *
-     * @var PublisherInterface
+     * @var Publisher
      */
     private $publisher;
 
@@ -731,17 +731,17 @@ class Router
     }
 
     /**
-     * @return PublisherInterface
+     * @return Publisher
      */
-    public function getPublisher(): PublisherInterface
+    public function getPublisher(): Publisher
     {
         return $this->publisher;
     }
 
     /**
-     * @param PublisherInterface $publisher
+     * @param Publisher $publisher
      */
-    public function setPublisher(PublisherInterface $publisher): void
+    public function setPublisher(Publisher $publisher): void
     {
         $this->publisher = $publisher;
     }
