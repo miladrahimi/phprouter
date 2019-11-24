@@ -24,8 +24,8 @@ Supported features:
 
 * **v4.x.x (LTS)**
 * v3.x.x (Unsupported)
-
-The versions *v2* and *v1* are not available in this repository, please consider an upgrade to the newer versions if you are still using them.
+* v2.x.x (Unavailable)
+* v1.x.x (Unavailable)
 
 ## Installation
 
@@ -70,7 +70,6 @@ After the configurations mentioned above, you can start using PhpRouter in your 
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\JsonResponse;
 
 $router = new Router();
 
@@ -78,18 +77,10 @@ $router->get('/', function () {
     return '<p>This is homepage!</p>';
 });
 
-$router->post('/blog/post/{id}', function ($id) {
-    return HtmlResponse("<p>This is a post $id</p>");
-});
-
-$router->patch('/json', function () {
-    return new JsonResponse(["message" => "posted data to user: $id"]);
-});
-
 $router->dispatch();
 ```
 
-There are more examples [here](https://github.com/miladrahimi/phprouter/blob/master/examples/index.php).
+There are more examples [here](https://github.com/miladrahimi/phprouter/tree/master/examples).
 
 ## HTTP Methods
 
