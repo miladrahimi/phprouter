@@ -14,10 +14,6 @@ class HttpMethods
     const PUT = 'PUT';
     const PATCH = 'PATCH';
     const DELETE = 'DELETE';
-    const OPTIONS = 'OPTIONS';
-    const HEAD = 'HEAD';
-    const CONNECT = 'CONNECT';
-    const TRACE = 'TRACE';
 
     /**
      * Standardize custom http method name
