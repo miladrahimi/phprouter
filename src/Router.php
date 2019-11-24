@@ -8,8 +8,9 @@ use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
 use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
-use MiladRahimi\PhpRouter\Services\PublisherInterface;
+use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Values\Route;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,7 +25,8 @@ use Zend\Diactoros\ServerRequestFactory;
 
 /**
  * Class Router
- * Router is the main class in the package, it is responsible for defining and dispatching routes
+ * Router is the main class in the package.
+ * It's responsible for defining and dispatching routes.
  *
  * @package MiladRahimi\PhpRouter
  */
@@ -59,7 +61,7 @@ class Router
     /**
      * The publisher that is going to publish outputs of controllers
      *
-     * @var PublisherInterface
+     * @var Publisher
      */
     private $publisher;
 
@@ -669,16 +671,16 @@ class Router
 
     /**
      * Generate URL for given route name
-     * It returns null if route with given name is not found.
      *
      * @param string $routeName
      * @param string[] $parameters
-     * @return string|null
+     * @return string
+     * @throws UndefinedRouteException
      */
-    public function url(string $routeName, array $parameters = []): ?string
+    public function url(string $routeName, array $parameters = []): string
     {
         if (isset($this->names[$routeName]) == false) {
-            return null;
+            throw new UndefinedRouteException("There is no route with name `$routeName`.");
         }
 
         $uri = $this->names[$routeName]->getUri();
@@ -731,17 +733,17 @@ class Router
     }
 
     /**
-     * @return PublisherInterface
+     * @return Publisher
      */
-    public function getPublisher(): PublisherInterface
+    public function getPublisher(): Publisher
     {
         return $this->publisher;
     }
 
     /**
-     * @param PublisherInterface $publisher
+     * @param Publisher $publisher
      */
-    public function setPublisher(PublisherInterface $publisher): void
+    public function setPublisher(Publisher $publisher): void
     {
         $this->publisher = $publisher;
     }

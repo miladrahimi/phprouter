@@ -5,11 +5,6 @@ namespace MiladRahimi\PhpRouter\Tests;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use Throwable;
 
-/**
- * Class NamingTest
- *
- * @package MiladRahimi\PhpRouter\Tests
- */
 class NamingTest extends TestCase
 {
     /**
@@ -18,10 +13,10 @@ class NamingTest extends TestCase
     public function test_a_named_route()
     {
         $router = $this->router()
-            ->get('/', $this->controller(), [], null, 'Home')
+            ->get('/', $this->OkController(), [], null, 'Home')
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertTrue($router->currentRoute()->getName() == 'Home');
     }
 
@@ -32,10 +27,10 @@ class NamingTest extends TestCase
     {
         $router = $this->router()
             ->name('Home')
-            ->get('/', $this->controller())
+            ->get('/', $this->OkController())
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertTrue($router->currentRoute()->getName() == 'Home');
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
@@ -46,18 +41,18 @@ class NamingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('666', $this->outputOf($router));
+        $this->assertEquals('666', $this->output($router));
         $this->assertFalse($router->currentRoute()->getName() == 'Home');
     }
 
     /**
      * @throws Throwable
      */
-    public function test_duplicate_naming()
+    public function test_duplicate_naming_it_should_set_the_name_for_all_routes()
     {
         $router = $this->router()
-            ->get('/', $this->controller(), [], null, 'Home')
-            ->get('/home', $this->controller(), [], null, 'Home')
+            ->get('/', $this->OkController(), [], null, 'Home')
+            ->get('/home', $this->OkController(), [], null, 'Home')
             ->dispatch();
 
         $this->assertTrue($router->currentRoute()->getName() == 'Home');

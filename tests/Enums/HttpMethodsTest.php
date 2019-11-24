@@ -1,14 +1,10 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Enums;
 
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 
-/**
- * Class HttpMethodsTest
- *
- * @package MiladRahimi\PhpRouter\Tests
- */
 class HttpMethodsTest extends TestCase
 {
     public function test_custom_method_it_should_standardize_the_method()

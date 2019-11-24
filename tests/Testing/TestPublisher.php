@@ -1,17 +1,11 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests\Classes;
+namespace MiladRahimi\PhpRouter\Tests\Testing;
 
-use MiladRahimi\PhpRouter\Services\PublisherInterface;
+use MiladRahimi\PhpRouter\Services\Publisher;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Class Publisher
- *
- * @package MiladRahimi\PhpRouter\Tests\Classes
- * @codeCoverageIgnore
- */
-class Publisher implements PublisherInterface
+class TestPublisher implements Publisher
 {
     /**
      * @var string

@@ -1,13 +1,7 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests\Classes;
+namespace MiladRahimi\PhpRouter\Tests\Testing;
 
-/**
- * Class SampleController
- *
- * @package Classes
- * @codeCoverageIgnore
- */
 class SampleController
 {
     /**

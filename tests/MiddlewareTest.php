@@ -4,16 +4,11 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use Closure;
 use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
-use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
-use MiladRahimi\PhpRouter\Tests\Classes\StopperMiddleware;
+use MiladRahimi\PhpRouter\Tests\Testing\SampleMiddleware;
+use MiladRahimi\PhpRouter\Tests\Testing\StopperMiddleware;
 use Throwable;
 use Zend\Diactoros\ServerRequest;
 
-/**
- * Class MiddlewareTest
- *
- * @package MiladRahimi\PhpRouter\Tests
- */
 class MiddlewareTest extends TestCase
 {
     /**
@@ -24,10 +19,10 @@ class MiddlewareTest extends TestCase
         $middleware = new SampleMiddleware(666);
 
         $router = $this->router()
-            ->get('/', $this->controller(), $middleware)
+            ->get('/', $this->OkController(), $middleware)
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertContains($middleware->content, SampleMiddleware::$output);
     }
 
@@ -39,11 +34,11 @@ class MiddlewareTest extends TestCase
         $middleware = SampleMiddleware::class;
 
         $router = $this->router()
-            ->get('/', $this->controller(), $middleware)
+            ->get('/', $this->OkController(), $middleware)
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
-        $this->assertCount(1, SampleMiddleware::$output);
+        $this->assertEquals('OK', $this->output($router));
+        $this->assertEquals('empty', SampleMiddleware::$output[0]);
     }
 
     /**
@@ -61,7 +56,7 @@ class MiddlewareTest extends TestCase
             }, $middleware)
             ->dispatch();
 
-        $this->assertEquals('666', $this->outputOf($router));
+        $this->assertEquals('666', $this->output($router));
     }
 
     /**
@@ -72,10 +67,10 @@ class MiddlewareTest extends TestCase
         $middleware = new StopperMiddleware(666);
 
         $router = $this->router()
-            ->get('/', $this->controller(), $middleware)
+            ->get('/', $this->OkController(), $middleware)
             ->dispatch();
 
-        $this->assertEquals('Stopped in middleware.', $this->outputOf($router));
+        $this->assertEquals('Stopped in middleware.', $this->output($router));
         $this->assertContains($middleware->content, StopperMiddleware::$output);
     }
 
@@ -101,7 +96,7 @@ class MiddlewareTest extends TestCase
             }, $middleware)
             ->dispatch();
 
-        $this->assertEquals('It works!', $this->outputOf($router));
+        $this->assertEquals('It works!', $this->output($router));
     }
 
     /**
@@ -112,7 +107,7 @@ class MiddlewareTest extends TestCase
         $this->expectException(InvalidMiddlewareException::class);
 
         $this->router()
-            ->get('/', $this->controller(), 'UnknownMiddleware')
+            ->get('/', $this->OkController(), 'UnknownMiddleware')
             ->dispatch();
     }
 }

@@ -9,11 +9,6 @@ use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\TextResponse;
 
-/**
- * Class ResponseTest
- *
- * @package MiladRahimi\PhpRouter\Tests
- */
 class ResponseTest extends TestCase
 {
     /**
@@ -27,7 +22,7 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(204, $this->publisherOf($router)->responseCode);
+        $this->assertEquals(204, $this->status($router));
     }
 
     /**
@@ -41,8 +36,8 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(200, $this->publisherOf($router)->responseCode);
-        $this->assertEquals('<html lang="fa"></html>', $this->outputOf($router));
+        $this->assertEquals(200, $this->status($router));
+        $this->assertEquals('<html lang="fa"></html>', $this->output($router));
     }
 
     /**
@@ -56,8 +51,8 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(201, $this->publisherOf($router)->responseCode);
-        $this->assertEquals(json_encode(['a' => 'x', 'b' => 'y']), $this->outputOf($router));
+        $this->assertEquals(201, $this->status($router));
+        $this->assertEquals(json_encode(['a' => 'x', 'b' => 'y']), $this->output($router));
     }
 
     /**
@@ -71,8 +66,8 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(203, $this->publisherOf($router)->responseCode);
-        $this->assertEquals('Content', $this->outputOf($router));
+        $this->assertEquals(203, $this->status($router));
+        $this->assertEquals('Content', $this->output($router));
     }
 
     /**
@@ -86,8 +81,8 @@ class ResponseTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals(302, $this->publisherOf($router)->responseCode);
-        $this->assertEquals('', $this->outputOf($router));
-        $this->assertContains('location: https://miladrahimi.com', $this->publisherOf($router)->headerLines);
+        $this->assertEquals(302, $this->status($router));
+        $this->assertEquals('', $this->output($router));
+        $this->assertContains('location: https://miladrahimi.com', $this->publisher($router)->headerLines);
     }
 }

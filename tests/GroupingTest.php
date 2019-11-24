@@ -4,14 +4,9 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Tests\Classes\SampleMiddleware;
+use MiladRahimi\PhpRouter\Tests\Testing\SampleMiddleware;
 use Throwable;
 
-/**
- * Class GroupingTest
- *
- * @package MiladRahimi\PhpRouter\Tests
- */
 class GroupingTest extends TestCase
 {
     /**
@@ -21,10 +16,10 @@ class GroupingTest extends TestCase
     {
         $router = $this->router()
             ->group([], function (Router $router) {
-                $router->get('/', $this->controller());
+                $router->get('/', $this->OkController());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -36,10 +31,10 @@ class GroupingTest extends TestCase
 
         $router = $this->router()
             ->group(['middleware' => $middleware], function (Router $router) {
-                $router->get('/', $this->controller());
+                $router->get('/', $this->OkController());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertContains($middleware->content, SampleMiddleware::$output);
     }
 
@@ -53,10 +48,10 @@ class GroupingTest extends TestCase
 
         $router = $this->router()
             ->group(['middleware' => $groupMiddleware], function (Router $router) use ($routeMiddleware) {
-                $router->get('/', $this->controller(), $routeMiddleware);
+                $router->get('/', $this->OkController(), $routeMiddleware);
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertContains($groupMiddleware->content, SampleMiddleware::$output);
         $this->assertContains($routeMiddleware->content, SampleMiddleware::$output);
     }
@@ -72,11 +67,11 @@ class GroupingTest extends TestCase
         $router = $this->router()
             ->group(['middleware' => $group1Middleware], function (Router $router) use ($group2Middleware) {
                 $router->group(['middleware' => $group2Middleware], function (Router $router) {
-                    $router->get('/', $this->controller());
+                    $router->get('/', $this->OkController());
                 });
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertContains($group1Middleware->content, SampleMiddleware::$output);
         $this->assertContains($group2Middleware->content, SampleMiddleware::$output);
     }
@@ -90,10 +85,10 @@ class GroupingTest extends TestCase
 
         $router = $this->router()
             ->group(['prefix' => '/group'], function (Router $router) {
-                $router->get('/page', $this->controller());
+                $router->get('/page', $this->OkController());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -106,11 +101,11 @@ class GroupingTest extends TestCase
         $router = $this->router()
             ->group(['prefix' => '/group1'], function (Router $router) {
                 $router->group(['prefix' => '/group2'], function (Router $router) {
-                    $router->get('/page', $this->controller());
+                    $router->get('/page', $this->OkController());
                 });
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -118,14 +113,14 @@ class GroupingTest extends TestCase
      */
     public function test_with_namespace()
     {
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Classes';
+        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
 
         $router = $this->router()
             ->group(['namespace' => $namespace], function (Router $router) {
                 $router->get('/', 'SampleController@home');
             })->dispatch();
 
-        $this->assertEquals('Home', $this->outputOf($router));
+        $this->assertEquals('Home', $this->output($router));
     }
 
     /**
@@ -137,10 +132,10 @@ class GroupingTest extends TestCase
 
         $router = $this->router()
             ->group(['domain' => 'sub.domain.tld'], function (Router $router) {
-                $router->get('/', $this->controller());
+                $router->get('/', $this->OkController());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -152,10 +147,10 @@ class GroupingTest extends TestCase
 
         $router = $this->router()
             ->group(['domain' => 'sub1.domain.com'], function (Router $router) {
-                $router->get('/', $this->controller(), [], 'sub2.domain.com');
+                $router->get('/', $this->OkController(), [], 'sub2.domain.com');
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -168,12 +163,12 @@ class GroupingTest extends TestCase
         $router = $this->router()
             ->group(['domain' => 'sub1.domain.com'], function (Router $router) {
                 $router->group(['domain' => 'sub2.domain.com'], function (Router $router) {
-                    $router->get('/', $this->controller());
+                    $router->get('/', $this->OkController());
 
                 });
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -184,10 +179,10 @@ class GroupingTest extends TestCase
         $router = $this->router()
             ->name('NameForNothing')
             ->group([], function (Router $router) {
-                $router->get('/', $this->controller());
+                $router->get('/', $this->OkController());
             })->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
         $this->assertFalse($router->currentRoute()->getName() == 'NameForNothing');
     }
 }

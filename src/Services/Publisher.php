@@ -3,12 +3,12 @@
 namespace MiladRahimi\PhpRouter\Services;
 
 /**
- * Interface PublisherInterface
+ * Interface Publisher
  * Publishers are responsible to publish the response provided by controllers
  *
  * @package MiladRahimi\PhpRouter\Services
  */
-interface PublisherInterface
+interface Publisher
 {
     /**
      * Publish the content

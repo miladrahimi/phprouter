@@ -6,12 +6,12 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class HttpPublisher
- * HttpPublisher publishes controller responses as an HTTP response.
+ * HttpPublisher publishes controller responses as over HTTP.
  *
  * @package MiladRahimi\PhpRouter\Services
  * @codeCoverageIgnore
  */
-class HttpPublisher implements PublisherInterface
+class HttpPublisher implements Publisher
 {
     /**
      * @inheritdoc

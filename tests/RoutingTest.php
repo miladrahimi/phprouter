@@ -10,11 +10,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Zend\Diactoros\ServerRequest;
 
-/**
- * Class RoutingTest
- *
- * @package MiladRahimi\PhpRouter\Tests
- */
 class RoutingTest extends TestCase
 {
     /**
@@ -24,9 +19,9 @@ class RoutingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/');
 
-        $router = $this->router()->map('GET', '/', $this->controller())->dispatch();
+        $router = $this->router()->map('GET', '/', $this->OkController())->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -36,9 +31,9 @@ class RoutingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::POST, 'http://example.com/');
 
-        $router = $this->router()->post('/', $this->controller())->dispatch();
+        $router = $this->router()->post('/', $this->OkController())->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -48,9 +43,9 @@ class RoutingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::PUT, 'http://example.com/');
 
-        $router = $this->router()->put('/', $this->controller())->dispatch();
+        $router = $this->router()->put('/', $this->OkController())->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -60,9 +55,9 @@ class RoutingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::PATCH, 'http://example.com/');
 
-        $router = $this->router()->patch('/', $this->controller())->dispatch();
+        $router = $this->router()->patch('/', $this->OkController())->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -72,9 +67,9 @@ class RoutingTest extends TestCase
     {
         $this->mockRequest(HttpMethods::DELETE, 'http://example.com/');
 
-        $router = $this->router()->delete('/', $this->controller())->dispatch();
+        $router = $this->router()->delete('/', $this->OkController())->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -86,9 +81,9 @@ class RoutingTest extends TestCase
 
         $this->mockRequest($method, 'http://example.com/');
 
-        $router = $this->router()->map($method, '/', $this->controller())->dispatch();
+        $router = $this->router()->map($method, '/', $this->OkController())->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -102,7 +97,7 @@ class RoutingTest extends TestCase
             return 'Test any for get';
         })->dispatch();
 
-        $this->assertEquals('Test any for get', $this->outputOf($router));
+        $this->assertEquals('Test any for get', $this->output($router));
 
         $this->mockRequest(HttpMethods::POST, 'http://example.com/');
 
@@ -112,7 +107,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('Test any for post', $this->outputOf($router));
+        $this->assertEquals('Test any for post', $this->output($router));
     }
 
     /**
@@ -131,7 +126,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('666', $this->outputOf($router));
+        $this->assertEquals('666', $this->output($router));
     }
 
     /**
@@ -148,7 +143,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('Home again!', $this->outputOf($router));
+        $this->assertEquals('Home again!', $this->output($router));
     }
 
     /**
@@ -170,7 +165,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('Post', $this->outputOf($router));
+        $this->assertEquals('Post', $this->output($router));
     }
 
     /**
@@ -181,10 +176,10 @@ class RoutingTest extends TestCase
         $this->mockRequest(HttpMethods::POST, 'http://example.com/app/page');
 
         $router = $this->router('/app')
-            ->post('/page', $this->controller())
+            ->post('/page', $this->OkController())
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -200,7 +195,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('666', $this->outputOf($router));
+        $this->assertEquals('666', $this->output($router));
     }
 
     /**
@@ -216,7 +211,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('666', $this->outputOf($router));
+        $this->assertEquals('666', $this->output($router));
     }
 
     /**
@@ -232,7 +227,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('Default', $this->outputOf($router));
+        $this->assertEquals('Default', $this->output($router));
     }
 
     /**
@@ -243,10 +238,10 @@ class RoutingTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://server.domain.ext/');
 
         $router = $this->router()
-            ->get('/', $this->controller(), [], 'server.domain.ext')
+            ->get('/', $this->OkController(), [], 'server.domain.ext')
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -257,10 +252,10 @@ class RoutingTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://something.domain.ext/');
 
         $router = $this->router()
-            ->get('/', $this->controller(), [], '(.*).domain.ext')
+            ->get('/', $this->OkController(), [], '(.*).domain.ext')
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
     }
 
     /**
@@ -272,10 +267,10 @@ class RoutingTest extends TestCase
 
         $router = $this->router()
             ->define('id', '[0-9]+')
-            ->get('/{id}', $this->controller())
+            ->get('/{id}', $this->OkController())
             ->dispatch();
 
-        $this->assertEquals('OK', $this->outputOf($router));
+        $this->assertEquals('OK', $this->output($router));
 
         $this->mockRequest(HttpMethods::GET, 'http://example.com/abc');
 
@@ -283,7 +278,7 @@ class RoutingTest extends TestCase
 
         $this->router()
             ->define('id', '[0-9]+')
-            ->get('/{id}', $this->controller())
+            ->get('/{id}', $this->OkController())
             ->dispatch();
     }
 
@@ -299,7 +294,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('GET', $this->outputOf($router));
+        $this->assertEquals('GET', $this->output($router));
     }
 
     /**
@@ -313,7 +308,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('GET', $this->outputOf($router));
+        $this->assertEquals('GET', $this->output($router));
     }
 
     /**
@@ -327,7 +322,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('GET', $this->outputOf($router));
+        $this->assertEquals('GET', $this->output($router));
     }
 
     /**
@@ -343,7 +338,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('home', $this->outputOf($router));
+        $this->assertEquals('home', $this->output($router));
     }
 
     /**
@@ -358,7 +353,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('home', $this->outputOf($router));
+        $this->assertEquals('home', $this->output($router));
     }
 
     /**
@@ -372,7 +367,7 @@ class RoutingTest extends TestCase
             })
             ->dispatch();
 
-        $this->assertEquals('Default', $this->outputOf($router));
+        $this->assertEquals('Default', $this->output($router));
     }
 
     /**
@@ -389,7 +384,7 @@ class RoutingTest extends TestCase
             return $router->getRequest()->getMethod();
         })->dispatch();
 
-        $this->assertEquals('CUSTOM', $this->outputOf($router));
+        $this->assertEquals('CUSTOM', $this->output($router));
     }
 
     /**
@@ -415,13 +410,13 @@ class RoutingTest extends TestCase
      */
     public function test_with_fully_namespaced_controller()
     {
-        $c = 'MiladRahimi\PhpRouter\Tests\Classes\SampleController@home';
+        $c = 'MiladRahimi\PhpRouter\Tests\Testing\SampleController@home';
 
         $router = $this->router()
             ->get('/', $c)
             ->dispatch();
 
-        $this->assertEquals('Home', $this->outputOf($router));
+        $this->assertEquals('Home', $this->output($router));
     }
 
     /**
@@ -429,13 +424,13 @@ class RoutingTest extends TestCase
      */
     public function test_with_preserved_namespaced_controller()
     {
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Classes';
+        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
 
         $router = $this->router('', $namespace)
             ->get('/', 'SampleController@home')
             ->dispatch();
 
-        $this->assertEquals('Home', $this->outputOf($router));
+        $this->assertEquals('Home', $this->output($router));
     }
 
     /**
@@ -447,7 +442,7 @@ class RoutingTest extends TestCase
 
         $this->expectException(RouteNotFoundException::class);
 
-        $this->router()->get('/', $this->controller())->dispatch();
+        $this->router()->get('/', $this->OkController())->dispatch();
     }
 
     /**
@@ -477,7 +472,7 @@ class RoutingTest extends TestCase
     {
         $this->expectException(InvalidControllerException::class);
 
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Classes';
+        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
         $this->router('', $namespace)
             ->get('/', 'SampleController@invalidMethod')
             ->dispatch();
