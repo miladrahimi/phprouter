@@ -49,7 +49,6 @@ After configurations above, you can start using PhpRouter in your entry point (`
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
 
 $router = new Router();
@@ -63,7 +62,7 @@ $router->post('/blog/post/{id}', function ($id) {
 });
 
 $router->patch('/json', function () {
-    return JsonResponse(['message' => 'This is a JSON response!']);
+    return new JsonResponse(["message" => "posted data to user: $id"]);
 });
 
 $router->dispatch();
@@ -99,7 +98,7 @@ $router
     ->dispatch();
 ```
 
-You may want to use your custom http methods so take look at this example:
+You may want to use your custom http methods, so take look at this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -142,19 +141,14 @@ use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
-$router->get('/1', function () {
+$router->get('/closure', function () {
     return 'Closure as a controller';
 });
-
-$closure = function() {
-    return 'Stored closure as a controller';
-};
-$router->get('/2', $closure);
 
 function func() {
     return 'Function as a controller';
 }
-$router->get('/3', 'func');
+$router->get('/function', 'func');
 
 $router->dispatch();
 ```
@@ -175,7 +169,7 @@ class Controller
     }
 }
 
-$router->get('/4', 'Controller@method');
+$router->get('/method', 'Controller@method');
 
 $router->dispatch();
 ```
@@ -188,22 +182,22 @@ use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
-$router->get('/5', 'App\Controllers\TheController@method');
+$router->get('/ns', 'App\Controllers\TheController@show');
 // OR
-$router->get('/5', TheController::class . '@method');
+$router->get('/ns', TheController::class . '@show');
 
 $router->dispatch();
 ```
 
-Or you can pass the namespace to the Router instance and only write the controller name in the routes this way:
+Or you can pass the namespace to the Router constructor and only write the controller name in the routes this way:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
 
 $router = new Router('', 'App\Controllers');
 
-$router->get('/5', 'TheController@method');
-// PhpRouter looks for App\Controllers\TheController@method
+$router->get('/', 'TheController@show');
+// PhpRouter looks for App\Controllers\TheController@show
 
 $router->dispatch();
 ```
@@ -218,54 +212,52 @@ use MiladRahimi\PhpRouter\Router;
 $router = new Router();
 
 // Required parameter
-$router->get('/blog/post/{id}', function ($id) {
-    return 'Content of the post: ' . $id;
+$router->get('/post/{id}', function ($id) {
+    return "The content of post $id";
 });
 
 // Optional parameter
-$router->get('/path/to/{info?}', function ($info = null) {
-    return 'Info may be present or may be NULL.';
+$router->get('/welcome/{name?}', function ($name = null) {
+    return 'Welcome ' . ($name ?: 'Dear User');
 });
 
 // Optional parameter, Optional Slash!
-$router->get('/path/to/?{info?}', function ($info = null) {
-    return 'info may be present or may be NULL.';
+$router->get('/profile/?{user?}', function ($user = null) {
+    return ($user ?: 'Your') . ' profile';
 });
 
 // Optional parameter with default value
-$router->get('/path/to/{info?}', function ($info = 'Default') {
-    return 'info may be present or may be Default.';
+$router->get('/role/{role?}', function ($role = 'admin') {
+    return "Role is $role";
+});
+
+// Multiple parameters
+$router->get('/post/{pid}/comment/{cid}', function ($pid, $cid) {
+    return "The comment $cid of the post $pid";
 });
 
 $router->dispatch();
 ```
 
-In default, route parameters can match any value, but you can define a regular expression for them and it applys to all of them in all the routes.
+In default, a route parameter can match any value, but you can define a regular expression pattern for it.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
 
-class BlogController
-{
-    function getPost(int $id)
-    {
-        return 'Content of the post: ' . $id;
-    }
-}
-
 $router = new Router();
 
-// ID must be a numeric value
 $router->define('id', '[0-9]+');
 
-$router->get('/blog/post/{id}', 'BlogController@getPost');
+$router->get('/blog/post/{id}', function (int $id) {
+    return 'Content of the post: ' . $id;
+});
 
 $router->dispatch();
 ```
 
 ## HTTP Request and Request
 
-PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) package (version 2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) complaint request and response objects to your controllers and middleware.
+PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) package (v2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) complaint request and response objects to your controllers and middleware.
 
 ### Request
 
@@ -291,8 +283,8 @@ $router->get('/', function (ServerRequest $request) {
     ]);
 });
 
-$router->post('/blog/posts', function (ServerRequest $request) {
-    $post = new \App\Models\Post();
+$router->post('/posts', function (ServerRequest $request) {
+    $post = new PostModel();
     $post->title = $request->getQueryParams()['title'];
     $post->content = $request->getQueryParams()['content'];
     $post->save();
@@ -324,7 +316,7 @@ $router
         return new HtmlResponse('<html>This is also an HTML response</html>', 200);
     })
     ->get('/json', function () {
-        return new JsonResponse(['message' => 'Unauthorized!'], 401);
+        return new JsonResponse(['error' => 'Unauthorized!'], 401);
     })
     ->get('/text', function () {
         return new TextResponse('This is a plain text...');
@@ -334,7 +326,6 @@ $router
     });
 
 $router->dispatch();
-
 ```
 
 #### Redirection Response
@@ -380,7 +371,7 @@ interface Middleware
      *
      * @param ServerRequestInterface $request
      * @param Closure $next
-     * @return ResponseInterface|mixed
+     * @return ResponseInterface|mixed|null
      */
     public function handle(ServerRequestInterface $request, Closure $next);
 }
@@ -394,8 +385,8 @@ it passes the request to the next middleware or the controller (if there is no m
 ```php
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Middleware;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\JsonResponse;
 
 class AuthMiddleware implements Middleware
 {
@@ -405,22 +396,24 @@ class AuthMiddleware implements Middleware
             return $next($request);
         }
 
-        return new EmptyResponse(401);
+        return new JsonResponse(['error' => 'Unauthorized!'], 401);
     }
 }
 
 $router = new Router();
 
-$router->get('/auth', function () { return 'OK' }, AuthMiddleware::class);
+$router->get('/admin', function () {
+    return 'This is admin panel!';
+}, AuthMiddleware::class);
 
 $router->dispatch();
 ```
 
 Middleware can be implemented using closures but it doesn’t make scense to do so!
 
-## Domain and Subdomain
+## Domain and Sub-domain
 
-Your application may serve different services on different domains/subdomains or it may assign subdomain dynamically to users or services. In this case, you need to specify domain or subdomain in addition to the URIs in your routes.
+Your application may serve different services on different domains/subdomains or it may assign sub-domain dynamically to users or services. In this case, you need to specify domain or sub-domain in addition to the URIs in your routes.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -430,44 +423,50 @@ $router = new Router();
 // Domain
 $router->get('/', 'Controller@method', [], 'domain2.com');
 
-// Subdomain
+// Sub-domain
 $router->get('/', 'Controller@method', [], 'server2.domain.com');
 
-// Subdomain regex pattern
+// Sub-domain with regex pattern
 $router->get('/', 'Controller@method', [], '(.*).domain.com');
 
 $router->dispatch();
 ```
 
-Notice that domain parameter receives a regex pattern not a simple string.
-
 ## Route Groups
 
-Usually routes can fit in a groups that have common attributes like middleware, domain/subdomain and prefix. To group routes you can follow the example below.
+Usually routes can fit in a groups that have common attributes like middleware, domain/sub-domain and prefix. To group routes you can follow the example below.
 
 ```php
+use MiladRahimi\PhpRouter\Examples\Samples\SimpleMiddleware;
 use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
+// A group with uri prefix
 $router->group(['prefix' => '/admin'], function (Router $router) {
-      // URI: /admin/setting
-    $router->get('/setting', 'AdminController@getSetting');
+    // URI: /admin/setting
+    $router->get('/setting', function () {
+        return 'Setting.';
+    });
 });
 
+// All of group properties together!
 $attributes = [
-    'prefix'        => '/products',
-    'namespace'     => 'App\Controllers',
-    'domain'        => 'shop.example.com',
-    'middleware'    => SampleMiddleware::class,
+    'prefix' => '/products',
+    'namespace' => 'App\Controllers',
+    'domain' => 'shop.example.com',
+    'middleware' => SimpleMiddleware::class,
 ];
 
+// A group with many common properties!
 $router->group($attributes, function (Router $router) {
     // URI: http://shop.example.com/products/{id}
     // Controller: App\Controllers\ShopController@getProduct
     // Domain: shop.example.com
     // Middleware: SampleMiddleware
-    $router->get('/{id}', 'ShopController@getProduct');
+    $router->get('/{id}', function ($id) {
+        return 'Wow.';
+    });
 });
 
 $router->dispatch();
@@ -485,10 +484,14 @@ use MiladRahimi\PhpRouter\Router;
 $router = new Router('/shop');
 
 // URI: /shop/about
-$router->get('/about', 'ShopController@getAbout');
+$router->get('/about', function () {
+    return 'About the shop.';
+});
 
 // URI: /shop/product/{id}
-$router->get('/product/{id}', 'ShopController@getProduct');
+$router->get('/product/{id}', function ($id) {
+    return 'A product.';
+});
 
 $router->dispatch();
 ```
@@ -503,20 +506,18 @@ use Zend\Diactoros\Response\JsonResponse;
 $router = new Router();
 
 $router->name('about')->get('/about', function () {
-    return 'About me!'
+    return 'About.';
 });
-$router->name('help')->get('/help', function () {
-    return 'Help me!'
-});
-$router->name('page')->get('/page/{id}', function ($id) {
-    return 'Content of the page: ' . $id;
+$router->name('post')->get('/post/{id}', function ($id) {
+    return 'Content of the post: ' . $id;
 });
 $router->name('home')->get('/', function (Router $router) {
     return new JsonResponse([
-        "link_about" => $router->url('about'), /* /about */
-        "link_help" => $router->url('help') /* /help */
-        "link_page_1" => $router->url('page', ['id' => 1]), /* /page/1 */
-        "link_page_2" => $router->url('page', ['id' => 2]) /* /page/2 */
+        'links' => [
+            'about' => $router->url('about'),             /* Result: /about  */
+            'post1' => $router->url('post', ['id' => 1]), /* Result: /post/1 */
+            'post2' => $router->url('post', ['id' => 2])  /* Result: /post/2 */
+        ]
     ]);
 });
 
@@ -534,11 +535,11 @@ use Zend\Diactoros\Response\JsonResponse;
 $router = new Router();
 
 $router->name('home')->get('/', function (Router $router) {
-    return JsonResponse([
-        "current_page_name" => $router->currentRoute()->getName() /* home */
-        "current_page_uri" => $router->currentRoute()->getUri() /* /home */
-        "current_page_method" => $router->currentRoute()->getMethod() /* GET */
-        "current_page_domain" => $router->currentRoute()->getDomain() /* NULL */
+    return new JsonResponse([
+        'current_page_name'   => $router->currentRoute()->getName(),   /* Result: home  */
+        'current_page_uri'    => $router->currentRoute()->getUri(),    /* Result: /     */
+        'current_page_method' => $router->currentRoute()->getMethod(), /* Result: GET   */
+        'current_page_domain' => $router->currentRoute()->getDomain(), /* Result: null  */
     ]);
 });
 
@@ -552,19 +553,21 @@ Your application runs through the `Router::disptach()` method, you should put it
 ```php
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
+use Zend\Diactoros\Response\HtmlResponse;
 
 $router = new Router();
 
 $router->get('/', function () {
-    return 'This is home page!';
+    return 'Home.';
 });
 
 try {
     $router->dispatch();
 } catch (RouteNotFoundException $e) {
-    $router->getPublisher()->publish(new EmptyResponse(404));
+    $router->getPublisher()->publish(new HtmlResponse('Not found.', 404));
 } catch (Throwable $e) {
-    // other exceptions...
+    // Log and report...
+    $router->getPublisher()->publish(new HtmlResponse('Internal error.', 500));
 }
 ```
 
