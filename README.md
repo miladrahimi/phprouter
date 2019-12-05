@@ -359,7 +359,7 @@ interface Middleware
 }
 ```
 
-As you can see, a middleware must have a `handle()` method that catches the request and a Closure (which is responsible for running the next middleware or the controller). It must return a response, as well. A middleware can break the lifecycle and return the response or it can run the `$next` closure to continue the lifecycle.
+As you can see, a middleware must have a `handle()` method that catches the request and a Closure (which is responsible for running the next middleware or the controller). It must return a response, as well. A middleware can break the lifecycle and return a response or it can run the `$next` closure to continue the lifecycle.
 
 See the following example. In this snippet, if there is an `Authorization` header in the request, it passes the request to the next middleware or the controller (if there is no more middleware left) and if the header is absent, it returns an empty response with `401 Authorization Failed ` HTTP status code.
 
