@@ -257,7 +257,7 @@ $router->dispatch();
 
 ## HTTP Request and Request
 
-PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) package (v2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) complaint request and response objects to your controllers and middleware.
+PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) package (v2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) request and response objects to your controllers and middleware.
 
 ### Request
 
