@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Examples\Samples;
+namespace MiladRahimi\PhpRouter\Examples\Shared;
 
 use Closure;
 use MiladRahimi\PhpRouter\Middleware;

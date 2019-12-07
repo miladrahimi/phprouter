@@ -2,7 +2,7 @@
 
 require('../../vendor/autoload.php');
 
-use MiladRahimi\PhpRouter\Examples\Samples\PostModel;
+use MiladRahimi\PhpRouter\Examples\Shared\PostModel;
 use MiladRahimi\PhpRouter\Router;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response\EmptyResponse;

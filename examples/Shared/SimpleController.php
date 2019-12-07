@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Examples\Samples;
+namespace MiladRahimi\PhpRouter\Examples\Shared;
 
 class SimpleController
 {

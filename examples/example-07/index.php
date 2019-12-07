@@ -2,7 +2,7 @@
 
 require('../../vendor/autoload.php');
 
-use MiladRahimi\PhpRouter\Examples\Samples\SimpleController;
+use MiladRahimi\PhpRouter\Examples\Shared\SimpleController;
 use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
