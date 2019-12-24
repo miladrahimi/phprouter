@@ -1,12 +1,12 @@
 {
   "name": "miladrahimi/phprouter",
-  "description": "PhpRouter is a powerful, standalone, and very fast HTTP URL router for PHP projects.",
+  "description": "A powerful, standalone, and very fast HTTP URL router.",
   "keywords": [
+    "Route",
     "Router",
+    "Routing",
     "URL Router",
     "HTTP Router",
-    "Route",
-    "Routing",
     "URL",
     "HTTP"
   ],
