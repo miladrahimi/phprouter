@@ -20,6 +20,8 @@ Supported features:
 * PSR-7 requests and responses
 * Request, response and router instance injection
 
+It supports PHP `v7.1`, `v7.2`, `v7.3` and `v7.4`.
+
 ## Versions
 
 * **v4.x.x (LTS)**
