@@ -371,36 +371,33 @@ class Router
      * @param ServerRequestInterface $request
      * @return ResponseInterface|mixed|null
      * @throws InvalidControllerException
+     * @throws ReflectionException
      */
     private function runController($controller, array $parameters, ServerRequestInterface $request)
     {
-        try {
-            if (is_string($controller) && strpos($controller, '@')) {
-                list($className, $methodName) = explode('@', $controller);
+        if (is_string($controller) && strpos($controller, '@')) {
+            list($className, $methodName) = explode('@', $controller);
 
-                if (class_exists($className) == false) {
-                    throw new InvalidControllerException("Controller class `$controller` not found.");
-                }
-
-                $classObject = new $className();
-
-                if (method_exists($classObject, $methodName) == false) {
-                    throw new InvalidControllerException("Controller method `$methodName` not found.");
-                }
-
-                $parameters = $this->arrangeMethodParameters($className, $methodName, $parameters, $request);
-
-                $controller = [$classObject, $methodName];
-            } elseif (is_callable($controller)) {
-                $parameters = $this->arrangeFunctionParameters($controller, $parameters, $request);
-            } else {
-                throw new InvalidControllerException('Invalid controller: ' . $controller);
+            if (class_exists($className) == false) {
+                throw new InvalidControllerException("Controller class `$controller` not found.");
             }
 
-            return call_user_func_array($controller, $parameters);
-        } catch (ReflectionException $e) {
-            throw new InvalidControllerException('Reflection error', 0, $e);
+            $classObject = new $className();
+
+            if (method_exists($classObject, $methodName) == false) {
+                throw new InvalidControllerException("Controller method `$methodName` not found.");
+            }
+
+            $parameters = $this->arrangeMethodParameters($className, $methodName, $parameters, $request);
+
+            $controller = [$classObject, $methodName];
+        } elseif (is_callable($controller)) {
+            $parameters = $this->arrangeFunctionParameters($controller, $parameters, $request);
+        } else {
+            throw new InvalidControllerException('Invalid controller: ' . $controller);
         }
+
+        return call_user_func_array($controller, $parameters);
     }
 
     /**
@@ -457,6 +454,7 @@ class Router
                     return $parameters[$parameter->getName()];
                 }
 
+                /** @noinspection PhpPossiblePolymorphicInvocationInspection */
                 if (
                     ($parameter->getType() && $parameter->getType()->getName() == ServerRequestInterface::class) ||
                     ($parameter->getType() && $parameter->getType()->getName() == ServerRequest::class) ||
@@ -465,6 +463,7 @@ class Router
                     return $request;
                 }
 
+                /** @noinspection PhpPossiblePolymorphicInvocationInspection */
                 if (
                     ($parameter->getType() && $parameter->getType()->getName() == Router::class) ||
                     ($parameter->getName() == 'router')

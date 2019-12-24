@@ -42,7 +42,7 @@ composer require miladrahimi/phprouter "4.*"
 First of all, you need to configure your webserver to handle all the HTTP requests with a single PHP file like `index.php`. Here you can see sample configurations for Apache HTTP Server and NGINX.
 
 * Apache `.htaccess` sample:
-    ```
+    ```apacheconfig
     <IfModule mod_rewrite.c>
         <IfModule mod_negotiation.c>
             Options -MultiViews
