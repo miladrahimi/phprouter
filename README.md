@@ -26,8 +26,8 @@ It supports PHP `v7.1` and newer versions.
 
 * **v4.x.x (LTS)**
 * v3.x.x (Unsupported)
-* v2.x.x (Unavailable)
-* v1.x.x (Unavailable)
+* ~~v2~~ (Unavailable)
+* ~~v1~~ (Unavailable)
 
 ## Installation
 
