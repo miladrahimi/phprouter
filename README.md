@@ -291,7 +291,7 @@ $router->post('/posts', function (ServerRequest $request) {
     $post->content = $request->getQueryParams()['content'];
     $post->save();
 
-    return new EmptyResponse(204);
+    return new EmptyResponse();
 });
 
 $router->dispatch();
