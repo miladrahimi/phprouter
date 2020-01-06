@@ -20,7 +20,7 @@ Supported features:
 * PSR-7 requests and responses
 * Request, response and router instance injection
 
-It requires PHP `v7.1` and newer versions.
+It requires PHP `v7.1` or newer versions.
 
 ## Versions
 
