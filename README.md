@@ -446,9 +446,7 @@ $router->group($attributes, function (Router $router) {
     // Controller: App\Controllers\ShopController@getProduct
     // Domain: shop.example.com
     // Middleware: SampleMiddleware
-    $router->get('/{id}', function ($id) {
-        return 'Wow.';
-    });
+    $router->get('/{id}', 'ShopController@getProduct');
 });
 
 $router->dispatch();
