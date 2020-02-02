@@ -179,7 +179,7 @@ $router->dispatch();
 If your controller class has a namespace:
 
 ```php
-use App\Controllers\HomeController;
+use App\Controllers\TheController;
 use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
