@@ -8,19 +8,19 @@
 
 PhpRouter is a powerful, standalone, and very fast HTTP URL router for PHP projects.
 
-Supported features:
-* Multiple controller types (class, closure, and function)
+Some of supported features:
 * Route parameters
-* Predefined route parameter regex patterns
 * Middleware
 * Route groups (URI prefix, namespace prefix, middleware, and domain)
 * Route names
+* PSR-7 requests and responses
+* Multiple controller types (class, closure, and function)
+* Predefined route parameter regex patterns
 * Multiple domains or subdomains (regex pattern)
 * Custom HTTP methods
-* PSR-7 requests and responses
 * Request, response and router instance injection
 
-It requires PHP `v7.1` or newer versions.
+Current version requires PHP `v7.1` or newer versions.
 
 ## Versions
 
@@ -68,7 +68,7 @@ First of all, you need to configure your webserver to handle all the HTTP reques
 
 ## Getting Started
 
-After the configurations mentioned above, you can start using PhpRouter in your entry point file (`index.php`) like this example:
+After applying the configurations mentioned above, you can start using PhpRouter in your entry point file (`index.php`) like this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -82,7 +82,21 @@ $router->get('/', function () {
 $router->dispatch();
 ```
 
-There are more examples [here](https://github.com/miladrahimi/phprouter/tree/master/examples).
+Chaining methods is also possible, take a look at this example:
+
+```php
+use MiladRahimi\PhpRouter\Router;
+
+$router = new Router();
+
+$router
+    ->get('/', function () {
+        return '<p>This is homepage!</p>';
+    })
+    ->dispatch();
+```
+
+There are more examples available [here](https://github.com/miladrahimi/phprouter/tree/master/examples).
 
 ## HTTP Methods
 
