@@ -26,8 +26,8 @@ Current version requires PHP `v7.1` or newer versions.
 
 * **v4.x.x (LTS)**
 * v3.x.x (Unsupported)
-* ~~v2~~ (Unavailable)
-* ~~v1~~ (Unavailable)
+* ~~v2.x.x~~ (Unavailable)
+* ~~v1.x.x~~ (Unavailable)
 
 ## Installation
 
