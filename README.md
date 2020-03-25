@@ -273,7 +273,7 @@ $router->dispatch();
 
 ## HTTP Request and Request
 
-PhpRouter uses [zend-diactoros](https://github.com/zendframework/zend-diactoros) package (v2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) request and response objects to your controllers and middleware.
+PhpRouter uses [laminas-diactoros](https://github.com/laminas/laminas-diactoros/) (formerly known as [zend-diactoros](https://github.com/zendframework/zend-diactoros)) package (v2) to provide [PSR-7](https://www.php-fig.org/psr/psr-7) request and response objects to your controllers and middleware.
 
 ### Request
 
@@ -564,7 +564,7 @@ try {
 }
 ```
 
-PhpRouter also throws the following exceptions:
+PhpRouter throws the following exceptions:
 
 * `RouteNotFoundException` if PhpRouter cannot find any route that matches the user request.
 * `InvalidControllerException` if PhpRouter cannot invoke the controller.
