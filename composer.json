@@ -1,6 +1,6 @@
 {
   "name": "miladrahimi/phprouter",
-  "description": "A powerful, standalone, and very fast HTTP URL router.",
+  "description": "A powerful, lightweight, and very fast HTTP URL router.",
   "keywords": [
     "Route",
     "Router",
