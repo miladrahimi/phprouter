@@ -5,7 +5,7 @@ namespace MiladRahimi\PhpRouter\Tests\Testing;
 use Closure;
 use MiladRahimi\PhpRouter\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\Response\TextResponse;
 
 class StopperMiddleware implements Middleware
 {

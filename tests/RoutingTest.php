@@ -8,7 +8,7 @@ use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequest;
 
 class RoutingTest extends TestCase
 {

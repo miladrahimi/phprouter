@@ -3,7 +3,7 @@
 require('../../vendor/autoload.php');
 
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 
 $router = new Router();
 

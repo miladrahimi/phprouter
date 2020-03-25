@@ -306,9 +306,9 @@ You can catch the PSR-7 request object in your controllers like this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Response\EmptyResponse;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\ServerRequest;
+use Laminas\Diactoros\Response\EmptyResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 $router = new Router();
 
@@ -342,10 +342,10 @@ The example below illustrates the built-in responses.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\EmptyResponse;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\Response\EmptyResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\TextResponse;
 
 $router = new Router();
 
@@ -408,7 +408,7 @@ See the following example. In the implemented middelware, if there is an `Author
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 class AuthMiddleware implements Middleware
 {
@@ -519,7 +519,7 @@ You can define names for your routes and use them in your codes instead of the U
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 $router = new Router();
 
@@ -548,7 +548,7 @@ You might want to get information about the current route in your controller. Th
 
 ```php
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 $router = new Router();
 
@@ -571,7 +571,7 @@ Your application runs through the `Router::dispatch()` method. You should put it
 ```php
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 
 $router = new Router();
 

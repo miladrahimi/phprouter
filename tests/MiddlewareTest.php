@@ -7,7 +7,7 @@ use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
 use MiladRahimi\PhpRouter\Tests\Testing\SampleMiddleware;
 use MiladRahimi\PhpRouter\Tests\Testing\StopperMiddleware;
 use Throwable;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequest;
 
 class MiddlewareTest extends TestCase
 {

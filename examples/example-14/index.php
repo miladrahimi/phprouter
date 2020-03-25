@@ -5,7 +5,7 @@ require('../../vendor/autoload.php');
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 class AuthMiddleware implements Middleware
 {

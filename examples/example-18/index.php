@@ -3,7 +3,7 @@
 require('../../vendor/autoload.php');
 
 use MiladRahimi\PhpRouter\Router;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 $router = new Router();
 
