@@ -110,12 +110,10 @@ class Router
     /**
      * Router constructor.
      *
-     * @param string $uriPrefix
      * @param string $namespacePrefix
      */
-    public function __construct(string $uriPrefix = '', string $namespacePrefix = '')
+    public function __construct(string $namespacePrefix = '')
     {
-        $this->prefix = $uriPrefix;
         $this->namespace = $namespacePrefix;
     }
 
