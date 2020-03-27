@@ -87,7 +87,7 @@ class Router
     private $prefix;
 
     /**
-     * Controller namespace prefix for next routes
+     * Controller namespace (prefix) for next routes
      *
      * @var string
      */

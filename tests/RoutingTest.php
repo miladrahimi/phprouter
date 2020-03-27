@@ -171,20 +171,6 @@ class RoutingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_initial_prefix()
-    {
-        $this->mockRequest(HttpMethods::POST, 'http://example.com/app/page');
-
-        $router = $this->router('/app')
-            ->post('/page', $this->OkController())
-            ->dispatch();
-
-        $this->assertEquals('OK', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
     public function test_with_a_required_parameter()
     {
         $this->mockRequest(HttpMethods::GET, 'http://web.com/666');
@@ -426,7 +412,7 @@ class RoutingTest extends TestCase
     {
         $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
 
-        $router = $this->router('', $namespace)
+        $router = $this->router($namespace)
             ->get('/', 'SampleController@home')
             ->dispatch();
 
