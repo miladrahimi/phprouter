@@ -2,6 +2,7 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
+use Laminas\Diactoros\Response\JsonResponse;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
@@ -432,5 +433,26 @@ class RoutingTest extends TestCase
         $this->router($namespace)
             ->get('/', 'SampleController@invalidMethod')
             ->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_current_route()
+    {
+        $router = $this->router()
+            ->get('/', function (Router $r) {
+                return join(',', [
+                    $r->currentRoute()->getName(),
+                    $r->currentRoute()->getUri(),
+                    $r->currentRoute()->getMethod(),
+                    count($r->currentRoute()->getMiddleware()),
+                    $r->currentRoute()->getDomain() ?? '-',
+                ]);
+            }, 'home')
+            ->dispatch();
+
+        $value = join(',', ['home', '/', 'GET', 0, '-']);
+        $this->assertEquals($value, $this->output($router));
     }
 }
