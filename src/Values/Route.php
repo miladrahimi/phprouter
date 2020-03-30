@@ -23,7 +23,7 @@ class Route
     private $uri;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $method;
 
@@ -55,7 +55,7 @@ class Route
     public function __construct(
         ?string $name,
         string $uri,
-        ?string $method,
+        string $method,
         $controller,
         $middleware,
         ?string $domain
@@ -118,7 +118,7 @@ class Route
     /**
      * @return string|null
      */
-    public function getMethod(): ?string
+    public function getMethod(): string
     {
         return $this->method;
     }

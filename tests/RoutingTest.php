@@ -219,34 +219,6 @@ class RoutingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_with_a_static_domain()
-    {
-        $this->mockRequest(HttpMethods::GET, 'http://server.domain.ext/');
-
-        $router = $this->router()
-            ->get('/', $this->OkController(), [], 'server.domain.ext')
-            ->dispatch();
-
-        $this->assertEquals('OK', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_with_a_domain_pattern()
-    {
-        $this->mockRequest(HttpMethods::GET, 'http://something.domain.ext/');
-
-        $router = $this->router()
-            ->get('/', $this->OkController(), [], '(.*).domain.ext')
-            ->dispatch();
-
-        $this->assertEquals('OK', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
     public function test_with_defined_parameters()
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/666');
@@ -317,11 +289,10 @@ class RoutingTest extends TestCase
     public function test_injection_of_router_by_name()
     {
         $router = $this->router()
-            ->name('home')
             ->get('/', function ($router) {
                 /** @var Router $router */
                 return $router->currentRoute()->getName();
-            })
+            }, 'home')
             ->dispatch();
 
         $this->assertEquals('home', $this->output($router));
@@ -333,10 +304,9 @@ class RoutingTest extends TestCase
     public function test_injection_of_router_by_type()
     {
         $router = $this->router()
-            ->name('home')
             ->get('/', function (Router $r) {
                 return $r->currentRoute()->getName();
-            })
+            }, 'home')
             ->dispatch();
 
         $this->assertEquals('home', $this->output($router));
@@ -459,7 +429,7 @@ class RoutingTest extends TestCase
         $this->expectException(InvalidControllerException::class);
 
         $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
-        $this->router('', $namespace)
+        $this->router($namespace)
             ->get('/', 'SampleController@invalidMethod')
             ->dispatch();
     }

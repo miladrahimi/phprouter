@@ -38,7 +38,6 @@ Current version requires PHP `v7.1` or newer versions.
     - [Middleware](#middleware)
     - [Domain and Sub-domain](#domain-and-sub-domain)
     - [Route Groups](#route-groups)
-    - [URI Prefix](#uri-prefix)
     - [Route Name](#route-name)
     - [Current Route](#current-route)
     - [Error Handling](#error-handling)
@@ -280,7 +279,7 @@ $router->get('/post/{pid}/comment/{cid}', function ($pid, $cid) {
 $router->dispatch();
 ```
 
-In default, route parameters can be any value, but you can define regex patterns for each of them.
+In default, route parameters can hold any value, but you can define regex patterns for each of them.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -486,28 +485,6 @@ $router->group($attributes, function (Router $router) {
     // Domain: shop.example.com
     // Middleware: SampleMiddleware
     $router->get('/{id}', 'ShopController@getProduct');
-});
-
-$router->dispatch();
-```
-
-### URI Prefix
-
-Your project might be in a subdirectory, or all of your routes might start with the same prefix. You can pass this prefix as the constructor like this example:
-
-```php
-use MiladRahimi\PhpRouter\Router;
-
-$router = new Router('/shop');
-
-// URI: /shop/about
-$router->get('/about', function () {
-    return 'About the shop.';
-});
-
-// URI: /shop/product/{id}
-$router->get('/product/{id}', function ($id) {
-    return 'A product.';
 });
 
 $router->dispatch();

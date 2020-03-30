@@ -35,7 +35,7 @@ class Router
     /**
      * List of defined routes
      *
-     * @var Route[]
+     * @var Route[][]
      */
     private $routes = [];
 
@@ -64,13 +64,6 @@ class Router
      * @var Publisher
      */
     private $publisher;
-
-    /**
-     * Name for the next route
-     *
-     * @var string|null
-     */
-    private $name = null;
 
     /**
      * Middleware (one or more) for next routes
@@ -127,13 +120,10 @@ class Router
     public function group(array $attributes, Closure $routes): self
     {
         // Backup current properties
-        $oldName = $this->name;
         $oldMiddleware = $this->middleware;
         $oldNamespace = $this->namespace;
         $oldPrefix = $this->prefix;
         $oldDomain = $this->domain;
-
-        $this->name = null;
 
         // Set middleware for the group
         if (isset($attributes[GroupAttributes::MIDDLEWARE])) {
@@ -163,7 +153,6 @@ class Router
         call_user_func($routes, $this);
 
         // Restore properties
-        $this->name = $oldName;
         $this->domain = $oldDomain;
         $this->prefix = $oldPrefix;
         $this->middleware = $oldMiddleware;
@@ -178,23 +167,17 @@ class Router
      * @param string $method
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
-     * @param string|null $domain
      * @param string|null $name
      * @return self
      */
     public function map(
-        ?string $method,
+        string $method,
         string $route,
         $controller,
-        $middleware = [],
-        ?string $domain = null,
         ?string $name = null
     ): self
     {
-        $name = $name ?: $this->name;
         $uri = $this->prefix . $route;
-        $middleware = is_array($middleware) ? $middleware : [$middleware];
 
         if (is_string($controller) && is_callable($controller) == false) {
             $controller = $this->namespace . "\\" . $controller;
@@ -205,15 +188,14 @@ class Router
             $uri,
             $method,
             $controller,
-            array_merge($this->middleware, $middleware),
-            $domain ?: $this->domain
+            $this->middleware,
+            $this->domain
         );
 
-        $this->routes[] = $route;
+        $this->routes[$method][] = $route;
 
         if ($name) {
             $this->names[$name] = $route;
-            $this->name = null;
         }
 
         return $this;
@@ -236,13 +218,16 @@ class Router
         $domain = $this->request->getUri()->getHost();
         $uri = $this->request->getUri()->getPath();
 
-        sort($this->routes, SORT_DESC);
+        $routes = array_merge(
+            $this->routes['*'] ?? [],
+            $this->routes[$method] ?? []
+        );
+        sort($routes, SORT_DESC);
 
-        foreach ($this->routes as $route) {
+        foreach ($routes as $route) {
             $parameters = [];
 
             if (
-                $this->compareMethod($route->getMethod(), $method) &&
                 $this->compareDomain($route->getDomain(), $domain) &&
                 $this->compareUri($route->getUri(), $uri, $parameters)
             ) {
@@ -255,18 +240,6 @@ class Router
         }
 
         throw new RouteNotFoundException();
-    }
-
-    /**
-     * Check if given request method matches given route method
-     *
-     * @param string|null $routeMethod
-     * @param string $requestMethod
-     * @return bool
-     */
-    private function compareMethod(?string $routeMethod, string $requestMethod): bool
-    {
-        return $routeMethod == null || $routeMethod == $requestMethod;
     }
 
     /**
@@ -518,20 +491,16 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
-     * @param string|null $domain
      * @param string|null $name
      * @return self
      */
     public function any(
         string $route,
         $controller,
-        $middleware = [],
-        ?string $domain = null,
         ?string $name = null
     ): self
     {
-        return $this->map(null, $route, $controller, $middleware, $domain, $name);
+        return $this->map('*', $route, $controller, $name);
     }
 
     /**
@@ -539,20 +508,16 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
-     * @param string|null $domain
      * @param string|null $name
      * @return self
      */
     public function get(
         string $route,
         $controller,
-        $middleware = [],
-        ?string $domain = null,
         ?string $name = null
     ): self
     {
-        return $this->map(HttpMethods::GET, $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::GET, $route, $controller, $name);
     }
 
     /**
@@ -560,20 +525,16 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
-     * @param string|null $domain
      * @param string|null $name
      * @return self
      */
     public function post(
         string $route,
         $controller,
-        $middleware = [],
-        ?string $domain = null,
         ?string $name = null
     ): self
     {
-        return $this->map(HttpMethods::POST, $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::POST, $route, $controller, $name);
     }
 
     /**
@@ -581,20 +542,16 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
-     * @param string|null $domain
      * @param string|null $name
      * @return self
      */
     public function put(
         string $route,
         $controller,
-        $middleware = [],
-        ?string $domain = null,
         ?string $name = null
     ): self
     {
-        return $this->map(HttpMethods::PUT, $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::PUT, $route, $controller, $name);
     }
 
     /**
@@ -602,20 +559,16 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
-     * @param string|null $domain
      * @param string|null $name
      * @return self
      */
     public function patch(
         string $route,
         $controller,
-        $middleware = [],
-        ?string $domain = null,
         ?string $name = null
     ): self
     {
-        return $this->map(HttpMethods::PATCH, $route, $controller, $middleware, $domain, $name);
+        return $this->map(HttpMethods::PATCH, $route, $controller, $name);
     }
 
     /**
@@ -623,33 +576,16 @@ class Router
      *
      * @param string $route
      * @param Closure|callable|string $controller
-     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
-     * @param string|null $domain
      * @param string|null $name
      * @return self
      */
     public function delete(
         string $route,
         $controller,
-        $middleware = [],
-        ?string $domain = null,
         ?string $name = null
     ): self
     {
-        return $this->map(HttpMethods::DELETE, $route, $controller, $middleware, $domain, $name);
-    }
-
-    /**
-     * Use given name for the next route mapping
-     *
-     * @param string $name
-     * @return self
-     */
-    public function name(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
+        return $this->map(HttpMethods::DELETE, $route, $controller, $name);
     }
 
     /**

@@ -39,13 +39,12 @@ class TestCase extends BaseTestCase
     /**
      * Get a router instance for testing purposes
      *
-     * @param string $prefix
      * @param string $namespace
      * @return Router
      */
-    protected function router(string $prefix = '', string $namespace = ''): Router
+    protected function router(string $namespace = ''): Router
     {
-        $router = new Router($prefix, $namespace);
+        $router = new Router($namespace);
         $router->setPublisher(new TestPublisher());
 
         return $router;

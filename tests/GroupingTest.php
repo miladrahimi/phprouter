@@ -41,24 +41,6 @@ class GroupingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_with_route_and_group_middleware()
-    {
-        $groupMiddleware = new SampleMiddleware(13);
-        $routeMiddleware = new SampleMiddleware(666);
-
-        $router = $this->router()
-            ->group(['middleware' => $groupMiddleware], function (Router $router) use ($routeMiddleware) {
-                $router->get('/', $this->OkController(), $routeMiddleware);
-            })->dispatch();
-
-        $this->assertEquals('OK', $this->output($router));
-        $this->assertContains($groupMiddleware->content, SampleMiddleware::$output);
-        $this->assertContains($routeMiddleware->content, SampleMiddleware::$output);
-    }
-
-    /**
-     * @throws Throwable
-     */
     public function test_nested_groups_with_middleware()
     {
         $group1Middleware = new SampleMiddleware(mt_rand(1, 9999999));
@@ -141,21 +123,6 @@ class GroupingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_with_group_and_route_domain_it_should_only_consider_route_domain()
-    {
-        $this->mockRequest(HttpMethods::GET, 'http://sub2.domain.com/');
-
-        $router = $this->router()
-            ->group(['domain' => 'sub1.domain.com'], function (Router $router) {
-                $router->get('/', $this->OkController(), [], 'sub2.domain.com');
-            })->dispatch();
-
-        $this->assertEquals('OK', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
     public function test_nested_groups_with_domain_it_should_consider_the_inner_group_domain()
     {
         $this->mockRequest(HttpMethods::GET, 'http://sub2.domain.com/');
@@ -169,20 +136,5 @@ class GroupingTest extends TestCase
             })->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_naming_it_should_remove_existing_name_before_the_group()
-    {
-        $router = $this->router()
-            ->name('NameForNothing')
-            ->group([], function (Router $router) {
-                $router->get('/', $this->OkController());
-            })->dispatch();
-
-        $this->assertEquals('OK', $this->output($router));
-        $this->assertFalse($router->currentRoute()->getName() == 'NameForNothing');
     }
 }

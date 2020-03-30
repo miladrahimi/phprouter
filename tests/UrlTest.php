@@ -15,10 +15,9 @@ class UrlTest extends TestCase
     public function test_generating_url_for_the_homepage()
     {
         $router = $this->router()
-            ->name('home')
             ->get('/', function (Router $r) {
                 return $r->url('home');
-            })
+            }, 'home')
             ->dispatch();
 
         $this->assertEquals('/', $this->output($router));
@@ -32,12 +31,12 @@ class UrlTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://web.com/page');
 
         $router = $this->router()
-            ->name('home')->get('/', function (Router $r) {
+            ->get('/', function (Router $r) {
                 return $r->url('home');
-            })
-            ->name('page')->get('/page', function (Router $r) {
+            }, 'home')
+            ->get('/page', function (Router $r) {
                 return $r->url('page');
-            })
+            }, 'page')
             ->dispatch();
 
         $this->assertEquals('/page', $this->output($router));
@@ -51,10 +50,9 @@ class UrlTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://web.com/contact');
 
         $router = $this->router()
-            ->name('page')
             ->get('/{name}', function (Router $r) {
                 return $r->url('page', ['name' => 'about']);
-            })
+            }, 'page')
             ->dispatch();
 
         $this->assertEquals('/about', $this->output($router));
@@ -68,10 +66,9 @@ class UrlTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://web.com/contact');
 
         $router = $this->router()
-            ->name('page')
             ->get('/{name?}', function (Router $r) {
                 return $r->url('page', ['name' => 'about']);
-            })
+            }, 'page')
             ->dispatch();
 
         $this->assertEquals('/about', $this->output($router));
@@ -85,10 +82,9 @@ class UrlTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://web.com/contact');
 
         $router = $this->router()
-            ->name('page')
             ->get('/{name?}', function (Router $r) {
                 return $r->url('page');
-            })
+            }, 'page')
             ->dispatch();
 
         $this->assertEquals('/', $this->output($router));
@@ -102,10 +98,9 @@ class UrlTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://web.com/page/contact');
 
         $router = $this->router()
-            ->name('page')
             ->get('/page/?{name?}', function (Router $r) {
                 return $r->url('page');
-            })
+            }, 'page')
             ->dispatch();
 
         $this->assertEquals('/page', $this->output($router));
