@@ -57,16 +57,16 @@ class Router
     /**
      * User HTTP Request
      *
-     * @var ServerRequestInterface
+     * @var ServerRequestInterface|null
      */
-    private $request;
+    private $request = null;
 
     /**
      * The publisher that is going to publish outputs of controllers
      *
-     * @var Publisher
+     * @var Publisher|null
      */
-    private $publisher;
+    private $publisher = null;
 
     /**
      * The state holder for processing group
@@ -622,9 +622,9 @@ class Router
     /**
      * Get current http request instance
      *
-     * @return ServerRequestInterface
+     * @return ServerRequestInterface|null
      */
-    public function getRequest(): ServerRequestInterface
+    public function getRequest(): ?ServerRequestInterface
     {
         return $this->request;
     }
@@ -640,9 +640,9 @@ class Router
     }
 
     /**
-     * @return Publisher
+     * @return Publisher|null
      */
-    public function getPublisher(): Publisher
+    public function getPublisher(): ?Publisher
     {
         return $this->publisher;
     }
