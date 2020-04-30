@@ -6,6 +6,7 @@ use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Tests\Testing\SampleController;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Laminas\Diactoros\ServerRequest;
@@ -395,6 +396,16 @@ class RoutingTest extends TestCase
         $this->expectException(InvalidControllerException::class);
 
         $this->router()->get('/', 'UnknownController@method')->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_class_but_invalid_method()
+    {
+        $this->expectException(InvalidControllerException::class);
+
+        $this->router()->get('/', SampleController::class . '@invalid')->dispatch();
     }
 
     /**
