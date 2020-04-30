@@ -7,6 +7,7 @@ use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Testing\FakePublisher;
+use MiladRahimi\PhpRouter\Values\State;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -39,12 +40,12 @@ class TestCase extends BaseTestCase
     /**
      * Get a router instance for testing purposes
      *
-     * @param string $namespace
+     * @param State|null $state
      * @return Router
      */
-    protected function router(string $namespace = ''): Router
+    protected function router(State $state = null): Router
     {
-        $router = new Router($namespace);
+        $router = new Router($state);
         $router->setPublisher(new FakePublisher());
 
         return $router;

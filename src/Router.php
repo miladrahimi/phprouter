@@ -12,7 +12,7 @@ use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Values\Route;
-use MiladRahimi\PhpRouter\Values\GroupState;
+use MiladRahimi\PhpRouter\Values\State;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
@@ -69,11 +69,12 @@ class Router
     private $publisher = null;
 
     /**
-     * The state holder for processing group
+     * The state of current instance/group
+     * It holds current attributes like prefix, domain...
      *
-     * @var GroupState
+     * @var State
      */
-    private $groupState;
+    private $state;
 
     /**
      * Current route that is recognized for current request
@@ -85,55 +86,54 @@ class Router
     /**
      * Router constructor.
      *
-     * @param string $namespacePrefix
+     * @param State|null $state
      */
-    public function __construct(string $namespacePrefix = '')
+    public function __construct(?State $state = null)
     {
-        $this->groupState = new GroupState();
-        $this->groupState->namespace = $namespacePrefix;
+        $this->state = $state ?: new State();
     }
 
     /**
      * Group routes with the given attributes
      *
      * @param array $attributes
-     * @param Closure $routes
+     * @param Closure $body
      * @return self
      */
-    public function group(array $attributes, Closure $routes): self
+    public function group(array $attributes, Closure $body): self
     {
         // Backup group state
-        $gs = clone $this->groupState;
+        $state = clone $this->state;
 
         // Set middleware for the group
         if (isset($attributes[GroupAttributes::MIDDLEWARE])) {
             if (is_array($attributes[GroupAttributes::MIDDLEWARE]) == false) {
-                $attributes[GroupAttributes::MIDDLEWARE] = [$attributes[GroupAttributes::MIDDLEWARE]];
+                $this->state->middleware[] = $attributes[GroupAttributes::MIDDLEWARE];
+            } else {
+                $this->state->middleware = array_merge($state->middleware, $attributes[GroupAttributes::MIDDLEWARE]);
             }
-
-            $this->groupState->middleware = array_merge($attributes[GroupAttributes::MIDDLEWARE], $gs->middleware);
         }
 
         // Set namespace for the group
         if (isset($attributes[GroupAttributes::NAMESPACE])) {
-            $this->groupState->namespace = $gs->namespace . "\\" . $attributes[GroupAttributes::NAMESPACE];
+            $this->state->namespace = join("\\", [$state->namespace, $attributes[GroupAttributes::NAMESPACE]]);
         }
 
         // Set prefix for the group
         if (isset($attributes[GroupAttributes::PREFIX])) {
-            $this->groupState->prefix = $gs->prefix . $attributes[GroupAttributes::PREFIX];
+            $this->state->prefix = $state->prefix . $attributes[GroupAttributes::PREFIX];
         }
 
         // Set domain for the group
         if (isset($attributes[GroupAttributes::DOMAIN])) {
-            $this->groupState->domain = $attributes[GroupAttributes::DOMAIN];
+            $this->state->domain = $attributes[GroupAttributes::DOMAIN];
         }
 
         // Run the group body closure
-        call_user_func($routes, $this);
+        call_user_func($body, $this);
 
-        // Restore group state
-        $this->groupState = $gs;
+        // Revert to the old state
+        $this->state = $state;
 
         return $this;
     }
@@ -154,10 +154,10 @@ class Router
         ?string $name = null
     ): self
     {
-        $uri = $this->groupState->prefix . $route;
+        $uri = $this->state->prefix . $route;
 
         if (is_string($controller) && is_callable($controller) == false) {
-            $controller = $this->groupState->namespace . "\\" . $controller;
+            $controller = join("\\", [$this->state->namespace, $controller]);
         }
 
         $route = new Route(
@@ -165,8 +165,8 @@ class Router
             $uri,
             $method,
             $controller,
-            $this->groupState->middleware,
-            $this->groupState->domain
+            $this->state->middleware,
+            $this->state->domain
         );
 
         $this->routes[$method][] = $route;

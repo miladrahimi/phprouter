@@ -2,7 +2,6 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
-use Laminas\Diactoros\Response\JsonResponse;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
@@ -379,20 +378,6 @@ class RoutingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_with_preserved_namespaced_controller()
-    {
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
-
-        $router = $this->router($namespace)
-            ->get('/', 'SampleController@home')
-            ->dispatch();
-
-        $this->assertEquals('Home', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
     public function test_not_found_error()
     {
         $this->mockRequest(HttpMethods::GET, 'http://example.com/unknowon');
@@ -420,19 +405,6 @@ class RoutingTest extends TestCase
         $this->expectException(InvalidControllerException::class);
 
         $this->router()->get('/', 666)->dispatch();
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_with_invalid_controller_method()
-    {
-        $this->expectException(InvalidControllerException::class);
-
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
-        $this->router($namespace)
-            ->get('/', 'SampleController@invalidMethod')
-            ->dispatch();
     }
 
     /**
