@@ -6,11 +6,11 @@ use Closure;
 use MiladRahimi\PhpRouter\Middleware;
 
 /**
- * Class State
+ * Class Config
  *
  * @package MiladRahimi\PhpRouter\Values
  */
-class State
+class Config
 {
     /**
      * URI prefix

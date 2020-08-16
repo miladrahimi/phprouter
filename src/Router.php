@@ -12,7 +12,7 @@ use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Values\Route;
-use MiladRahimi\PhpRouter\Values\State;
+use MiladRahimi\PhpRouter\Values\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
@@ -69,12 +69,12 @@ class Router
     private $publisher = null;
 
     /**
-     * The state of current instance/group
+     * The configuration of current instance/group
      * It holds current attributes like prefix, domain...
      *
-     * @var State
+     * @var Config
      */
-    private $state;
+    private $config;
 
     /**
      * Current route that is recognized for current request
@@ -86,11 +86,11 @@ class Router
     /**
      * Router constructor.
      *
-     * @param State|null $state
+     * @param Config|null $config
      */
-    public function __construct(?State $state = null)
+    public function __construct(?Config $config = null)
     {
-        $this->state = $state ?: new State();
+        $this->config = $config ?: new Config();
     }
 
     /**
@@ -102,38 +102,38 @@ class Router
      */
     public function group(array $attributes, Closure $body): self
     {
-        // Backup group state
-        $state = clone $this->state;
+        // Backup group config
+        $config = clone $this->config;
 
         // Set middleware for the group
         if (isset($attributes[GroupAttributes::MIDDLEWARE])) {
             if (is_array($attributes[GroupAttributes::MIDDLEWARE]) == false) {
-                $this->state->middleware[] = $attributes[GroupAttributes::MIDDLEWARE];
+                $this->config->middleware[] = $attributes[GroupAttributes::MIDDLEWARE];
             } else {
-                $this->state->middleware = array_merge($state->middleware, $attributes[GroupAttributes::MIDDLEWARE]);
+                $this->config->middleware = array_merge($config->middleware, $attributes[GroupAttributes::MIDDLEWARE]);
             }
         }
 
         // Set namespace for the group
         if (isset($attributes[GroupAttributes::NAMESPACE])) {
-            $this->state->namespace = join("\\", [$state->namespace, $attributes[GroupAttributes::NAMESPACE]]);
+            $this->config->namespace = join("\\", [$config->namespace, $attributes[GroupAttributes::NAMESPACE]]);
         }
 
         // Set prefix for the group
         if (isset($attributes[GroupAttributes::PREFIX])) {
-            $this->state->prefix = $state->prefix . $attributes[GroupAttributes::PREFIX];
+            $this->config->prefix = $config->prefix . $attributes[GroupAttributes::PREFIX];
         }
 
         // Set domain for the group
         if (isset($attributes[GroupAttributes::DOMAIN])) {
-            $this->state->domain = $attributes[GroupAttributes::DOMAIN];
+            $this->config->domain = $attributes[GroupAttributes::DOMAIN];
         }
 
         // Run the group body closure
         call_user_func($body, $this);
 
-        // Revert to the old state
-        $this->state = $state;
+        // Revert to the old config
+        $this->config = $config;
 
         return $this;
     }
@@ -154,10 +154,10 @@ class Router
         ?string $name = null
     ): self
     {
-        $uri = $this->state->prefix . $route;
+        $uri = $this->config->prefix . $route;
 
         if (is_string($controller) && is_callable($controller) == false) {
-            $controller = join("\\", [$this->state->namespace, $controller]);
+            $controller = join("\\", [$this->config->namespace, $controller]);
         }
 
         $route = new Route(
@@ -165,8 +165,8 @@ class Router
             $uri,
             $method,
             $controller,
-            $this->state->middleware,
-            $this->state->domain
+            $this->config->middleware,
+            $this->config->domain
         );
 
         $this->routes[$method][] = $route;
@@ -193,6 +193,9 @@ class Router
         $domain = $this->request->getUri()->getHost();
         $uri = $this->request->getUri()->getPath();
 
+        /**
+         * @var Route[] $routes
+         */
         $routes = array_merge(
             $this->routes['*'] ?? [],
             $this->routes[$method] ?? []
@@ -205,8 +208,10 @@ class Router
 
             if (
                 (!$route->getDomain() || $this->compareDomain($route->getDomain(), $domain)) &&
-                $this->compareUri($route->getUri(), $uri, $parameters)
+                $this->compareUri($route->getPath(), $uri, $parameters)
             ) {
+                $route->setParameters($parameters);
+                $route->setUri($uri);
                 $this->currentRoute = $route;
 
                 $this->publisher->publish($this->run($route, $parameters));
@@ -233,14 +238,14 @@ class Router
     /**
      * Check if given request uri matches given uri method
      *
-     * @param string $routeUri
-     * @param string $requestUri
+     * @param string $path
+     * @param string $uri
      * @param array $parameters
      * @return bool
      */
-    private function compareUri(string $routeUri, string $requestUri, array &$parameters): bool
+    private function compareUri(string $path, string $uri, array &$parameters): bool
     {
-        return preg_match('@^' . $this->regexUri($routeUri) . '$@', $requestUri, $parameters);
+        return preg_match('@^' . $this->regexUri($path) . '$@', $uri, $parameters);
     }
 
     /**
@@ -590,7 +595,7 @@ class Router
             throw new UndefinedRouteException("There is no route with name `$route`.");
         }
 
-        $uri = $this->names[$route]->getUri();
+        $uri = $this->names[$route]->getPath();
 
         foreach ($parameters as $name => $value) {
             $uri = preg_replace('/\??{' . $name . '\??}/', $value, $uri);

@@ -427,7 +427,7 @@ class RoutingTest extends TestCase
             ->get('/', function (Router $r) {
                 return join(',', [
                     $r->currentRoute()->getName(),
-                    $r->currentRoute()->getUri(),
+                    $r->currentRoute()->getPath(),
                     $r->currentRoute()->getMethod(),
                     count($r->currentRoute()->getMiddleware()),
                     $r->currentRoute()->getDomain() ?? '-',

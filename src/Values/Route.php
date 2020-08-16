@@ -20,7 +20,7 @@ class Route
     /**
      * @var string
      */
-    private $uri;
+    private $path;
 
     /**
      * @var string
@@ -43,6 +43,16 @@ class Route
     private $domain;
 
     /**
+     * @var null|string
+     */
+    private $uri = null;
+
+    /**
+     * @var null|string[]|array[string]string
+     */
+    private $parameters = null;
+
+    /**
      * Route constructor.
      *
      * @param string|null $name
@@ -59,9 +69,10 @@ class Route
         $controller,
         $middleware,
         ?string $domain
-    ) {
+    )
+    {
         $this->name = $name;
-        $this->uri = $uri;
+        $this->path = $uri;
         $this->method = $method;
         $this->controller = $controller;
         $this->middleware = $middleware;
@@ -75,7 +86,7 @@ class Route
     {
         return [
             'name' => $this->name,
-            'uri' => $this->uri,
+            'uri' => $this->path,
             'method' => $this->method,
             'controller' => $this->controller,
             'middleware' => $this->middleware,
@@ -110,9 +121,9 @@ class Route
     /**
      * @return string
      */
-    public function getUri(): string
+    public function getPath(): string
     {
-        return $this->uri;
+        return $this->path;
     }
 
     /**
@@ -145,5 +156,45 @@ class Route
     public function getDomain(): ?string
     {
         return $this->domain;
+    }
+
+    /**
+     * @return array|string[]|null
+     */
+    public function getParameters(): ?array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @param array|string[]|null $parameters
+     */
+    public function setParameters(?array $parameters): void
+    {
+        $routeParameters = [];
+
+        foreach ($parameters as $key => $value) {
+            if (strpos($this->path, $key) !== false) {
+                $routeParameters[$key] = $value;
+            }
+        }
+
+        $this->parameters = $routeParameters;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUri(): ?string
+    {
+        return $this->uri;
+    }
+
+    /** 
+     * @param string|null $uri
+     */
+    public function setUri(?string $uri): void
+    {
+        $this->uri = $uri;
     }
 }
