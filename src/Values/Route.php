@@ -174,7 +174,7 @@ class Route
         $routeParameters = [];
 
         foreach ($parameters as $key => $value) {
-            if (strpos($this->path ?? '', $key) !== false) {
+            if (strstr($this->path, $key) !== false) {
                 $routeParameters[$key] = $value;
             }
         }
