@@ -209,8 +209,8 @@ class RoutingTest extends TestCase
         $this->mockRequest(HttpMethods::GET, 'http://web.com/');
 
         $router = $this->router()
-            ->get('/{id?}', function ($id) {
-                return $id ?: 'Default';
+            ->get('/{id?}', function ($id = 'Default') {
+                return $id;
             })
             ->dispatch();
 

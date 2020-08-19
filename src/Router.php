@@ -3,6 +3,9 @@
 namespace MiladRahimi\PhpRouter;
 
 use Closure;
+use MiladRahimi\PhpContainer\Container;
+use MiladRahimi\PhpContainer\Exceptions\ContainerException;
+use MiladRahimi\PhpContainer\Exceptions\NotFoundException;
 use MiladRahimi\PhpRouter\Enums\GroupAttributes;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
@@ -13,13 +16,9 @@ use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Values\Route;
 use MiladRahimi\PhpRouter\Values\Config;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use ReflectionException;
-use ReflectionFunction;
-use ReflectionFunctionAbstract;
-use ReflectionMethod;
-use ReflectionParameter;
 use Throwable;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\ServerRequestFactory;
@@ -84,6 +83,13 @@ class Router
     private $currentRoute = null;
 
     /**
+     * The dependency injection container
+     *
+     * @var Container
+     */
+    private $container;
+
+    /**
      * Router constructor.
      *
      * @param Config|null $config
@@ -91,6 +97,7 @@ class Router
     public function __construct(?Config $config = null)
     {
         $this->config = $config ?: new Config();
+        $this->container = new Container();
     }
 
     /**
@@ -210,6 +217,12 @@ class Router
                 (!$route->getDomain() || $this->compareDomain($route->getDomain(), $domain)) &&
                 $this->compareUri($route->getPath(), $uri, $parameters)
             ) {
+                foreach ($parameters as $key => $value) {
+                    if (strstr($route->getPath(), (string)$key) === false) {
+                        unset($parameters[$key]);
+                    }
+                }
+
                 $route->setParameters($parameters);
                 $route->setUri($uri);
                 $this->currentRoute = $route;
@@ -321,7 +334,8 @@ class Router
      * @param ServerRequestInterface $request
      * @return ResponseInterface|mixed|null
      * @throws InvalidControllerException
-     * @throws ReflectionException
+     * @throws ContainerException
+     * @throws NotFoundException
      */
     private function runController($controller, array $parameters, ServerRequestInterface $request)
     {
@@ -338,98 +352,22 @@ class Router
                 throw new InvalidControllerException("Controller method `$methodName` not found.");
             }
 
-            $parameters = $this->arrangeMethodParameters($className, $methodName, $parameters, $request);
-
             $controller = [$classObject, $methodName];
-        } elseif (is_callable($controller)) {
-            $parameters = $this->arrangeFunctionParameters($controller, $parameters, $request);
-        } else {
+        }
+
+        if (is_callable($controller) == false) {
             throw new InvalidControllerException('Invalid controller: ' . $controller);
         }
 
-        return call_user_func_array($controller, $parameters);
-    }
+        $this->container->singleton('$request', $request);
+        $this->container->singleton(ServerRequest::class, $request);
+        $this->container->singleton(ServerRequestInterface::class, $request);
 
-    /**
-     * Arrange parameters for given function
-     *
-     * @param Closure|callable $function
-     * @param array $parameters
-     * @param ServerRequestInterface $request
-     * @return array
-     * @throws ReflectionException
-     */
-    private function arrangeFunctionParameters($function, array $parameters, ServerRequestInterface $request): array
-    {
-        return $this->arrangeParameters(new ReflectionFunction($function), $parameters, $request);
-    }
+        foreach ($parameters as $key => $value) {
+            $this->container->singleton('$' . $key, $value);
+        }
 
-    /**
-     * Arrange parameters for given method
-     *
-     * @param string $class
-     * @param string $method
-     * @param array $parameters
-     * @param ServerRequestInterface $request
-     * @return array
-     * @throws ReflectionException
-     */
-    private function arrangeMethodParameters(
-        string $class,
-        string $method,
-        array $parameters,
-        ServerRequestInterface $request
-    ): array
-    {
-        return $this->arrangeParameters(new ReflectionMethod($class, $method), $parameters, $request);
-    }
-
-    /**
-     * Arrange parameters for given method/function
-     *
-     * @param ReflectionFunctionAbstract $reflection
-     * @param array $parameters
-     * @param ServerRequestInterface $request
-     * @return array
-     */
-    private function arrangeParameters(
-        ReflectionFunctionAbstract $reflection,
-        array $parameters,
-        ServerRequestInterface $request
-    ): array
-    {
-        return array_map(
-            function (ReflectionParameter $parameter) use ($parameters, $request) {
-                if (isset($parameters[$parameter->getName()])) {
-                    return $parameters[$parameter->getName()];
-                }
-
-                /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-                if (
-                    ($parameter->getName() == 'request') ||
-                    ($parameter->getType() && $parameter->getType()->getName() == ServerRequestInterface::class) ||
-                    ($parameter->getType() && $parameter->getType()->getName() == ServerRequest::class)
-                ) {
-                    return $request;
-                }
-
-                /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-                if (
-                    ($parameter->getName() == 'router') ||
-                    ($parameter->getType() && $parameter->getType()->getName() == Router::class)
-                ) {
-                    return $this;
-                }
-
-                if ($parameter->isOptional()) {
-                    return $parameter->getDefaultValue();
-                }
-
-                return null;
-            },
-
-            $reflection->getParameters()
-        );
+        return $this->container->call($controller);
     }
 
     /**
@@ -622,6 +560,13 @@ class Router
     {
         $this->request = $this->request ?: ServerRequestFactory::fromGlobals();
         $this->publisher = $this->publisher ?: new HttpPublisher();
+
+        $this->container->singleton('$router', $this);
+        $this->container->singleton(Router::class, $this);
+
+        $this->container->singleton('$container', $this->container);
+        $this->container->singleton(Container::class, $this->container);
+        $this->container->singleton(ContainerInterface::class, $this->container);
     }
 
     /**
@@ -658,5 +603,21 @@ class Router
     public function setPublisher(Publisher $publisher): void
     {
         $this->publisher = $publisher;
+    }
+
+    /**
+     * @return Container
+     */
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    /**
+     * @param Container $container
+     */
+    public function setContainer(Container $container): void
+    {
+        $this->container = $container;
     }
 }

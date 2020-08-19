@@ -171,15 +171,7 @@ class Route
      */
     public function setParameters(?array $parameters): void
     {
-        $routeParameters = [];
-
-        foreach ($parameters as $key => $value) {
-            if (strstr((string)$this->path, (string)$key) !== false) {
-                $routeParameters[$key] = $value;
-            }
-        }
-
-        $this->parameters = $routeParameters;
+        $this->parameters = $parameters;
     }
 
     /**
