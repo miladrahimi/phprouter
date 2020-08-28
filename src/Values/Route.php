@@ -48,9 +48,9 @@ class Route
     private $uri = null;
 
     /**
-     * @var null|string[]|array[string]string
+     * @var string[]|array[string]string
      */
-    private $parameters = null;
+    private $parameters = [];
 
     /**
      * Route constructor.
@@ -161,17 +161,17 @@ class Route
     }
 
     /**
-     * @return array|string[]|null
+     * @return array|string[]
      */
-    public function getParameters(): ?array
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
     /**
-     * @param array|string[]|null $parameters
+     * @param array|string[] $parameters
      */
-    public function setParameters(?array $parameters): void
+    public function setParameters(array $parameters): void
     {
         $this->parameters = $parameters;
     }

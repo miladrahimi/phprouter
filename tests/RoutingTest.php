@@ -428,6 +428,8 @@ class RoutingTest extends TestCase
                 return join(',', [
                     $r->currentRoute()->getName(),
                     $r->currentRoute()->getPath(),
+                    $r->currentRoute()->getUri(),
+                    $r->currentRoute()->getParameters(),
                     $r->currentRoute()->getMethod(),
                     count($r->currentRoute()->getMiddleware()),
                     $r->currentRoute()->getDomain() ?? '-',
@@ -435,7 +437,7 @@ class RoutingTest extends TestCase
             }, 'home')
             ->dispatch();
 
-        $value = join(',', ['home', '/', 'GET', 0, '-']);
+        $value = join(',', ['home', '/','/', [], 'GET', 0, '-']);
         $this->assertEquals($value, $this->output($router));
     }
 }
