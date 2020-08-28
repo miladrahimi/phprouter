@@ -56,7 +56,7 @@ class Route
      * Route constructor.
      *
      * @param string|null $name
-     * @param string $uri
+     * @param string $path
      * @param string|null $method
      * @param Closure|callable|string $controller
      * @param string[]|callable[]|Closure[]|Middleware[] $middleware
@@ -64,7 +64,7 @@ class Route
      */
     public function __construct(
         ?string $name,
-        string $uri,
+        string $path,
         string $method,
         $controller,
         $middleware,
@@ -72,7 +72,7 @@ class Route
     )
     {
         $this->name = $name;
-        $this->path = $uri;
+        $this->path = $path;
         $this->method = $method;
         $this->controller = $controller;
         $this->middleware = $middleware;
@@ -86,11 +86,13 @@ class Route
     {
         return [
             'name' => $this->name,
-            'uri' => $this->path,
+            'path' => $this->path,
             'method' => $this->method,
             'controller' => $this->controller,
             'middleware' => $this->middleware,
             'domain' => $this->domain,
+            'uri' => $this->uri,
+            'parameters' => $this->parameters,
         ];
     }
 

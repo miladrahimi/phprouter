@@ -13,7 +13,7 @@ use MiladRahimi\PhpRouter\Middleware;
 class Config
 {
     /**
-     * URI prefix
+     * Path prefix
      *
      * @var string
      */
