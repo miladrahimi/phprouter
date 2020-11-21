@@ -3,11 +3,10 @@
 namespace MiladRahimi\PhpRouter\Tests\Testing;
 
 use Closure;
-use MiladRahimi\PhpRouter\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
 use Laminas\Diactoros\Response\TextResponse;
 
-class StopperMiddleware implements Middleware
+class StopperMiddleware
 {
     /**
      * @var string

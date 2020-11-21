@@ -2,11 +2,9 @@
 
 namespace MiladRahimi\PhpRouter\Tests\Testing;
 
-use Closure;
-use MiladRahimi\PhpRouter\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
 
-class SampleMiddleware implements Middleware
+class SampleMiddleware
 {
     /**
      * @var string
@@ -33,7 +31,7 @@ class SampleMiddleware implements Middleware
     /**
      * @inheritdoc
      */
-    public function handle(ServerRequestInterface $request, Closure $next)
+    public function handle(ServerRequestInterface $request, $next)
     {
         static::$output[] = $this->content;
 

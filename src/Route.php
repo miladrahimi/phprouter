@@ -1,9 +1,8 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Values;
+namespace MiladRahimi\PhpRouter;
 
 use Closure;
-use MiladRahimi\PhpRouter\Middleware;
 
 /**
  * Class Route
@@ -28,12 +27,12 @@ class Route
     private $method;
 
     /**
-     * @var Closure|callable|string
+     * @var Closure|array
      */
     private $controller;
 
     /**
-     * @var string[]|callable[]|Closure[]|Middleware[]
+     * @var string[]|callable[]
      */
     private $middleware;
 
@@ -58,8 +57,8 @@ class Route
      * @param string|null $name
      * @param string $path
      * @param string|null $method
-     * @param Closure|callable|string $controller
-     * @param string[]|callable[]|Closure[]|Middleware[] $middleware
+     * @param Closure|array $controller
+     * @param string[]|callable[] $middleware
      * @param string|null $domain
      */
     public function __construct(
@@ -67,7 +66,7 @@ class Route
         string $path,
         string $method,
         $controller,
-        $middleware,
+        array $middleware,
         ?string $domain
     )
     {
@@ -145,9 +144,9 @@ class Route
     }
 
     /**
-     * @return string[]|callable[]|Closure[]|Middleware[]
+     * @return string[]|callable[]
      */
-    public function getMiddleware()
+    public function getMiddleware(): array
     {
         return $this->middleware;
     }
@@ -184,7 +183,7 @@ class Route
         return $this->uri;
     }
 
-    /** 
+    /**
      * @param string|null $uri
      */
     public function setUri(?string $uri): void

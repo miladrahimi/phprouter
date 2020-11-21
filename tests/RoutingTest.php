@@ -3,10 +3,11 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
-use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
+use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Tests\Testing\SampleController;
+use MiladRahimi\PhpRouter\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Laminas\Diactoros\ServerRequest;
@@ -287,35 +288,6 @@ class RoutingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_injection_of_router_by_name()
-    {
-        $router = $this->router()
-            ->get('/', function ($router) {
-                /** @var Router $router */
-                return $router->currentRoute()->getName();
-            }, 'home')
-            ->dispatch();
-
-        $this->assertEquals('home', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_injection_of_router_by_type()
-    {
-        $router = $this->router()
-            ->get('/', function (Router $r) {
-                return $r->currentRoute()->getName();
-            }, 'home')
-            ->dispatch();
-
-        $this->assertEquals('home', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
     public function test_injection_of_default_value()
     {
         $router = $this->router()
@@ -367,10 +339,8 @@ class RoutingTest extends TestCase
      */
     public function test_with_fully_namespaced_controller()
     {
-        $c = 'MiladRahimi\PhpRouter\Tests\Testing\SampleController@home';
-
         $router = $this->router()
-            ->get('/', $c)
+            ->get('/', [SampleController::class, 'home'])
             ->dispatch();
 
         $this->assertEquals('Home', $this->output($router));
@@ -393,7 +363,7 @@ class RoutingTest extends TestCase
      */
     public function test_with_class_method_but_invalid_controller_class()
     {
-        $this->expectException(InvalidControllerException::class);
+        $this->expectException(InvalidCallableException::class);
 
         $this->router()->get('/', 'UnknownController@method')->dispatch();
     }
@@ -403,7 +373,7 @@ class RoutingTest extends TestCase
      */
     public function test_with_class_but_invalid_method()
     {
-        $this->expectException(InvalidControllerException::class);
+        $this->expectException(InvalidCallableException::class);
 
         $this->router()->get('/', SampleController::class . '@invalid')->dispatch();
     }
@@ -413,7 +383,7 @@ class RoutingTest extends TestCase
      */
     public function test_with_invalid_controller_class()
     {
-        $this->expectException(InvalidControllerException::class);
+        $this->expectException(InvalidCallableException::class);
 
         $this->router()->get('/', 666)->dispatch();
     }
@@ -424,15 +394,15 @@ class RoutingTest extends TestCase
     public function test_current_route()
     {
         $router = $this->router()
-            ->get('/', function (Router $r) {
+            ->get('/', function (Route $r) {
                 return join(',', [
-                    $r->currentRoute()->getName(),
-                    $r->currentRoute()->getPath(),
-                    $r->currentRoute()->getUri(),
-                    $r->currentRoute()->getParameters(),
-                    $r->currentRoute()->getMethod(),
-                    count($r->currentRoute()->getMiddleware()),
-                    $r->currentRoute()->getDomain() ?? '-',
+                    $r->getName(),
+                    $r->getPath(),
+                    $r->getUri(),
+                    $r->getParameters(),
+                    $r->getMethod(),
+                    count($r->getMiddleware()),
+                    $r->getDomain() ?? '-',
                 ]);
             }, 'home')
             ->dispatch();

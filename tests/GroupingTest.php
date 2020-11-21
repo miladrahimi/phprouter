@@ -30,7 +30,7 @@ class GroupingTest extends TestCase
         $middleware = new SampleMiddleware(666);
 
         $router = $this->router()
-            ->group(['middleware' => $middleware], function (Router $router) {
+            ->group(['middleware' => [$middleware]], function (Router $router) {
                 $router->get('/', $this->OkController());
             })->dispatch();
 
@@ -47,8 +47,8 @@ class GroupingTest extends TestCase
         $group2Middleware = new SampleMiddleware(mt_rand(1, 9999999));
 
         $router = $this->router()
-            ->group(['middleware' => $group1Middleware], function (Router $router) use ($group2Middleware) {
-                $router->group(['middleware' => $group2Middleware], function (Router $router) {
+            ->group(['middleware' => [$group1Middleware]], function (Router $router) use ($group2Middleware) {
+                $router->group(['middleware' => [$group2Middleware]], function (Router $router) {
                     $router->get('/', $this->OkController());
                 });
             })->dispatch();
@@ -88,21 +88,6 @@ class GroupingTest extends TestCase
             })->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_with_namespace()
-    {
-        $namespace = 'MiladRahimi\PhpRouter\Tests\Testing';
-
-        $router = $this->router()
-            ->group(['namespace' => $namespace], function (Router $router) {
-                $router->get('/', 'SampleController@home');
-            })->dispatch();
-
-        $this->assertEquals('Home', $this->output($router));
     }
 
     /**

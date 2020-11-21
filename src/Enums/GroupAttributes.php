@@ -9,8 +9,12 @@ namespace MiladRahimi\PhpRouter\Enums;
  */
 class GroupAttributes
 {
+    // The group middleware list
     const MIDDLEWARE = 'middleware';
+
+    // The group url prefix
     const PREFIX = 'prefix';
-    const NAMESPACE = 'namespace';
+
+    // The group domain (subdomain)
     const DOMAIN = 'domain';
 }

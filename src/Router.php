@@ -8,32 +8,28 @@ use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpContainer\Exceptions\NotFoundException;
 use MiladRahimi\PhpRouter\Enums\GroupAttributes;
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
-use MiladRahimi\PhpRouter\Exceptions\InvalidControllerException;
-use MiladRahimi\PhpRouter\Exceptions\InvalidMiddlewareException;
+use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Values\Route;
-use MiladRahimi\PhpRouter\Values\Config;
+use MiladRahimi\PhpRouter\Route;
+use MiladRahimi\PhpRouter\Config;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Throwable;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\ServerRequestFactory;
 
 /**
  * Class Router
- * Router is the main class in the package.
- * It's responsible for defining and dispatching routes.
  *
  * @package MiladRahimi\PhpRouter
  */
 class Router
 {
     /**
-     * List of defined routes
+     * List of declared routes
      *
      * @var Route[][]|array[string][int]Route
      */
@@ -56,16 +52,16 @@ class Router
     /**
      * User HTTP Request
      *
-     * @var ServerRequestInterface|null
+     * @var ServerRequestInterface
      */
-    private $request = null;
+    private $request;
 
     /**
      * The publisher that is going to publish outputs of controllers
      *
-     * @var Publisher|null
+     * @var Publisher
      */
-    private $publisher = null;
+    private $publisher;
 
     /**
      * The configuration of current instance/group
@@ -76,14 +72,7 @@ class Router
     private $config;
 
     /**
-     * Current route that is recognized for current request
-     *
-     * @var Route|null
-     */
-    private $currentRoute = null;
-
-    /**
-     * The dependency injection container
+     * The dependency injection IoC container
      *
      * @var Container
      */
@@ -97,7 +86,10 @@ class Router
     public function __construct(?Config $config = null)
     {
         $this->config = $config ?: new Config();
+
         $this->container = new Container();
+        $this->publisher = new HttpPublisher();
+        $this->request = ServerRequestFactory::fromGlobals();
     }
 
     /**
@@ -114,26 +106,17 @@ class Router
 
         // Set middleware for the group
         if (isset($attributes[GroupAttributes::MIDDLEWARE])) {
-            if (is_array($attributes[GroupAttributes::MIDDLEWARE]) == false) {
-                $this->config->middleware[] = $attributes[GroupAttributes::MIDDLEWARE];
-            } else {
-                $this->config->middleware = array_merge($config->middleware, $attributes[GroupAttributes::MIDDLEWARE]);
-            }
-        }
-
-        // Set namespace for the group
-        if (isset($attributes[GroupAttributes::NAMESPACE])) {
-            $this->config->namespace = join("\\", [$config->namespace, $attributes[GroupAttributes::NAMESPACE]]);
+            $this->config->addMiddleware($attributes[GroupAttributes::MIDDLEWARE]);
         }
 
         // Set prefix for the group
         if (isset($attributes[GroupAttributes::PREFIX])) {
-            $this->config->prefix = $config->prefix . $attributes[GroupAttributes::PREFIX];
+            $this->config->addPrefix($attributes[GroupAttributes::PREFIX]);
         }
 
         // Set domain for the group
         if (isset($attributes[GroupAttributes::DOMAIN])) {
-            $this->config->domain = $attributes[GroupAttributes::DOMAIN];
+            $this->config->setDomain($attributes[GroupAttributes::DOMAIN]);
         }
 
         // Run the group body closure
@@ -149,31 +132,20 @@ class Router
      * Map a controller to a route and set basic attributes
      *
      * @param string $method
-     * @param string $route
-     * @param Closure|callable|string $controller
+     * @param string $path
+     * @param Closure|array $controller
      * @param string|null $name
      * @return self
      */
-    public function map(
-        string $method,
-        string $route,
-        $controller,
-        ?string $name = null
-    ): self
+    public function map(string $method, string $path, $controller, ?string $name = null): self
     {
-        $uri = $this->config->prefix . $route;
-
-        if (is_string($controller) && is_callable($controller) == false) {
-            $controller = join("\\", [$this->config->namespace, $controller]);
-        }
-
         $route = new Route(
             $name,
-            $uri,
+            $this->config->getPrefix() . $path,
             $method,
             $controller,
-            $this->config->middleware,
-            $this->config->domain
+            $this->config->getMiddleware(),
+            $this->config->getDomain()
         );
 
         $this->routes[$method][] = $route;
@@ -187,53 +159,172 @@ class Router
      * Dispatch routes and run the application
      *
      * @return self
+     * @throws ContainerException
+     * @throws InvalidCallableException
+     * @throws NotFoundException
      * @throws RouteNotFoundException
-     * @throws InvalidControllerException
-     * @throws InvalidMiddlewareException
-     * @throws Throwable (the controller might throw any kind of exception)
      */
     public function dispatch(): self
     {
-        $this->prepare();
-
-        $method = $this->request->getMethod();
         $domain = $this->request->getUri()->getHost();
         $uri = $this->request->getUri()->getPath();
 
-        /**
-         * @var Route[] $routes
-         */
-        $routes = array_merge(
-            $this->routes['*'] ?? [],
-            $this->routes[$method] ?? []
-        );
-
-        sort($routes, SORT_DESC);
-
-        foreach ($routes as $route) {
+        foreach ($this->routesForMethod($this->request->getMethod()) as $route) {
             $parameters = [];
 
             if (
                 (!$route->getDomain() || $this->compareDomain($route->getDomain(), $domain)) &&
                 $this->compareUri($route->getPath(), $uri, $parameters)
             ) {
-                foreach ($parameters as $key => $value) {
-                    if (strstr($route->getPath(), (string)$key) === false) {
-                        unset($parameters[$key]);
-                    }
-                }
-
-                $route->setParameters($parameters);
+                $route->setParameters($this->filterRouteParameters($parameters));
                 $route->setUri($uri);
-                $this->currentRoute = $route;
 
-                $this->publisher->publish($this->run($route, $parameters));
+                $this->publisher->publish($this->run($route, $parameters, $this->request));
 
                 return $this;
             }
         }
 
         throw new RouteNotFoundException();
+    }
+
+    /**
+     * Get all candidate routes for current http method
+     *
+     * @param string $method
+     * @return Route[]
+     */
+    private function routesForMethod(string $method): array
+    {
+        $routes = array_merge($this->routes['*'] ?? [], $this->routes[$method] ?? []);
+        sort($routes, SORT_DESC);
+
+        return $routes;
+    }
+
+    /**
+     * Filter route parameters and remove unnecessary parameters
+     *
+     * @param array $parameters
+     * @return array
+     */
+    private function filterRouteParameters(array $parameters): array
+    {
+        return array_filter($parameters, function ($value, $name) {
+            return isset($value) && is_numeric($name) == false;
+        }, ARRAY_FILTER_USE_BOTH);
+    }
+
+    /**
+     * Run the controller of the given route
+     *
+     * @param Route $route
+     * @param array $parameters
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface|mixed|null
+     * @throws ContainerException
+     * @throws InvalidCallableException
+     * @throws NotFoundException
+     */
+    private function run(Route $route, array $parameters, ServerRequestInterface $request)
+    {
+        $this->container->singleton('$container', $this->container);
+        $this->container->singleton(Container::class, $this->container);
+        $this->container->singleton(ContainerInterface::class, $this->container);
+
+        $this->container->singleton('$router', $this);
+        $this->container->singleton(Router::class, $this);
+
+        $this->container->singleton('$route', $route);
+        $this->container->singleton(Route::class, $route);
+
+        foreach ($parameters as $key => $value) {
+            $this->container->singleton('$' . $key, $value);
+        }
+
+        return $this->runStack(array_merge($route->getMiddleware(), [$route->getController()]), $request);
+    }
+
+    /**
+     * Run the controller through the middleware (list)
+     *
+     * @param string[] $callables
+     * @param ServerRequestInterface $request
+     * @param int $i
+     * @return ResponseInterface|mixed|null
+     * @throws ContainerException
+     * @throws InvalidCallableException
+     * @throws NotFoundException
+     */
+    private function runStack(array $callables, ServerRequestInterface $request, $i = 0)
+    {
+        $this->container->singleton('$request', $request);
+        $this->container->singleton(ServerRequest::class, $request);
+        $this->container->singleton(ServerRequestInterface::class, $request);
+
+        if (isset($callables[$i + 1])) {
+            $next = function (ServerRequestInterface $request) use ($callables, $i) {
+                return $this->runStack($callables, $request, $i + 1);
+            };
+
+            $this->container->closure('$next', $next);
+        }
+
+        return $this->runCallable($callables[$i]);
+    }
+
+    /**
+     * Run the given callable (method, closure, etc.)
+     *
+     * @param Closure|callable|string $callable
+     * @return ResponseInterface|mixed|null
+     * @throws ContainerException
+     * @throws InvalidCallableException
+     * @throws NotFoundException
+     */
+    private function runCallable($callable)
+    {
+        if (is_array($callable)) {
+            if (count($callable) != 2) {
+                throw new InvalidCallableException('Invalid callable: ' . implode(',', $callable));
+            }
+
+            list($class, $method) = $callable;
+
+            if (class_exists($class) == false) {
+                throw new InvalidCallableException("Class `$callable` not found.");
+            }
+
+            $object = new $class();
+
+            if (method_exists($object, $method) == false) {
+                throw new InvalidCallableException("Method `$class::$method` not found.");
+            }
+
+            $callable = [$object, $method];
+        } else {
+            if (is_string($callable)) {
+                if (class_exists($callable)) {
+                    $callable = new $callable();
+                } else {
+                    throw new InvalidCallableException("Class `$callable` not found.");
+                }
+            }
+
+            if (is_object($callable) && !($callable instanceof Closure)) {
+                if (method_exists($callable, 'handle')) {
+                    $callable = [$callable, 'handle'];
+                } else {
+                    throw new InvalidCallableException("Method `$callable::handle` not found.");
+                }
+            }
+        }
+
+        if (is_callable($callable) == false) {
+            throw new InvalidCallableException('Invalid callable.');
+        }
+
+        return $this->container->call($callable);
     }
 
     /**
@@ -259,115 +350,6 @@ class Router
     private function compareUri(string $path, string $uri, array &$parameters): bool
     {
         return preg_match('@^' . $this->regexUri($path) . '$@', $uri, $parameters);
-    }
-
-    /**
-     * Run the controller of the given route
-     *
-     * @param Route $route
-     * @param array $parameters
-     * @return ResponseInterface|mixed|null
-     * @throws InvalidControllerException
-     * @throws InvalidMiddlewareException
-     * @throws Throwable
-     */
-    private function run(Route $route, array $parameters)
-    {
-        $controller = $route->getController();
-
-        if (count($middleware = $route->getMiddleware()) > 0) {
-            $controllerRunner = function (ServerRequest $request) use ($controller, $parameters) {
-                return $this->runController($controller, $parameters, $request);
-            };
-
-            return $this->runControllerThroughMiddleware($middleware, $this->request, $controllerRunner);
-        }
-
-        return $this->runController($controller, $parameters, $this->request);
-    }
-
-    /**
-     * Run the controller through the middleware (list)
-     *
-     * @param string|callable|Closure|Middleware|string[]|callable[]|Closure[]|Middleware[] $middleware
-     * @param ServerRequestInterface $request
-     * @param Closure $controllerRunner
-     * @param int $i
-     * @return ResponseInterface|mixed|null
-     * @throws InvalidMiddlewareException
-     */
-    private function runControllerThroughMiddleware(
-        array $middleware,
-        ServerRequestInterface $request,
-        Closure $controllerRunner,
-        $i = 0
-    )
-    {
-        if (isset($middleware[$i + 1])) {
-            $next = function (ServerRequestInterface $request) use ($middleware, $controllerRunner, $i) {
-                return $this->runControllerThroughMiddleware($middleware, $request, $controllerRunner, $i + 1);
-            };
-        } else {
-            $next = $controllerRunner;
-        }
-
-        if (is_callable($middleware[$i])) {
-            return $middleware[$i]($request, $next);
-        }
-
-        if (is_subclass_of($middleware[$i], Middleware::class)) {
-            if (is_string($middleware[$i])) {
-                $middleware[$i] = new $middleware[$i];
-            }
-
-            return $middleware[$i]->handle($request, $next);
-        }
-
-        throw new InvalidMiddlewareException('Invalid middleware for route: ' . $this->currentRoute);
-    }
-
-    /**
-     * Run the controller
-     *
-     * @param Closure|callable|string $controller
-     * @param array $parameters
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface|mixed|null
-     * @throws InvalidControllerException
-     * @throws ContainerException
-     * @throws NotFoundException
-     */
-    private function runController($controller, array $parameters, ServerRequestInterface $request)
-    {
-        if (is_string($controller) && strpos($controller, '@')) {
-            list($className, $methodName) = explode('@', $controller);
-
-            if (class_exists($className) == false) {
-                throw new InvalidControllerException("Controller class `$controller` not found.");
-            }
-
-            $classObject = new $className();
-
-            if (method_exists($classObject, $methodName) == false) {
-                throw new InvalidControllerException("Controller method `$methodName` not found.");
-            }
-
-            $controller = [$classObject, $methodName];
-        }
-
-        if (is_callable($controller) == false) {
-            throw new InvalidControllerException('Invalid controller: ' . $controller);
-        }
-
-        $this->container->singleton('$request', $request);
-        $this->container->singleton(ServerRequest::class, $request);
-        $this->container->singleton(ServerRequestInterface::class, $request);
-
-        foreach ($parameters as $key => $value) {
-            $this->container->singleton('$' . $key, $value);
-        }
-
-        return $this->container->call($controller);
     }
 
     /**
@@ -401,108 +383,6 @@ class Router
         $pattern = $this->parameters[$name] ?? '[^/]+';
 
         return '(?<' . $name . '>' . $pattern . ')' . $suffix;
-    }
-
-    /**
-     * Map a controller to given route for all the http methods
-     *
-     * @param string $route
-     * @param Closure|callable|string $controller
-     * @param string|null $name
-     * @return self
-     */
-    public function any(
-        string $route,
-        $controller,
-        ?string $name = null
-    ): self
-    {
-        return $this->map('*', $route, $controller, $name);
-    }
-
-    /**
-     * Map a controller to given GET route
-     *
-     * @param string $route
-     * @param Closure|callable|string $controller
-     * @param string|null $name
-     * @return self
-     */
-    public function get(
-        string $route,
-        $controller,
-        ?string $name = null
-    ): self
-    {
-        return $this->map(HttpMethods::GET, $route, $controller, $name);
-    }
-
-    /**
-     * Map a controller to given POST route
-     *
-     * @param string $route
-     * @param Closure|callable|string $controller
-     * @param string|null $name
-     * @return self
-     */
-    public function post(
-        string $route,
-        $controller,
-        ?string $name = null
-    ): self
-    {
-        return $this->map(HttpMethods::POST, $route, $controller, $name);
-    }
-
-    /**
-     * Map a controller to given PUT route
-     *
-     * @param string $route
-     * @param Closure|callable|string $controller
-     * @param string|null $name
-     * @return self
-     */
-    public function put(
-        string $route,
-        $controller,
-        ?string $name = null
-    ): self
-    {
-        return $this->map(HttpMethods::PUT, $route, $controller, $name);
-    }
-
-    /**
-     * Map a controller to given PATCH route
-     *
-     * @param string $route
-     * @param Closure|callable|string $controller
-     * @param string|null $name
-     * @return self
-     */
-    public function patch(
-        string $route,
-        $controller,
-        ?string $name = null
-    ): self
-    {
-        return $this->map(HttpMethods::PATCH, $route, $controller, $name);
-    }
-
-    /**
-     * Map a controller to given DELETE route
-     *
-     * @param string $route
-     * @param Closure|callable|string $controller
-     * @param string|null $name
-     * @return self
-     */
-    public function delete(
-        string $route,
-        $controller,
-        ?string $name = null
-    ): self
-    {
-        return $this->map(HttpMethods::DELETE, $route, $controller, $name);
     }
 
     /**
@@ -546,42 +426,92 @@ class Router
     }
 
     /**
-     * @return Route|null
-     */
-    public function currentRoute(): ?Route
-    {
-        return $this->currentRoute;
-    }
-
-    /**
-     * Prepare router to dispatch routes
-     */
-    private function prepare(): void
-    {
-        $this->request = $this->request ?: ServerRequestFactory::fromGlobals();
-        $this->publisher = $this->publisher ?: new HttpPublisher();
-
-        $this->container->singleton('$router', $this);
-        $this->container->singleton(Router::class, $this);
-
-        $this->container->singleton('$container', $this->container);
-        $this->container->singleton(Container::class, $this->container);
-        $this->container->singleton(ContainerInterface::class, $this->container);
-    }
-
-    /**
-     * Get current http request instance
+     * Map a controller to given route for all the http methods
      *
-     * @return ServerRequestInterface|null
+     * @param string $route
+     * @param Closure|callable|string $controller
+     * @param string|null $name
+     * @return self
      */
-    public function getRequest(): ?ServerRequestInterface
+    public function any(string $route, $controller, ?string $name = null): self
+    {
+        return $this->map('*', $route, $controller, $name);
+    }
+
+    /**
+     * Map a controller to given GET route
+     *
+     * @param string $route
+     * @param Closure|callable|string $controller
+     * @param string|null $name
+     * @return self
+     */
+    public function get(string $route, $controller, ?string $name = null): self
+    {
+        return $this->map(HttpMethods::GET, $route, $controller, $name);
+    }
+
+    /**
+     * Map a controller to given POST route
+     *
+     * @param string $route
+     * @param Closure|callable|string $controller
+     * @param string|null $name
+     * @return self
+     */
+    public function post(string $route, $controller, ?string $name = null): self
+    {
+        return $this->map(HttpMethods::POST, $route, $controller, $name);
+    }
+
+    /**
+     * Map a controller to given PUT route
+     *
+     * @param string $route
+     * @param Closure|callable|string $controller
+     * @param string|null $name
+     * @return self
+     */
+    public function put(string $route, $controller, ?string $name = null): self
+    {
+        return $this->map(HttpMethods::PUT, $route, $controller, $name);
+    }
+
+    /**
+     * Map a controller to given PATCH route
+     *
+     * @param string $route
+     * @param Closure|callable|string $controller
+     * @param string|null $name
+     * @return self
+     */
+    public function patch(string $route, $controller, ?string $name = null): self
+    {
+        return $this->map(HttpMethods::PATCH, $route, $controller, $name);
+    }
+
+    /**
+     * Map a controller to given DELETE route
+     *
+     * @param string $route
+     * @param Closure|callable|string $controller
+     * @param string|null $name
+     * @return self
+     */
+    public function delete(string $route, $controller, ?string $name = null): self
+    {
+        return $this->map(HttpMethods::DELETE, $route, $controller, $name);
+    }
+
+    /**
+     * @return ServerRequestInterface
+     */
+    public function getRequest(): ServerRequestInterface
     {
         return $this->request;
     }
 
     /**
-     * Set my own http request instance
-     *
      * @param ServerRequestInterface $request
      */
     public function setRequest(ServerRequestInterface $request): void
@@ -603,14 +533,6 @@ class Router
     public function setPublisher(Publisher $publisher): void
     {
         $this->publisher = $publisher;
-    }
-
-    /**
-     * @return Container
-     */
-    public function getContainer(): Container
-    {
-        return $this->container;
     }
 
     /**

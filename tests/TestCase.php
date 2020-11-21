@@ -7,7 +7,7 @@ use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Testing\FakePublisher;
-use MiladRahimi\PhpRouter\Values\Config;
+use MiladRahimi\PhpRouter\Config;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
