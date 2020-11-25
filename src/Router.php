@@ -6,13 +6,12 @@ use Closure;
 use MiladRahimi\PhpContainer\Container;
 use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpContainer\Exceptions\NotFoundException;
-use MiladRahimi\PhpRouter\Enums\GroupAttributes;
-use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Laminas\Diactoros\ServerRequest;
@@ -26,47 +25,16 @@ use Laminas\Diactoros\ServerRequestFactory;
 class Router
 {
     /**
-     * List of declared routes
-     *
-     * @var Route[][]
+     * @var Collection
      */
-    private $routes = [];
-
-    /**
-     * List of named routes
-     *
-     * @var Route[]
-     */
-    private $names = [];
+    private $collection;
 
     /**
      * List of defined route parameters
      *
      * @var string[]
      */
-    private $parameters = [];
-
-    /**
-     * User HTTP Request
-     *
-     * @var ServerRequestInterface
-     */
-    private $request;
-
-    /**
-     * The publisher that is going to publish outputs of controllers
-     *
-     * @var Publisher
-     */
-    private $publisher;
-
-    /**
-     * The configuration of current instance/group
-     * It holds current attributes like prefix, domain, etc.
-     *
-     * @var Config
-     */
-    private $config;
+    private $patterns = [];
 
     /**
      * The dependency injection IoC container
@@ -77,16 +45,16 @@ class Router
 
     /**
      * Router constructor.
-     *
-     * @param Config|null $config
      */
-    public function __construct(?Config $config = null)
+    public function __construct()
     {
-        $this->config = $config ?: new Config();
-
+        $this->collection = new Collection();
         $this->container = new Container();
-        $this->publisher = new HttpPublisher();
-        $this->request = ServerRequestFactory::fromGlobals();
+
+        $this->bind([Router::class], $this);
+        $this->bind([Container::class, ContainerInterface::class], $this->container);
+        $this->bind([Publisher::class], HttpPublisher::class);
+        $this->bind([ServerRequestInterface::class, ServerRequest::class], ServerRequestFactory::fromGlobals());
     }
 
     /**
@@ -98,35 +66,19 @@ class Router
      */
     public function group(array $attributes, Closure $body): self
     {
-        // Backup group config
-        $config = clone $this->config;
+        $oldAttributes = $this->collection->getAttributes();
+        $this->collection->appendAttributes($attributes);
 
-        // Set middleware for the group
-        if (isset($attributes[GroupAttributes::MIDDLEWARE])) {
-            $this->config->addMiddleware($attributes[GroupAttributes::MIDDLEWARE]);
-        }
-
-        // Set prefix for the group
-        if (isset($attributes[GroupAttributes::PREFIX])) {
-            $this->config->addPrefix($attributes[GroupAttributes::PREFIX]);
-        }
-
-        // Set domain for the group
-        if (isset($attributes[GroupAttributes::DOMAIN])) {
-            $this->config->setDomain($attributes[GroupAttributes::DOMAIN]);
-        }
-
-        // Run the group body closure
         call_user_func($body, $this);
 
         // Revert to the old config
-        $this->config = $config;
+        $this->collection->setAttributes($oldAttributes);
 
         return $this;
     }
 
     /**
-     * Map a controller to a route and set basic attributes
+     * Map a controller to a route
      *
      * @param string $method
      * @param string $path
@@ -136,18 +88,7 @@ class Router
      */
     public function map(string $method, string $path, $controller, ?string $name = null): self
     {
-        $route = new Route(
-            $name,
-            $this->config->getPrefix() . $path,
-            $method,
-            $controller,
-            $this->config->getMiddleware(),
-            $this->config->getDomain()
-        );
-
-        $this->routes[$method][] = $route;
-
-        $name && $this->names[$name] = $route;
+        $this->collection->add($method, $path, $controller, $name);
 
         return $this;
     }
@@ -163,20 +104,13 @@ class Router
      */
     public function dispatch(): self
     {
-        $domain = $this->request->getUri()->getHost();
-        $uri = $this->request->getUri()->getPath();
+        /** @var ServerRequestInterface $request */
+        $request = $this->container->get(ServerRequestInterface::class);
 
-        foreach ($this->findRoutesByMethod($this->request->getMethod()) as $route) {
+        foreach ($this->collection->findByMethod($request->getMethod()) as $route) {
             $parameters = [];
-
-            if (
-                (!$route->getDomain() || $this->compareDomain($route->getDomain(), $domain)) &&
-                $this->compareUri($route->getPath(), $uri, $parameters)
-            ) {
-                $route->setParameters($this->pruneRouteParameters($parameters));
-                $route->setUri($uri);
-
-                $this->publisher->publish($this->run($route, $parameters, $this->request));
+            if ($this->compare($route, $request, $parameters)) {
+                $this->run($route, $parameters, $request);
 
                 return $this;
             }
@@ -186,17 +120,32 @@ class Router
     }
 
     /**
-     * Find all candidate routes for current http method
+     * Run the route controllers and related middleware
      *
-     * @param string $method
-     * @return Route[]
+     * @param Route $route
+     * @param array $parameters
+     * @param ServerRequestInterface $request
+     * @throws ContainerException
+     * @throws InvalidCallableException
+     * @throws NotFoundException
      */
-    private function findRoutesByMethod(string $method): array
+    private function run(Route $route, array $parameters, ServerRequestInterface $request)
     {
-        $routes = array_merge($this->routes['*'] ?? [], $this->routes[$method] ?? []);
-        sort($routes, SORT_DESC);
+        $route->setParameters($this->pruneRouteParameters($parameters));
+        $route->setUri($request->getUri()->getPath());
 
-        return $routes;
+        $this->bind([Route::class], $route);
+
+        foreach ($parameters as $key => $value) {
+            $this->bind(['$' . $key], $value);
+        }
+
+        /** @var Publisher $publisher */
+        $publisher = $this->container->get(Publisher::class);
+        $publisher->publish($this->callStack(
+            array_merge($route->getMiddleware(), [$route->getController()]),
+            $request
+        ));
     }
 
     /**
@@ -214,37 +163,7 @@ class Router
     }
 
     /**
-     * Run the controller of the given route
-     *
-     * @param Route $route
-     * @param array $parameters
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface|mixed|null
-     * @throws ContainerException
-     * @throws InvalidCallableException
-     * @throws NotFoundException
-     */
-    private function run(Route $route, array $parameters, ServerRequestInterface $request)
-    {
-        $this->container->singleton('$container', $this->container);
-        $this->container->singleton(Container::class, $this->container);
-        $this->container->singleton(ContainerInterface::class, $this->container);
-
-        $this->container->singleton('$router', $this);
-        $this->container->singleton(Router::class, $this);
-
-        $this->container->singleton('$route', $route);
-        $this->container->singleton(Route::class, $route);
-
-        foreach ($parameters as $key => $value) {
-            $this->container->singleton('$' . $key, $value);
-        }
-
-        return $this->runStack(array_merge($route->getMiddleware(), [$route->getController()]), $request);
-    }
-
-    /**
-     * Run the controller through the middleware (list)
+     * Call the given callable stack
      *
      * @param string[] $callables
      * @param ServerRequestInterface $request
@@ -254,7 +173,7 @@ class Router
      * @throws InvalidCallableException
      * @throws NotFoundException
      */
-    private function runStack(array $callables, ServerRequestInterface $request, $i = 0)
+    private function callStack(array $callables, ServerRequestInterface $request, $i = 0)
     {
         $this->container->singleton('$request', $request);
         $this->container->singleton(ServerRequest::class, $request);
@@ -262,7 +181,7 @@ class Router
 
         if (isset($callables[$i + 1])) {
             $next = function (ServerRequestInterface $request) use ($callables, $i) {
-                return $this->runStack($callables, $request, $i + 1);
+                return $this->callStack($callables, $request, $i + 1);
             };
 
             $this->container->closure('$next', $next);
@@ -326,6 +245,22 @@ class Router
     }
 
     /**
+     * Compare given route with the given http request
+     *
+     * @param Route $route
+     * @param ServerRequestInterface $request
+     * @param array $parameters
+     * @return bool
+     */
+    private function compare(Route $route, ServerRequestInterface $request, array &$parameters): bool
+    {
+        return (
+            $this->compareDomain($route->getDomain(), $request->getUri()->getHost()) &&
+            $this->compareUri($route->getPath(), $request->getUri()->getPath(), $parameters)
+        );
+    }
+
+    /**
      * Check if given request domain matches given route domain
      *
      * @param string|null $routeDomain
@@ -334,7 +269,7 @@ class Router
      */
     private function compareDomain(?string $routeDomain, string $requestDomain): bool
     {
-        return preg_match('@^' . $routeDomain . '$@', $requestDomain);
+        return !$routeDomain || preg_match('@^' . $routeDomain . '$@', $requestDomain);
     }
 
     /**
@@ -378,7 +313,7 @@ class Router
             $suffix = '';
         }
 
-        $pattern = $this->parameters[$name] ?? '[^/]+';
+        $pattern = $this->patterns[$name] ?? '[^/]+';
 
         return '(?<' . $name . '>' . $pattern . ')' . $suffix;
     }
@@ -390,9 +325,9 @@ class Router
      * @param string $pattern
      * @return self
      */
-    public function define(string $name, string $pattern): self
+    public function patterns(string $name, string $pattern): self
     {
-        $this->parameters[$name] = $pattern;
+        $this->patterns[$name] = $pattern;
 
         return $this;
     }
@@ -400,18 +335,18 @@ class Router
     /**
      * Generate URL for given route name
      *
-     * @param string $route
+     * @param string $routeName
      * @param string[] $parameters
      * @return string
      * @throws UndefinedRouteException
      */
-    public function url(string $route, array $parameters = []): string
+    public function url(string $routeName, array $parameters = []): string
     {
-        if (isset($this->names[$route]) == false) {
-            throw new UndefinedRouteException("There is no route with name `$route`.");
+        if (!($route = $this->collection->findByName($routeName))) {
+            throw new UndefinedRouteException("There is no route with name `$routeName`.");
         }
 
-        $uri = $this->names[$route]->getPath();
+        $uri = $route->getPath();
 
         foreach ($parameters as $name => $value) {
             $uri = preg_replace('/\??{' . $name . '\??}/', $value, $uri);
@@ -421,6 +356,35 @@ class Router
         $uri = str_replace('/?', '', $uri);
 
         return $uri;
+    }
+
+    /**
+     * Bind dependencies using the container
+     *
+     * @param array $abstracts
+     * @param $concrete
+     */
+    private function bind(array $abstracts, $concrete): void
+    {
+        foreach ($abstracts as $abstract) $this->container->singleton($abstract, $concrete);
+    }
+
+    /**
+     * Map a controller to given route with multiple http methods
+     *
+     * @param array $methods
+     * @param string $path
+     * @param Closure|callable|string $controller
+     * @param string|null $name
+     * @return self
+     */
+    public function match(array $methods, string $path, $controller, ?string $name = null): self
+    {
+        foreach ($methods as $method) {
+            return $this->map($method, $path, $controller, $name);
+        }
+
+        return $this;
     }
 
     /**
@@ -446,7 +410,7 @@ class Router
      */
     public function get(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::GET, $path, $controller, $name);
+        return $this->map('GET', $path, $controller, $name);
     }
 
     /**
@@ -459,7 +423,7 @@ class Router
      */
     public function post(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::POST, $path, $controller, $name);
+        return $this->map('POST', $path, $controller, $name);
     }
 
     /**
@@ -472,7 +436,7 @@ class Router
      */
     public function put(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::PUT, $path, $controller, $name);
+        return $this->map('PUT', $path, $controller, $name);
     }
 
     /**
@@ -485,7 +449,7 @@ class Router
      */
     public function patch(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::PATCH, $path, $controller, $name);
+        return $this->map('PATCH', $path, $controller, $name);
     }
 
     /**
@@ -498,39 +462,20 @@ class Router
      */
     public function delete(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::DELETE, $path, $controller, $name);
+        return $this->map('DELETE', $path, $controller, $name);
     }
 
     /**
-     * @return ServerRequestInterface
+     * Map a controller to given OPTIONS route
+     *
+     * @param string $path
+     * @param Closure|callable|string $controller
+     * @param string|null $name
+     * @return self
      */
-    public function getRequest(): ServerRequestInterface
+    public function options(string $path, $controller, ?string $name = null): self
     {
-        return $this->request;
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     */
-    public function setRequest(ServerRequestInterface $request): void
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * @return Publisher|null
-     */
-    public function getPublisher(): ?Publisher
-    {
-        return $this->publisher;
-    }
-
-    /**
-     * @param Publisher $publisher
-     */
-    public function setPublisher(Publisher $publisher): void
-    {
-        $this->publisher = $publisher;
+        return $this->map('OPTIONS', $path, $controller, $name);
     }
 
     /**
@@ -539,5 +484,13 @@ class Router
     public function setContainer(Container $container): void
     {
         $this->container = $container;
+    }
+
+    /**
+     * @return Container
+     */
+    public function getContainer(): Container
+    {
+        return $this->container;
     }
 }

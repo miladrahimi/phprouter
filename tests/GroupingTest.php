@@ -2,7 +2,6 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
-use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Tests\Testing\SampleMiddleware;
 use Throwable;
@@ -63,7 +62,7 @@ class GroupingTest extends TestCase
      */
     public function test_with_a_prefix()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/group/page');
+        $this->mockRequest('GET', 'http://example.com/group/page');
 
         $router = $this->router()
             ->group(['prefix' => '/group'], function (Router $router) {
@@ -78,7 +77,7 @@ class GroupingTest extends TestCase
      */
     public function test_nested_groups_with_prefix()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/group1/group2/page');
+        $this->mockRequest('GET', 'http://example.com/group1/group2/page');
 
         $router = $this->router()
             ->group(['prefix' => '/group1'], function (Router $router) {
@@ -95,7 +94,7 @@ class GroupingTest extends TestCase
      */
     public function test_with_domain()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://sub.domain.tld/');
+        $this->mockRequest('GET', 'http://sub.domain.tld/');
 
         $router = $this->router()
             ->group(['domain' => 'sub.domain.tld'], function (Router $router) {
@@ -110,7 +109,7 @@ class GroupingTest extends TestCase
      */
     public function test_nested_groups_with_domain_it_should_consider_the_inner_group_domain()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://sub2.domain.com/');
+        $this->mockRequest('GET', 'http://sub2.domain.com/');
 
         $router = $this->router()
             ->group(['domain' => 'sub1.domain.com'], function (Router $router) {

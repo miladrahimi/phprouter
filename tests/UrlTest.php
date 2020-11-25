@@ -2,7 +2,6 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
-use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Router;
 use Throwable;
@@ -28,7 +27,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://web.com/page');
+        $this->mockRequest('GET', 'http://web.com/page');
 
         $router = $this->router()
             ->get('/', function (Router $r) {
@@ -47,7 +46,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_required_parameter()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://web.com/contact');
+        $this->mockRequest('GET', 'http://web.com/contact');
 
         $router = $this->router()
             ->get('/{name}', function (Router $r) {
@@ -63,7 +62,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_optional_parameter()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://web.com/contact');
+        $this->mockRequest('GET', 'http://web.com/contact');
 
         $router = $this->router()
             ->get('/{name?}', function (Router $r) {
@@ -79,7 +78,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_optional_parameter_2()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://web.com/contact');
+        $this->mockRequest('GET', 'http://web.com/contact');
 
         $router = $this->router()
             ->get('/{name?}', function (Router $r) {
@@ -95,7 +94,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_optional_parameter_3()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://web.com/page/contact');
+        $this->mockRequest('GET', 'http://web.com/page/contact');
 
         $router = $this->router()
             ->get('/page/?{name?}', function (Router $r) {

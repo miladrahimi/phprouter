@@ -286,7 +286,7 @@ use MiladRahimi\PhpRouter\Router;
 
 $router = new Router();
 
-$router->define('id', '[0-9]+');
+$router->patterns('id', '[0-9]+');
 
 $router->get('/blog/post/{id}', function (int $id) {
     return 'Content of the post: ' . $id;

@@ -4,6 +4,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpContainer\Container;
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Testing\FakePublisher;
 use Throwable;
 
@@ -14,12 +15,9 @@ class ContainerTest extends TestCase
      */
     public function test_setting_and_getting_container()
     {
-        $container = new Container();
-        $container->singleton('name', 'Pink Floyd');
-
         $router = new Router();
-        $router->setPublisher(new FakePublisher());
-        $router->setContainer($container);
+        $router->getContainer()->singleton('name', 'Pink Floyd');;
+        $router->getContainer()->singleton(Publisher::class, new FakePublisher());;
 
         $router->get('/', function (Container $container) {
             return $container->get('name');

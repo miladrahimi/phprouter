@@ -2,7 +2,6 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
-use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router;
@@ -19,7 +18,7 @@ class RoutingTest extends TestCase
      */
     public function test_a_simple_get_route()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/');
+        $this->mockRequest('GET', 'http://example.com/');
 
         $router = $this->router()->map('GET', '/', $this->OkController())->dispatch();
 
@@ -31,7 +30,7 @@ class RoutingTest extends TestCase
      */
     public function test_a_simple_post_route()
     {
-        $this->mockRequest(HttpMethods::POST, 'http://example.com/');
+        $this->mockRequest('POST', 'http://example.com/');
 
         $router = $this->router()->post('/', $this->OkController())->dispatch();
 
@@ -43,7 +42,7 @@ class RoutingTest extends TestCase
      */
     public function test_a_simple_put_route()
     {
-        $this->mockRequest(HttpMethods::PUT, 'http://example.com/');
+        $this->mockRequest('PUT', 'http://example.com/');
 
         $router = $this->router()->put('/', $this->OkController())->dispatch();
 
@@ -55,7 +54,7 @@ class RoutingTest extends TestCase
      */
     public function test_a_simple_patch_route()
     {
-        $this->mockRequest(HttpMethods::PATCH, 'http://example.com/');
+        $this->mockRequest('PATCH', 'http://example.com/');
 
         $router = $this->router()->patch('/', $this->OkController())->dispatch();
 
@@ -67,7 +66,7 @@ class RoutingTest extends TestCase
      */
     public function test_a_simple_delete_route()
     {
-        $this->mockRequest(HttpMethods::DELETE, 'http://example.com/');
+        $this->mockRequest('DELETE', 'http://example.com/');
 
         $router = $this->router()->delete('/', $this->OkController())->dispatch();
 
@@ -93,7 +92,7 @@ class RoutingTest extends TestCase
      */
     public function test_the_any_method()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/');
+        $this->mockRequest('GET', 'http://example.com/');
 
         $router = $this->router()->any('/', function () {
             return 'Test any for get';
@@ -101,7 +100,7 @@ class RoutingTest extends TestCase
 
         $this->assertEquals('Test any for get', $this->output($router));
 
-        $this->mockRequest(HttpMethods::POST, 'http://example.com/');
+        $this->mockRequest('POST', 'http://example.com/');
 
         $router = $this->router()
             ->any('/', function () {
@@ -117,7 +116,7 @@ class RoutingTest extends TestCase
      */
     public function test_multiple_routes()
     {
-        $this->mockRequest(HttpMethods::POST, 'http://example.com/666');
+        $this->mockRequest('POST', 'http://example.com/666');
 
         $router = $this->router()
             ->get('/', function () {
@@ -153,7 +152,7 @@ class RoutingTest extends TestCase
      */
     public function test_multiple_http_methods()
     {
-        $this->mockRequest(HttpMethods::POST, 'http://example.com/');
+        $this->mockRequest('POST', 'http://example.com/');
 
         $router = $this->router()
             ->get('/', function () {
@@ -175,7 +174,7 @@ class RoutingTest extends TestCase
      */
     public function test_with_a_required_parameter()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://web.com/666');
+        $this->mockRequest('GET', 'http://web.com/666');
 
         $router = $this->router()
             ->get('/{id}', function ($id) {
@@ -191,7 +190,7 @@ class RoutingTest extends TestCase
      */
     public function test_with_a_optional_parameter_when_it_is_present()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://web.com/666');
+        $this->mockRequest('GET', 'http://web.com/666');
 
         $router = $this->router()
             ->get('/{id?}', function ($id) {
@@ -207,7 +206,7 @@ class RoutingTest extends TestCase
      */
     public function test_with_a_optional_parameter_when_it_is_not_present()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://web.com/');
+        $this->mockRequest('GET', 'http://web.com/');
 
         $router = $this->router()
             ->get('/{id?}', function ($id = 'Default') {
@@ -223,21 +222,21 @@ class RoutingTest extends TestCase
      */
     public function test_with_defined_parameters()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/666');
+        $this->mockRequest('GET', 'http://example.com/666');
 
         $router = $this->router()
-            ->define('id', '[0-9]+')
+            ->patterns('id', '[0-9]+')
             ->get('/{id}', $this->OkController())
             ->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
 
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/abc');
+        $this->mockRequest('GET', 'http://example.com/abc');
 
         $this->expectException(RouteNotFoundException::class);
 
         $this->router()
-            ->define('id', '[0-9]+')
+            ->patterns('id', '[0-9]+')
             ->get('/{id}', $this->OkController())
             ->dispatch();
     }
@@ -302,23 +301,6 @@ class RoutingTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_set_and_get_request()
-    {
-        $router = $this->router();
-
-        $router->get('/', function () use ($router) {
-            $newRequest = $router->getRequest()->withMethod('CUSTOM');
-            $router->setRequest($newRequest);
-
-            return $router->getRequest()->getMethod();
-        })->dispatch();
-
-        $this->assertEquals('CUSTOM', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
     public function test_default_publisher()
     {
         ob_start();
@@ -351,7 +333,7 @@ class RoutingTest extends TestCase
      */
     public function test_not_found_error()
     {
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/unknowon');
+        $this->mockRequest('GET', 'http://example.com/unknowon');
 
         $this->expectException(RouteNotFoundException::class);
 

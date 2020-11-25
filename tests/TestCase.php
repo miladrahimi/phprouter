@@ -3,11 +3,10 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use Closure;
-use MiladRahimi\PhpRouter\Enums\HttpMethods;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Testing\FakePublisher;
-use MiladRahimi\PhpRouter\Config;
+use MiladRahimi\PhpRouter\Attributes;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -19,7 +18,7 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/');
+        $this->mockRequest('GET', 'http://example.com/');
     }
 
     /**
@@ -40,13 +39,13 @@ class TestCase extends BaseTestCase
     /**
      * Get a router instance for testing purposes
      *
-     * @param Config|null $config
+     * @param Attributes|null $config
      * @return Router
      */
-    protected function router(Config $config = null): Router
+    protected function router(Attributes $config = null): Router
     {
         $router = new Router($config);
-        $router->setPublisher(new FakePublisher());
+        $router->getContainer()->singleton(Publisher::class, new FakePublisher());
 
         return $router;
     }
@@ -71,7 +70,7 @@ class TestCase extends BaseTestCase
      */
     protected function output(Router $router)
     {
-        return $router->getPublisher()->output;
+        return $router->getContainer()->get(Publisher::class)->output;
     }
 
     /**
@@ -82,7 +81,7 @@ class TestCase extends BaseTestCase
      */
     protected function publisher(Router $router): FakePublisher
     {
-        return $router->getPublisher();
+        return $router->getContainer()->get(Publisher::class);
     }
 
     /**
