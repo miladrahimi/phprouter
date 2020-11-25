@@ -27,12 +27,12 @@ class Route
     private $method;
 
     /**
-     * @var Closure|array
+     * @var array|Closure
      */
     private $controller;
 
     /**
-     * @var string[]|callable[]
+     * @var array[]|Closure[]
      */
     private $middleware;
 
@@ -42,12 +42,12 @@ class Route
     private $domain;
 
     /**
-     * @var null|string
+     * @var string
      */
     private $uri = null;
 
     /**
-     * @var string[]|array[string]string
+     * @var string[]
      */
     private $parameters = [];
 
@@ -128,7 +128,7 @@ class Route
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getMethod(): string
     {
@@ -136,7 +136,7 @@ class Route
     }
 
     /**
-     * @return Closure|callable|string
+     * @return array|Closure
      */
     public function getController()
     {
@@ -144,7 +144,7 @@ class Route
     }
 
     /**
-     * @return string[]|callable[]
+     * @return array[]|Closure[]
      */
     public function getMiddleware(): array
     {
@@ -160,7 +160,7 @@ class Route
     }
 
     /**
-     * @return array|string[]
+     * @return string[]
      */
     public function getParameters(): array
     {
@@ -168,7 +168,7 @@ class Route
     }
 
     /**
-     * @param array|string[] $parameters
+     * @param string[] $parameters
      */
     public function setParameters(array $parameters): void
     {
@@ -176,17 +176,17 @@ class Route
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getUri(): ?string
+    public function getUri(): string
     {
         return $this->uri;
     }
 
     /**
-     * @param string|null $uri
+     * @param string $uri
      */
-    public function setUri(?string $uri): void
+    public function setUri(string $uri): void
     {
         $this->uri = $uri;
     }

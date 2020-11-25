@@ -13,9 +13,6 @@ use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Route;
-use MiladRahimi\PhpRouter\Config;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Laminas\Diactoros\ServerRequest;
@@ -31,21 +28,21 @@ class Router
     /**
      * List of declared routes
      *
-     * @var Route[][]|array[string][int]Route
+     * @var Route[][]
      */
     private $routes = [];
 
     /**
      * List of named routes
      *
-     * @var Route[]|array[string]Route
+     * @var Route[]
      */
     private $names = [];
 
     /**
      * List of defined route parameters
      *
-     * @var string[]|array[string]string
+     * @var string[]
      */
     private $parameters = [];
 
@@ -65,7 +62,7 @@ class Router
 
     /**
      * The configuration of current instance/group
-     * It holds current attributes like prefix, domain...
+     * It holds current attributes like prefix, domain, etc.
      *
      * @var Config
      */
@@ -169,14 +166,14 @@ class Router
         $domain = $this->request->getUri()->getHost();
         $uri = $this->request->getUri()->getPath();
 
-        foreach ($this->routesForMethod($this->request->getMethod()) as $route) {
+        foreach ($this->findRoutesByMethod($this->request->getMethod()) as $route) {
             $parameters = [];
 
             if (
                 (!$route->getDomain() || $this->compareDomain($route->getDomain(), $domain)) &&
                 $this->compareUri($route->getPath(), $uri, $parameters)
             ) {
-                $route->setParameters($this->filterRouteParameters($parameters));
+                $route->setParameters($this->pruneRouteParameters($parameters));
                 $route->setUri($uri);
 
                 $this->publisher->publish($this->run($route, $parameters, $this->request));
@@ -189,12 +186,12 @@ class Router
     }
 
     /**
-     * Get all candidate routes for current http method
+     * Find all candidate routes for current http method
      *
      * @param string $method
      * @return Route[]
      */
-    private function routesForMethod(string $method): array
+    private function findRoutesByMethod(string $method): array
     {
         $routes = array_merge($this->routes['*'] ?? [], $this->routes[$method] ?? []);
         sort($routes, SORT_DESC);
@@ -203,15 +200,16 @@ class Router
     }
 
     /**
-     * Filter route parameters and remove unnecessary parameters
+     * Prune route parameters (remove unnecessary parameters)
      *
      * @param array $parameters
      * @return array
+     * @noinspection PhpUnusedParameterInspection
      */
-    private function filterRouteParameters(array $parameters): array
+    private function pruneRouteParameters(array $parameters): array
     {
         return array_filter($parameters, function ($value, $name) {
-            return isset($value) && is_numeric($name) == false;
+            return is_numeric($name) == false;
         }, ARRAY_FILTER_USE_BOTH);
     }
 
@@ -274,7 +272,7 @@ class Router
     }
 
     /**
-     * Run the given callable (method, closure, etc.)
+     * Run the given callable (controller or middleware)
      *
      * @param Closure|callable|string $callable
      * @return ResponseInterface|mixed|null
@@ -428,79 +426,79 @@ class Router
     /**
      * Map a controller to given route for all the http methods
      *
-     * @param string $route
+     * @param string $path
      * @param Closure|callable|string $controller
      * @param string|null $name
      * @return self
      */
-    public function any(string $route, $controller, ?string $name = null): self
+    public function any(string $path, $controller, ?string $name = null): self
     {
-        return $this->map('*', $route, $controller, $name);
+        return $this->map('*', $path, $controller, $name);
     }
 
     /**
      * Map a controller to given GET route
      *
-     * @param string $route
+     * @param string $path
      * @param Closure|callable|string $controller
      * @param string|null $name
      * @return self
      */
-    public function get(string $route, $controller, ?string $name = null): self
+    public function get(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::GET, $route, $controller, $name);
+        return $this->map(HttpMethods::GET, $path, $controller, $name);
     }
 
     /**
      * Map a controller to given POST route
      *
-     * @param string $route
+     * @param string $path
      * @param Closure|callable|string $controller
      * @param string|null $name
      * @return self
      */
-    public function post(string $route, $controller, ?string $name = null): self
+    public function post(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::POST, $route, $controller, $name);
+        return $this->map(HttpMethods::POST, $path, $controller, $name);
     }
 
     /**
      * Map a controller to given PUT route
      *
-     * @param string $route
+     * @param string $path
      * @param Closure|callable|string $controller
      * @param string|null $name
      * @return self
      */
-    public function put(string $route, $controller, ?string $name = null): self
+    public function put(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::PUT, $route, $controller, $name);
+        return $this->map(HttpMethods::PUT, $path, $controller, $name);
     }
 
     /**
      * Map a controller to given PATCH route
      *
-     * @param string $route
+     * @param string $path
      * @param Closure|callable|string $controller
      * @param string|null $name
      * @return self
      */
-    public function patch(string $route, $controller, ?string $name = null): self
+    public function patch(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::PATCH, $route, $controller, $name);
+        return $this->map(HttpMethods::PATCH, $path, $controller, $name);
     }
 
     /**
      * Map a controller to given DELETE route
      *
-     * @param string $route
+     * @param string $path
      * @param Closure|callable|string $controller
      * @param string|null $name
      * @return self
      */
-    public function delete(string $route, $controller, ?string $name = null): self
+    public function delete(string $path, $controller, ?string $name = null): self
     {
-        return $this->map(HttpMethods::DELETE, $route, $controller, $name);
+        return $this->map(HttpMethods::DELETE, $path, $controller, $name);
     }
 
     /**

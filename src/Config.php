@@ -2,10 +2,12 @@
 
 namespace MiladRahimi\PhpRouter;
 
+use Closure;
+
 /**
  * Class Config
  *
- * @package MiladRahimi\PhpRouter\Values
+ * @package MiladRahimi\PhpRouter
  */
 class Config
 {
@@ -19,7 +21,7 @@ class Config
     /**
      * Middleware list
      *
-     * @var string[]|callable[]
+     * @var array[]|Closure[]
      */
     private $middleware = [];
 
