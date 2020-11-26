@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter;
+namespace MiladRahimi\PhpRouter\Routes;
 
 use Closure;
 
@@ -62,18 +62,18 @@ class Route
      * @param string|null $domain
      */
     public function __construct(
-        ?string $name,
-        string $path,
         string $method,
+        string $path,
         $controller,
+        ?string $name,
         array $middleware,
         ?string $domain
     )
     {
-        $this->name = $name;
-        $this->path = $path;
         $this->method = $method;
+        $this->path = $path;
         $this->controller = $controller;
+        $this->name = $name;
         $this->middleware = $middleware;
         $this->domain = $domain;
     }
@@ -84,10 +84,10 @@ class Route
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
-            'path' => $this->path,
             'method' => $this->method,
+            'path' => $this->path,
             'controller' => $this->controller,
+            'name' => $this->name,
             'middleware' => $this->middleware,
             'domain' => $this->domain,
             'uri' => $this->uri,

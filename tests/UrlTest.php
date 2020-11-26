@@ -13,11 +13,11 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_the_homepage()
     {
-        $router = $this->router()
-            ->get('/', function (Router $r) {
-                return $r->url('home');
-            }, 'home')
-            ->dispatch();
+        $router = $this->router();
+        $router->get('/', function (Router $r) {
+            return $r->url('home');
+        }, 'home');
+        $router->dispatch();
 
         $this->assertEquals('/', $this->output($router));
     }
@@ -29,14 +29,14 @@ class UrlTest extends TestCase
     {
         $this->mockRequest('GET', 'http://web.com/page');
 
-        $router = $this->router()
-            ->get('/', function (Router $r) {
-                return $r->url('home');
-            }, 'home')
-            ->get('/page', function (Router $r) {
-                return $r->url('page');
-            }, 'page')
-            ->dispatch();
+        $router = $this->router();
+        $router->get('/', function (Router $r) {
+            return $r->url('home');
+        }, 'home');
+        $router->get('/page', function (Router $r) {
+            return $r->url('page');
+        }, 'page');
+        $router->dispatch();
 
         $this->assertEquals('/page', $this->output($router));
     }
@@ -48,11 +48,11 @@ class UrlTest extends TestCase
     {
         $this->mockRequest('GET', 'http://web.com/contact');
 
-        $router = $this->router()
-            ->get('/{name}', function (Router $r) {
-                return $r->url('page', ['name' => 'about']);
-            }, 'page')
-            ->dispatch();
+        $router = $this->router();
+        $router->get('/{name}', function (Router $r) {
+            return $r->url('page', ['name' => 'about']);
+        }, 'page');
+        $router->dispatch();
 
         $this->assertEquals('/about', $this->output($router));
     }
@@ -64,11 +64,11 @@ class UrlTest extends TestCase
     {
         $this->mockRequest('GET', 'http://web.com/contact');
 
-        $router = $this->router()
-            ->get('/{name?}', function (Router $r) {
-                return $r->url('page', ['name' => 'about']);
-            }, 'page')
-            ->dispatch();
+        $router = $this->router();
+        $router->get('/{name?}', function (Router $r) {
+            return $r->url('page', ['name' => 'about']);
+        }, 'page');
+        $router->dispatch();
 
         $this->assertEquals('/about', $this->output($router));
     }
@@ -80,11 +80,11 @@ class UrlTest extends TestCase
     {
         $this->mockRequest('GET', 'http://web.com/contact');
 
-        $router = $this->router()
-            ->get('/{name?}', function (Router $r) {
-                return $r->url('page');
-            }, 'page')
-            ->dispatch();
+        $router = $this->router();
+        $router->get('/{name?}', function (Router $r) {
+            return $r->url('page');
+        }, 'page');
+        $router->dispatch();
 
         $this->assertEquals('/', $this->output($router));
     }
@@ -96,11 +96,11 @@ class UrlTest extends TestCase
     {
         $this->mockRequest('GET', 'http://web.com/page/contact');
 
-        $router = $this->router()
-            ->get('/page/?{name?}', function (Router $r) {
-                return $r->url('page');
-            }, 'page')
-            ->dispatch();
+        $router = $this->router();
+        $router->get('/page/?{name?}', function (Router $r) {
+            return $r->url('page');
+        }, 'page');
+        $router->dispatch();
 
         $this->assertEquals('/page', $this->output($router));
     }
@@ -113,10 +113,10 @@ class UrlTest extends TestCase
         $this->expectException(UndefinedRouteException::class);
         $this->expectExceptionMessage("There is no route with name `home`.");
 
-        $this->router()
-            ->get('/', function (Router $r) {
-                return $r->url('home');
-            })
-            ->dispatch();
+        $router = $this->router();
+        $router->get('/', function (Router $r) {
+            return $r->url('home');
+        });
+        $router->dispatch();
     }
 }

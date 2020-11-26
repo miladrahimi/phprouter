@@ -3,7 +3,7 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Enums\HttpMethods;
-use MiladRahimi\PhpRouter\Route;
+use MiladRahimi\PhpRouter\Routes\Route;
 use Throwable;
 
 class NamingTest extends TestCase
@@ -13,11 +13,11 @@ class NamingTest extends TestCase
      */
     public function test_a_named_route()
     {
-        $router = $this->router()
-            ->get('/', function (Route $route) {
-                return $route->getName();
-            }, 'home')
-            ->dispatch();
+        $router = $this->router();
+        $router->get('/', function (Route $route) {
+            return $route->getName();
+        }, 'home');
+        $router->dispatch();
 
         $this->assertEquals('home', $this->output($router));
     }

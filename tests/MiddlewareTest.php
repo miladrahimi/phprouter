@@ -17,9 +17,11 @@ class MiddlewareTest extends TestCase
     {
         $middleware = new SampleMiddleware(666);
 
-        $router = $this->router()->group(['middleware' => [$middleware]], function (Router $r) {
+        $router = $this->router();
+        $router->group(['middleware' => [$middleware]], function (Router $r) {
             $r->get('/', $this->OkController());
-        })->dispatch();
+        });
+        $router->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
         $this->assertContains($middleware->content, SampleMiddleware::$output);
@@ -32,9 +34,11 @@ class MiddlewareTest extends TestCase
     {
         $middleware = SampleMiddleware::class;
 
-        $router = $this->router()->group(['middleware' => [$middleware]], function (Router $r) {
+        $router = $this->router();
+        $router->group(['middleware' => [$middleware]], function (Router $r) {
             $r->get('/', $this->OkController());
-        })->dispatch();
+        });
+        $router->dispatch();
 
         $this->assertEquals('OK', $this->output($router));
         $this->assertEquals('empty', SampleMiddleware::$output[0]);
@@ -47,9 +51,11 @@ class MiddlewareTest extends TestCase
     {
         $middleware = new StopperMiddleware(666);
 
-        $router = $this->router()->group(['middleware' => [$middleware]], function (Router $r) {
+        $router = $this->router();
+        $router->group(['middleware' => [$middleware]], function (Router $r) {
             $r->get('/', $this->OkController());
-        })->dispatch();
+        });
+        $router->dispatch();
 
         $this->assertEquals('Stopped in middleware.', $this->output($router));
         $this->assertContains($middleware->content, StopperMiddleware::$output);
@@ -62,8 +68,10 @@ class MiddlewareTest extends TestCase
     {
         $this->expectException(InvalidCallableException::class);
 
-        $this->router()->group(['middleware' => ['UnknownMiddleware']], function (Router $r) {
+        $router = $this->router();
+        $router->group(['middleware' => ['UnknownMiddleware']], function (Router $r) {
             $r->get('/', $this->OkController());
-        })->dispatch();
+        });
+        $router->dispatch();
     }
 }

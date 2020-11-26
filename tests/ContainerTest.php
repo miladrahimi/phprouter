@@ -21,7 +21,9 @@ class ContainerTest extends TestCase
 
         $router->get('/', function (Container $container) {
             return $container->get('name');
-        })->dispatch();
+        });
+
+        $router->dispatch();
 
         $this->assertEquals('Pink Floyd', $this->output($router));
     }
