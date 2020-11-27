@@ -75,7 +75,7 @@ class Caller
                 throw new InvalidCallableException("Class `$callable` not found.");
             }
 
-            $object = new $class();
+            $object = $this->container->instantiate($class);
 
             if (method_exists($object, $method) == false) {
                 throw new InvalidCallableException("Method `$class::$method` not found.");
