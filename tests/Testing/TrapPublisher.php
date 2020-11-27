@@ -5,7 +5,7 @@ namespace MiladRahimi\PhpRouter\Tests\Testing;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use Psr\Http\Message\ResponseInterface;
 
-class FakePublisher implements Publisher
+class TrapPublisher implements Publisher
 {
     /**
      * @var string

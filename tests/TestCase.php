@@ -6,7 +6,7 @@ use Closure;
 use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Tests\Testing\FakePublisher;
+use MiladRahimi\PhpRouter\Tests\Testing\TrapPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -45,7 +45,7 @@ class TestCase extends BaseTestCase
     protected function router(): Router
     {
         $router = Router::create();
-        $router->setPublisher(new FakePublisher());
+        $router->setPublisher(new TrapPublisher());
 
         return $router;
     }
@@ -77,9 +77,9 @@ class TestCase extends BaseTestCase
      * Get the given router publisher.
      *
      * @param Router $router
-     * @return FakePublisher|Publisher
+     * @return TrapPublisher|Publisher
      */
-    protected function publisher(Router $router): FakePublisher
+    protected function publisher(Router $router): TrapPublisher
     {
         return $router->getPublisher();
     }

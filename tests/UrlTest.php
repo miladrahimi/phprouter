@@ -3,7 +3,6 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
-use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Url;
 use Throwable;
 
@@ -15,8 +14,8 @@ class UrlTest extends TestCase
     public function test_generating_url_for_the_homepage()
     {
         $router = $this->router();
-        $router->get('/', function (Url $r) {
-            return $r->make('home');
+        $router->get('/', function (Url $url) {
+            return $url->make('home');
         }, 'home');
         $router->dispatch();
 
@@ -31,11 +30,11 @@ class UrlTest extends TestCase
         $this->mockRequest('GET', 'http://web.com/page');
 
         $router = $this->router();
-        $router->get('/', function (Url $r) {
-            return $r->make('home');
+        $router->get('/', function (Url $url) {
+            return $url->make('home');
         }, 'home');
-        $router->get('/page', function (Url $r) {
-            return $r->make('page');
+        $router->get('/page', function (Url $url) {
+            return $url->make('page');
         }, 'page');
         $router->dispatch();
 
@@ -47,11 +46,14 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_required_parameter()
     {
-        $this->mockRequest('GET', 'http://web.com/contact');
+        $this->mockRequest('GET', 'http://web.com/');
 
         $router = $this->router();
-        $router->get('/{name}', function (Url $r) {
-            return $r->make('page', ['name' => 'about']);
+        $router->get('/', function (Url $url) {
+            return $url->make('page', ['name' => 'about']);
+        });
+        $router->get('/{name}', function () {
+            return 'empty';
         }, 'page');
         $router->dispatch();
 
@@ -63,47 +65,56 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_optional_parameter()
     {
-        $this->mockRequest('GET', 'http://web.com/contact');
+        $this->mockRequest('GET', 'http://web.com/');
 
         $router = $this->router();
-        $router->get('/{name?}', function (Url $r) {
-            return $r->make('page', ['name' => 'about']);
+        $router->get('/', function (Url $url) {
+            return $url->make('page', ['name' => 'blog']);
+        });
+        $router->get('/{name?}', function () {
+            return 'empty';
         }, 'page');
         $router->dispatch();
 
-        $this->assertEquals('/about', $this->output($router));
+        $this->assertEquals('/blog', $this->output($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_generating_url_for_a_page_with_optional_parameter_2()
+    public function test_generating_url_for_a_page_with_optional_parameter_ignored()
     {
-        $this->mockRequest('GET', 'http://web.com/contact');
+        $this->mockRequest('GET', 'http://web.com/');
 
         $router = $this->router();
-        $router->get('/{name?}', function (Url $r) {
-            return $r->make('page');
+        $router->get('/', function (Url $url) {
+            return $url->make('page');
+        });
+        $router->get('/profile/{name?}', function () {
+            return 'empty';
         }, 'page');
         $router->dispatch();
 
-        $this->assertEquals('/', $this->output($router));
+        $this->assertEquals('/profile/', $this->output($router));
     }
 
     /**
      * @throws Throwable
      */
-    public function test_generating_url_for_a_page_with_optional_parameter_3()
+    public function test_generating_url_for_a_page_with_optional_parameter_and_slash_ignored()
     {
-        $this->mockRequest('GET', 'http://web.com/page/contact');
+        $this->mockRequest('GET', 'http://web.com/');
 
         $router = $this->router();
-        $router->get('/page/?{name?}', function (Url $r) {
-            return $r->make('page');
+        $router->get('/', function (Url $url) {
+            return $url->make('page');
+        });
+        $router->get('/profile/?{name?}', function () {
+            return 'empty';
         }, 'page');
         $router->dispatch();
 
-        $this->assertEquals('/page', $this->output($router));
+        $this->assertEquals('/profile', $this->output($router));
     }
 
     /**
@@ -112,11 +123,11 @@ class UrlTest extends TestCase
     public function test_generating_url_for_undefined_route()
     {
         $this->expectException(UndefinedRouteException::class);
-        $this->expectExceptionMessage("There is no route named `home`.");
+        $this->expectExceptionMessage("There is no route named `page`.");
 
         $router = $this->router();
         $router->get('/', function (Url $r) {
-            return $r->make('home');
+            return $r->make('page');
         });
         $router->dispatch();
     }
