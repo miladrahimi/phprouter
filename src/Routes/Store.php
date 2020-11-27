@@ -2,12 +2,7 @@
 
 namespace MiladRahimi\PhpRouter\Routes;
 
-/**
- * Class RouteRepository
- *
- * @package MiladRahimi\PhpRouter
- */
-class RouteRepository
+class Store
 {
     /**
      * @var array

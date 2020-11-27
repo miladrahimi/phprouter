@@ -4,11 +4,6 @@ namespace MiladRahimi\PhpRouter\Routes;
 
 use Closure;
 
-/**
- * Class Route
- *
- * @package MiladRahimi\PhpRouter
- */
 class Route
 {
     /**

@@ -4,6 +4,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Url;
 use Throwable;
 
 class UrlTest extends TestCase
@@ -14,8 +15,8 @@ class UrlTest extends TestCase
     public function test_generating_url_for_the_homepage()
     {
         $router = $this->router();
-        $router->get('/', function (Router $r) {
-            return $r->url('home');
+        $router->get('/', function (Url $r) {
+            return $r->make('home');
         }, 'home');
         $router->dispatch();
 
@@ -30,11 +31,11 @@ class UrlTest extends TestCase
         $this->mockRequest('GET', 'http://web.com/page');
 
         $router = $this->router();
-        $router->get('/', function (Router $r) {
-            return $r->url('home');
+        $router->get('/', function (Url $r) {
+            return $r->make('home');
         }, 'home');
-        $router->get('/page', function (Router $r) {
-            return $r->url('page');
+        $router->get('/page', function (Url $r) {
+            return $r->make('page');
         }, 'page');
         $router->dispatch();
 
@@ -49,8 +50,8 @@ class UrlTest extends TestCase
         $this->mockRequest('GET', 'http://web.com/contact');
 
         $router = $this->router();
-        $router->get('/{name}', function (Router $r) {
-            return $r->url('page', ['name' => 'about']);
+        $router->get('/{name}', function (Url $r) {
+            return $r->make('page', ['name' => 'about']);
         }, 'page');
         $router->dispatch();
 
@@ -65,8 +66,8 @@ class UrlTest extends TestCase
         $this->mockRequest('GET', 'http://web.com/contact');
 
         $router = $this->router();
-        $router->get('/{name?}', function (Router $r) {
-            return $r->url('page', ['name' => 'about']);
+        $router->get('/{name?}', function (Url $r) {
+            return $r->make('page', ['name' => 'about']);
         }, 'page');
         $router->dispatch();
 
@@ -81,8 +82,8 @@ class UrlTest extends TestCase
         $this->mockRequest('GET', 'http://web.com/contact');
 
         $router = $this->router();
-        $router->get('/{name?}', function (Router $r) {
-            return $r->url('page');
+        $router->get('/{name?}', function (Url $r) {
+            return $r->make('page');
         }, 'page');
         $router->dispatch();
 
@@ -97,8 +98,8 @@ class UrlTest extends TestCase
         $this->mockRequest('GET', 'http://web.com/page/contact');
 
         $router = $this->router();
-        $router->get('/page/?{name?}', function (Router $r) {
-            return $r->url('page');
+        $router->get('/page/?{name?}', function (Url $r) {
+            return $r->make('page');
         }, 'page');
         $router->dispatch();
 
@@ -111,11 +112,11 @@ class UrlTest extends TestCase
     public function test_generating_url_for_undefined_route()
     {
         $this->expectException(UndefinedRouteException::class);
-        $this->expectExceptionMessage("There is no route with name `home`.");
+        $this->expectExceptionMessage("There is no route named `home`.");
 
         $router = $this->router();
-        $router->get('/', function (Router $r) {
-            return $r->url('home');
+        $router->get('/', function (Url $r) {
+            return $r->make('home');
         });
         $router->dispatch();
     }

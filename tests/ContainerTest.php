@@ -15,9 +15,8 @@ class ContainerTest extends TestCase
      */
     public function test_setting_and_getting_container()
     {
-        $router = new Router();
+        $router = $this->router();
         $router->getContainer()->singleton('name', 'Pink Floyd');;
-        $router->getContainer()->singleton(Publisher::class, new FakePublisher());;
 
         $router->get('/', function (Container $container) {
             return $container->get('name');

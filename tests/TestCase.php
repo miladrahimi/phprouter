@@ -3,10 +3,10 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use Closure;
+use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Testing\FakePublisher;
-use MiladRahimi\PhpRouter\Attributes;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -39,13 +39,13 @@ class TestCase extends BaseTestCase
     /**
      * Get a router instance for testing purposes
      *
-     * @param Attributes|null $config
      * @return Router
+     * @throws ContainerException
      */
-    protected function router(Attributes $config = null): Router
+    protected function router(): Router
     {
-        $router = new Router($config);
-        $router->getContainer()->singleton(Publisher::class, new FakePublisher());
+        $router = Router::create();
+        $router->setPublisher(new FakePublisher());
 
         return $router;
     }
@@ -70,7 +70,7 @@ class TestCase extends BaseTestCase
      */
     protected function output(Router $router)
     {
-        return $router->getContainer()->get(Publisher::class)->output;
+        return $this->publisher($router)->output;
     }
 
     /**
@@ -81,7 +81,7 @@ class TestCase extends BaseTestCase
      */
     protected function publisher(Router $router): FakePublisher
     {
-        return $router->getContainer()->get(Publisher::class);
+        return $router->getPublisher();
     }
 
     /**

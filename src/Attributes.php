@@ -2,11 +2,6 @@
 
 namespace MiladRahimi\PhpRouter;
 
-/**
- * Class Attributes
- *
- * @package MiladRahimi\PhpRouter
- */
 class Attributes
 {
     const MIDDLEWARE = 'middleware';

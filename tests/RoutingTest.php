@@ -304,7 +304,7 @@ class RoutingTest extends TestCase
     {
         ob_start();
 
-        $router = new Router();
+        $router = Router::create();
 
         $router->get('/', function () {
             return 'home';
