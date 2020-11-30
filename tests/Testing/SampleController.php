@@ -11,4 +11,9 @@ class SampleController
     {
         return 'Home';
     }
+
+    public function page()
+    {
+        return 'Page';
+    }
 }

@@ -9,7 +9,7 @@ class Storekeeper
     /**
      * @var Store
      */
-    private $repository;
+    private $store;
 
     /**
      * @var string
@@ -33,7 +33,7 @@ class Storekeeper
      */
     public function __construct(Store $repository)
     {
-        $this->repository = $repository;
+        $this->store = $repository;
     }
 
     /**
@@ -47,7 +47,7 @@ class Storekeeper
     public function add(string $method, string $path, $controller, ?string $name = null): void
     {
         $path = $this->prefix . $path;
-        $this->repository->save($method, $path, $controller, $name, $this->middleware, $this->domain);
+        $this->store->save($method, $path, $controller, $name, $this->middleware, $this->domain);
     }
 
     /**
@@ -87,16 +87,16 @@ class Storekeeper
     /**
      * @return Store
      */
-    public function getRepository(): Store
+    public function getStore(): Store
     {
-        return $this->repository;
+        return $this->store;
     }
 
     /**
-     * @param Store $repository
+     * @param Store $store
      */
-    public function setRepository(Store $repository): void
+    public function setStore(Store $store): void
     {
-        $this->repository = $repository;
+        $this->store = $store;
     }
 }

@@ -50,7 +50,11 @@ class Store
             $this->repository['method'][$method] ?? []
         );
 
+        print_r($routes);
+
         sort($routes, SORT_DESC);
+
+        print_r($routes);
 
         return $routes;
     }

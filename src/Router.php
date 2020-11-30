@@ -135,6 +135,7 @@ class Router
     /**
      * Dispatch routes and run the application
      *
+     * @throws ContainerException
      * @throws InvalidCallableException
      * @throws RouteNotFoundException
      */
