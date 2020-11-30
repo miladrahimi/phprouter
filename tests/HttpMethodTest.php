@@ -2,6 +2,7 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
+use Laminas\Diactoros\ServerRequest;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Tests\Testing\SampleController;
 use Throwable;
@@ -157,14 +158,16 @@ class HttpMethodTest extends TestCase
     public function test_any_with_some_methods()
     {
         $router = $this->router();
-        $router->any('/', [SampleController::class, 'home']);
+        $router->any('/', function (ServerRequest $request) {
+            return $request->getMethod();
+        });
 
         $this->mockRequest('GET', 'http://example.com/');
         $router->dispatch();
-        $this->assertEquals('Home', $this->output($router));
+        $this->assertEquals('GET', $this->output($router));
 
         $this->mockRequest('POST', 'http://example.com/');
         $router->dispatch();
-        $this->assertEquals('Home', $this->output($router));
+        $this->assertEquals('POST', $this->output($router));
     }
 }
