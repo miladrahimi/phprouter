@@ -69,14 +69,14 @@ class UrlTest extends TestCase
 
         $router = $this->router();
         $router->get('/', function (Url $url) {
-            return $url->make('page', ['name' => 'blog']);
+            return $url->make('post', ['post' => 666]);
         });
-        $router->get('/{name?}', function () {
+        $router->get('/blog/{post?}', function () {
             return 'empty';
-        }, 'page');
+        }, 'post');
         $router->dispatch();
 
-        $this->assertEquals('/blog', $this->output($router));
+        $this->assertEquals('/blog/666', $this->output($router));
     }
 
     /**

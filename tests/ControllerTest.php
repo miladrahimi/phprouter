@@ -68,11 +68,9 @@ class ControllerTest extends TestCase
     public function test_multiple_controller_for_the_same_route_it_should_call_the_last_one()
     {
         $router = $this->router();
-        $router->get('/', [SampleController::class, 'page']);
         $router->get('/', [SampleController::class, 'home']);
+        $router->get('/', [SampleController::class, 'page']);
         $router->dispatch();
-
-        print_r($router->getStorekeeper()->getStore()->findByMethod('GET'));
 
         $this->assertEquals('Page', $this->output($router));
     }

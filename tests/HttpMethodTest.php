@@ -86,7 +86,7 @@ class HttpMethodTest extends TestCase
         $this->mockRequest('OPTIONS', 'http://example.com/');
 
         $router = $this->router();
-        $router->delete('/', [SampleController::class, 'home']);
+        $router->options('/', [SampleController::class, 'home']);
         $router->dispatch();
 
         $this->assertEquals('Home', $this->output($router));
