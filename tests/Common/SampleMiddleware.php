@@ -28,9 +28,6 @@ class SampleMiddleware
         $this->content = $content ?: 'empty';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function handle(ServerRequestInterface $request, $next)
     {
         static::$output[] = $this->content;

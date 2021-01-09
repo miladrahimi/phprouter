@@ -49,6 +49,18 @@ class ControllerTest extends TestCase
     /**
      * @throws Throwable
      */
+    public function test_with_an_invalid_method_as_controller_it_should_fail()
+    {
+        $router = $this->router();
+        $router->get('/', [SampleController::class, 'invalid']);
+
+        $this->expectException(InvalidCallableException::class);
+        $router->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
     public function test_with_multiple_controller_for_the_same_route_it_should_call_the_last_one()
     {
         $router = $this->router();
