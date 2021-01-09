@@ -268,14 +268,6 @@ class Router
     }
 
     /**
-     * @param Container $container
-     */
-    public function setContainer(Container $container): void
-    {
-        $this->container = $container;
-    }
-
-    /**
      * @return Container
      */
     public function getContainer(): Container
@@ -284,66 +276,10 @@ class Router
     }
 
     /**
-     * @return Storekeeper
-     */
-    public function getStorekeeper(): Storekeeper
-    {
-        return $this->storekeeper;
-    }
-
-    /**
-     * @param Storekeeper $storekeeper
-     */
-    public function setStorekeeper(Storekeeper $storekeeper): void
-    {
-        $this->storekeeper = $storekeeper;
-    }
-
-    /**
-     * @return Matcher
-     */
-    public function getMatcher(): Matcher
-    {
-        return $this->matcher;
-    }
-
-    /**
-     * @param Matcher $matcher
-     */
-    public function setMatcher(Matcher $matcher): void
-    {
-        $this->matcher = $matcher;
-    }
-
-    /**
-     * @return Caller
-     */
-    public function getCaller(): Caller
-    {
-        return $this->caller;
-    }
-
-    /**
-     * @param Caller $caller
-     */
-    public function setCaller(Caller $caller): void
-    {
-        $this->caller = $caller;
-    }
-
-    /**
      * @return Publisher
      */
     public function getPublisher(): Publisher
     {
         return $this->publisher;
-    }
-
-    /**
-     * @param Publisher $publisher
-     */
-    public function setPublisher(Publisher $publisher): void
-    {
-        $this->publisher = $publisher;
     }
 }

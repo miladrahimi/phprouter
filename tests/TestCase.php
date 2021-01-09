@@ -3,11 +3,15 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use Closure;
+use MiladRahimi\PhpContainer\Container;
 use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Routing\Repository;
+use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Common\TrapPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Psr\Container\ContainerInterface;
 
 class TestCase extends BaseTestCase
 {
@@ -44,10 +48,13 @@ class TestCase extends BaseTestCase
      */
     protected function router(): Router
     {
-        $router = Router::create();
-        $router->setPublisher(new TrapPublisher());
+        $container = new Container();
+        $container->singleton(Container::class, $container);
+        $container->singleton(ContainerInterface::class, $container);
+        $container->singleton(Repository::class, new Repository());
+        $container->singleton(Publisher::class, TrapPublisher::class);
 
-        return $router;
+        return $container->instantiate(Router::class);
     }
 
     /**

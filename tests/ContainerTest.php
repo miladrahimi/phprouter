@@ -10,10 +10,10 @@ class ContainerTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_setting_and_getting_container()
+    public function test_binding_and_resolving_with_container()
     {
         $router = $this->router();
-        $router->getContainer()->singleton('name', 'Pink Floyd');;
+        $router->getContainer()->singleton('name', 'Pink Floyd');
 
         $router->get('/', function (Container $container) {
             return $container->get('name');
