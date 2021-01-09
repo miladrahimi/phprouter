@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests\Testing;
+namespace MiladRahimi\PhpRouter\Tests\Common;
 
 use MiladRahimi\PhpRouter\Services\Publisher;
 use Psr\Http\Message\ResponseInterface;

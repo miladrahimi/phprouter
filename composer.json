@@ -1,45 +1,49 @@
 {
-    "name": "miladrahimi/phprouter",
-    "description": "A powerful, lightweight, and very fast HTTP URL router for PHP projects.",
-    "keywords": [
-        "Route",
-        "Router",
-        "Routing",
-        "URL Router",
-        "HTTP Router",
-        "URL",
-        "HTTP"
-    ],
-    "homepage": "https://github.com/miladrahimi/phprouter",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Milad Rahimi",
-            "email": "info@miladrahimi.com",
-            "homepage": "https://miladrahimi.com",
-            "role": "Developer"
-        }
-    ],
-    "support": {
-        "email": "info@miladrahimi.com",
-        "source": "https://github.com/miladrahimi/phprouter/issues"
-    },
-    "require": {
-        "php": ">=7.1",
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "laminas/laminas-diactoros": "^2.2",
-        "miladrahimi/phpcontainer": "^5.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7|^8"
-    },
-    "autoload": {
-        "psr-4": {
-            "MiladRahimi\\PhpRouter\\": "src/",
-            "MiladRahimi\\PhpRouter\\Tests\\": "tests/",
-            "MiladRahimi\\PhpRouter\\Examples\\": "examples/"
-        }
+  "name": "miladrahimi/phprouter",
+  "description": "A powerful, lightweight, and very fast HTTP URL router for PHP projects.",
+  "keywords": [
+    "Route",
+    "Router",
+    "Routing",
+    "URL Router",
+    "HTTP Router",
+    "URL",
+    "HTTP"
+  ],
+  "homepage": "https://github.com/miladrahimi/phprouter",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Milad Rahimi",
+      "email": "info@miladrahimi.com",
+      "homepage": "https://miladrahimi.com",
+      "role": "Developer"
     }
+  ],
+  "support": {
+    "email": "info@miladrahimi.com",
+    "source": "https://github.com/miladrahimi/phprouter/issues"
+  },
+  "require": {
+    "php": ">=7.1",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "laminas/laminas-diactoros": "^2.2",
+    "miladrahimi/phpcontainer": "^5.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7|^8"
+  },
+  "autoload": {
+    "psr-4": {
+      "MiladRahimi\\PhpRouter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MiladRahimi\\PhpRouter\\Tests\\": "tests/",
+      "MiladRahimi\\PhpRouter\\Examples\\": "examples/"
+    }
+  }
 }

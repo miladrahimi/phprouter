@@ -6,7 +6,7 @@ use Closure;
 use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Tests\Testing\TrapPublisher;
+use MiladRahimi\PhpRouter\Tests\Common\TrapPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase

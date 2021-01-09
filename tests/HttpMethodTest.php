@@ -4,7 +4,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use Laminas\Diactoros\ServerRequest;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-use MiladRahimi\PhpRouter\Tests\Testing\SampleController;
+use MiladRahimi\PhpRouter\Tests\Common\SampleController;
 use Throwable;
 
 class HttpMethodTest extends TestCase

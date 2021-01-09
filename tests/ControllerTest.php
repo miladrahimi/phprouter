@@ -3,7 +3,7 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
-use MiladRahimi\PhpRouter\Tests\Testing\SampleController;
+use MiladRahimi\PhpRouter\Tests\Common\SampleController;
 use Throwable;
 
 class ControllerTest extends TestCase

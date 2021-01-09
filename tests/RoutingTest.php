@@ -5,7 +5,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Tests\Testing\SampleController;
+use MiladRahimi\PhpRouter\Tests\Common\SampleController;
 use MiladRahimi\PhpRouter\Routing\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
@@ -147,7 +147,7 @@ class RoutingTest extends TestCase
                 $r->getName(),
                 $r->getPath(),
                 $r->getUri(),
-                $r->getParameters(),
+                count($r->getParameters()),
                 $r->getMethod(),
                 count($r->getMiddleware()),
                 $r->getDomain() ?? '-',
@@ -155,7 +155,7 @@ class RoutingTest extends TestCase
         }, 'home');
         $router->dispatch();
 
-        $value = join(',', ['home', '/', '/', [], 'GET', 0, '-']);
+        $value = join(',', ['home', '/', '/', 0, 'GET', 0, '-']);
         $this->assertEquals($value, $this->output($router));
     }
 }

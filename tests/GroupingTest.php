@@ -3,7 +3,7 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Tests\Testing\SampleMiddleware;
+use MiladRahimi\PhpRouter\Tests\Common\SampleMiddleware;
 use Throwable;
 
 class GroupingTest extends TestCase

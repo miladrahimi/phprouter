@@ -3,9 +3,6 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpContainer\Container;
-use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Tests\Testing\TrapPublisher;
 use Throwable;
 
 class ContainerTest extends TestCase
