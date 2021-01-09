@@ -3,6 +3,7 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Tests\Common\SampleController;
 use MiladRahimi\PhpRouter\Tests\Common\SampleMiddleware;
 use Throwable;
 
@@ -15,7 +16,7 @@ class GroupingTest extends TestCase
     {
         $router = $this->router();
         $router->group([], function (Router $router) {
-            $router->get('/', $this->OkController());
+            $router->get('/', [SampleController::class, 'ok']);
         });
         $router->dispatch();
 
@@ -31,7 +32,7 @@ class GroupingTest extends TestCase
 
         $router = $this->router();
         $router->group(['middleware' => [$middleware]], function (Router $router) {
-            $router->get('/', $this->OkController());
+            $router->get('/', [SampleController::class, 'ok']);
         });
         $router->dispatch();
 
@@ -50,7 +51,7 @@ class GroupingTest extends TestCase
         $router = $this->router();
         $router->group(['middleware' => [$group1Middleware]], function (Router $router) use ($group2Middleware) {
             $router->group(['middleware' => [$group2Middleware]], function (Router $router) {
-                $router->get('/', $this->OkController());
+                $router->get('/', [SampleController::class, 'ok']);
             });
         });
         $router->dispatch();
@@ -69,7 +70,7 @@ class GroupingTest extends TestCase
 
         $router = $this->router();
         $router->group(['prefix' => '/group'], function (Router $router) {
-            $router->get('/page', $this->OkController());
+            $router->get('/page', [SampleController::class, 'ok']);
         });
         $router->dispatch();
 
@@ -86,7 +87,7 @@ class GroupingTest extends TestCase
         $router = $this->router();
         $router->group(['prefix' => '/group1'], function (Router $router) {
             $router->group(['prefix' => '/group2'], function (Router $router) {
-                $router->get('/page', $this->OkController());
+                $router->get('/page', [SampleController::class, 'ok']);
             });
         });
         $router->dispatch();
@@ -103,7 +104,7 @@ class GroupingTest extends TestCase
 
         $router = $this->router();
         $router->group(['domain' => 'sub.domain.tld'], function (Router $router) {
-            $router->get('/', $this->OkController());
+            $router->get('/', [SampleController::class, 'ok']);
         });
         $router->dispatch();
 
@@ -120,7 +121,7 @@ class GroupingTest extends TestCase
         $router = $this->router();
         $router->group(['domain' => 'sub1.domain.com'], function (Router $router) {
             $router->group(['domain' => 'sub2.domain.com'], function (Router $router) {
-                $router->get('/', $this->OkController());
+                $router->get('/', [SampleController::class, 'ok']);
             });
         });
         $router->dispatch();

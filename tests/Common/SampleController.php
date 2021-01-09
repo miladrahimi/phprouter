@@ -4,9 +4,6 @@ namespace MiladRahimi\PhpRouter\Tests\Common;
 
 class SampleController
 {
-    /**
-     * @return string
-     */
     public function home()
     {
         return 'Home';
@@ -15,5 +12,10 @@ class SampleController
     public function page()
     {
         return 'Page';
+    }
+
+    public function ok()
+    {
+        return 'OK';
     }
 }

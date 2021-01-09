@@ -2,12 +2,10 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
-use Closure;
 use MiladRahimi\PhpContainer\Container;
 use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Routing\Repository;
-use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Common\TrapPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -55,18 +53,6 @@ class TestCase extends BaseTestCase
         $container->singleton(Publisher::class, TrapPublisher::class);
 
         return $container->instantiate(Router::class);
-    }
-
-    /**
-     * Get a sample controller that returns an 'OK' string
-     *
-     * @return Closure
-     */
-    protected function OkController(): Closure
-    {
-        return function () {
-            return 'OK';
-        };
     }
 
     /**

@@ -4,6 +4,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\Tests\Common\SampleController;
 use MiladRahimi\PhpRouter\Tests\Common\SampleMiddleware;
 use MiladRahimi\PhpRouter\Tests\Common\StopperMiddleware;
 use Throwable;
@@ -19,7 +20,7 @@ class MiddlewareTest extends TestCase
 
         $router = $this->router();
         $router->group(['middleware' => [$middleware]], function (Router $r) {
-            $r->get('/', $this->OkController());
+            $r->get('/', [SampleController::class, 'ok']);
         });
         $router->dispatch();
 
@@ -36,7 +37,7 @@ class MiddlewareTest extends TestCase
 
         $router = $this->router();
         $router->group(['middleware' => [$middleware]], function (Router $r) {
-            $r->get('/', $this->OkController());
+            $r->get('/', [SampleController::class, 'ok']);
         });
         $router->dispatch();
 
@@ -53,7 +54,7 @@ class MiddlewareTest extends TestCase
 
         $router = $this->router();
         $router->group(['middleware' => [$middleware]], function (Router $r) {
-            $r->get('/', $this->OkController());
+            $r->get('/', [SampleController::class, 'ok']);
         });
         $router->dispatch();
 
@@ -70,7 +71,7 @@ class MiddlewareTest extends TestCase
 
         $router = $this->router();
         $router->group(['middleware' => ['UnknownMiddleware']], function (Router $r) {
-            $r->get('/', $this->OkController());
+            $r->get('/', [SampleController::class, 'ok']);
         });
         $router->dispatch();
     }
