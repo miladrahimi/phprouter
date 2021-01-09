@@ -3,25 +3,25 @@
 namespace MiladRahimi\PhpRouter\Dispatching;
 
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-use MiladRahimi\PhpRouter\Routes\Route;
-use MiladRahimi\PhpRouter\Routes\Store;
+use MiladRahimi\PhpRouter\Routing\Route;
+use MiladRahimi\PhpRouter\Routing\Repository;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Matcher
 {
     /**
-     * @var Store
+     * @var Repository
      */
-    private $store;
+    private $repository;
 
     /**
      * Matcher constructor.
      *
-     * @param Store $store
+     * @param Repository $repository
      */
-    public function __construct(Store $store)
+    public function __construct(Repository $repository)
     {
-        $this->store = $store;
+        $this->repository = $repository;
     }
 
     /**
@@ -34,7 +34,7 @@ class Matcher
      */
     public function find(ServerRequestInterface $request, array $patterns)
     {
-        foreach ($this->store->findByMethod($request->getMethod()) as $route) {
+        foreach ($this->repository->findByMethod($request->getMethod()) as $route) {
             $parameters = [];
 
             if ($this->compare($route, $request, $parameters, $patterns)) {

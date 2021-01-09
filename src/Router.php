@@ -9,9 +9,9 @@ use MiladRahimi\PhpRouter\Dispatching\Caller;
 use MiladRahimi\PhpRouter\Dispatching\Matcher;
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
-use MiladRahimi\PhpRouter\Routes\Route;
-use MiladRahimi\PhpRouter\Routes\Storekeeper;
-use MiladRahimi\PhpRouter\Routes\Store;
+use MiladRahimi\PhpRouter\Routing\Route;
+use MiladRahimi\PhpRouter\Routing\Storekeeper;
+use MiladRahimi\PhpRouter\Routing\Repository;
 use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use Psr\Container\ContainerInterface;
@@ -27,7 +27,7 @@ class Router
     private $container;
 
     /**
-     * The storekeeper of route store (repository)
+     * The storekeeper of route repository
      *
      * @var Storekeeper
      */
@@ -96,7 +96,7 @@ class Router
         $container = new Container();
         $container->singleton(Container::class, $container);
         $container->singleton(ContainerInterface::class, $container);
-        $container->singleton(Store::class, new Store());
+        $container->singleton(Repository::class, new Repository());
         $container->singleton(Publisher::class, HttpPublisher::class);
 
         return $container->instantiate(Router::class);
@@ -110,13 +110,13 @@ class Router
      */
     public function group(array $attributes, Closure $body): void
     {
-        $oldAttributes = $this->storekeeper->attributes();
+        $oldState = clone $this->storekeeper->getState();
 
-        $this->storekeeper->appendAttributes($attributes);
+        $this->storekeeper->getState()->append($attributes);
 
         call_user_func($body, $this);
 
-        $this->storekeeper->updateAttributes($oldAttributes);
+        $this->storekeeper->setState($oldState);
     }
 
     /**

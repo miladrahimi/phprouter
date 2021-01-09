@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Routes;
+namespace MiladRahimi\PhpRouter\Routing;
 
 use Closure;
 

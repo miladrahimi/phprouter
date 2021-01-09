@@ -31,27 +31,25 @@ class Caller
      *
      * @param string[] $callables
      * @param ServerRequestInterface $request
-     * @param int $i
+     * @param int $index
      * @return mixed
      * @throws ContainerException
      * @throws InvalidCallableException
      */
-    public function stack(array $callables, ServerRequestInterface $request, $i = 0)
+    public function stack(array $callables, ServerRequestInterface $request, int $index = 0)
     {
         $this->container->singleton(ServerRequest::class, $request);
         $this->container->singleton(ServerRequestInterface::class, $request);
 
-        if (isset($callables[$i + 1])) {
-            $next = function (ServerRequestInterface $request) use ($callables, $i) {
-                return $this->stack($callables, $request, $i + 1);
-            };
-
-            $this->container->closure('$next', $next);
+        if (isset($callables[$index + 1])) {
+            $this->container->closure('$next', function (ServerRequestInterface $request) use ($callables, $index) {
+                return $this->stack($callables, $request, $index + 1);
+            });
         } else {
             $this->container->delete('$next');
         }
 
-        return $this->call($callables[$i]);
+        return $this->call($callables[$index]);
     }
 
     /**

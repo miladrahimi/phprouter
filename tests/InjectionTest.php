@@ -4,7 +4,7 @@ namespace MiladRahimi\PhpRouter\Tests;
 
 use Laminas\Diactoros\ServerRequest;
 use MiladRahimi\PhpContainer\Container;
-use MiladRahimi\PhpRouter\Routes\Route;
+use MiladRahimi\PhpRouter\Routing\Route;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;

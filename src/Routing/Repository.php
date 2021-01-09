@@ -1,13 +1,13 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Routes;
+namespace MiladRahimi\PhpRouter\Routing;
 
-class Store
+class Repository
 {
     /**
-     * @var array
+     * @var Route[]
      */
-    private $repository = [];
+    private $routes = [];
 
     /**
      * Add a route to the repository
@@ -30,10 +30,10 @@ class Store
     {
         $route = new Route($method, $path, $controller, $name, $middleware, $domain);
 
-        $this->repository['method'][$method][] = $route;
+        $this->routes['method'][$method][] = $route;
 
         if ($name) {
-            $this->repository['name'][$name] = $route;
+            $this->routes['name'][$name] = $route;
         }
     }
 
@@ -46,8 +46,8 @@ class Store
     public function findByMethod(string $method): array
     {
         $routes = array_merge(
-            $this->repository['method']['*'] ?? [],
-            $this->repository['method'][$method] ?? []
+            $this->routes['method']['*'] ?? [],
+            $this->routes['method'][$method] ?? []
         );
 
         krsort($routes);
@@ -63,6 +63,6 @@ class Store
      */
     public function findByName(string $name): ?Route
     {
-        return $this->repository['name'][$name] ?? null;
+        return $this->routes['name'][$name] ?? null;
     }
 }

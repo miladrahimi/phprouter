@@ -1,6 +1,6 @@
 {
     "name": "miladrahimi/phprouter",
-    "description": "A powerful, lightweight, and very fast HTTP URL router.",
+    "description": "A powerful, lightweight, and very fast HTTP URL router for PHP projects.",
     "keywords": [
         "Route",
         "Router",
@@ -33,7 +33,7 @@
         "miladrahimi/phpcontainer": "^5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7"
+        "phpunit/phpunit": "^7|^8"
     },
     "autoload": {
         "psr-4": {

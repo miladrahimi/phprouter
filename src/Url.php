@@ -3,23 +3,23 @@
 namespace MiladRahimi\PhpRouter;
 
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
-use MiladRahimi\PhpRouter\Routes\Store;
+use MiladRahimi\PhpRouter\Routing\Repository;
 
 class Url
 {
     /**
-     * @var Store
+     * @var Repository
      */
-    private $store;
+    private $repository;
 
     /**
      * Url constructor.
      *
-     * @param Store $store
+     * @param Repository $repository
      */
-    public function __construct(Store $store)
+    public function __construct(Repository $repository)
     {
-        $this->store = $store;
+        $this->repository = $repository;
     }
 
     /**
@@ -32,7 +32,7 @@ class Url
      */
     public function make(string $routeName, array $parameters = []): string
     {
-        if (!($route = $this->store->findByName($routeName))) {
+        if (!($route = $this->repository->findByName($routeName))) {
             throw new UndefinedRouteException("There is no route named `$routeName`.");
         }
 

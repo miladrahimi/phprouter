@@ -6,7 +6,7 @@ use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Tests\Testing\SampleController;
-use MiladRahimi\PhpRouter\Routes\Route;
+use MiladRahimi\PhpRouter\Routing\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Laminas\Diactoros\ServerRequest;
