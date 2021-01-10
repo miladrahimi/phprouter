@@ -256,18 +256,6 @@ class Router
     }
 
     /**
-     * Map a controller to given OPTIONS route
-     *
-     * @param string $path
-     * @param Closure|callable|string $controller
-     * @param string|null $name
-     */
-    public function options(string $path, $controller, ?string $name = null): void
-    {
-        $this->map('OPTIONS', $path, $controller, $name);
-    }
-
-    /**
      * @return Container
      */
     public function getContainer(): Container

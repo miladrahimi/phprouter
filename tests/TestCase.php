@@ -2,14 +2,11 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
-use MiladRahimi\PhpContainer\Container;
 use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpRouter\Router;
-use MiladRahimi\PhpRouter\Routing\Repository;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use MiladRahimi\PhpRouter\Tests\Common\TrapPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
-use Psr\Container\ContainerInterface;
 
 class TestCase extends BaseTestCase
 {

@@ -82,20 +82,6 @@ class HttpMethodTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function test_an_options_route()
-    {
-        $this->mockRequest('OPTIONS', 'http://example.com/');
-
-        $router = $this->router();
-        $router->options('/', [SampleController::class, 'home']);
-        $router->dispatch();
-
-        $this->assertEquals('Home', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
     public function test_map_a_post_route()
     {
         $this->mockRequest('POST', 'http://example.com/');
