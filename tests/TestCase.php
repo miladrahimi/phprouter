@@ -46,13 +46,10 @@ class TestCase extends BaseTestCase
      */
     protected function router(): Router
     {
-        $container = new Container();
-        $container->singleton(Container::class, $container);
-        $container->singleton(ContainerInterface::class, $container);
-        $container->singleton(Repository::class, new Repository());
-        $container->singleton(Publisher::class, TrapPublisher::class);
+        $router = Router::create();
+        $router->setPublisher(new  TrapPublisher());
 
-        return $container->instantiate(Router::class);
+        return $router;
     }
 
     /**

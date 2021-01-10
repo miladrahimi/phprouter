@@ -282,4 +282,12 @@ class Router
     {
         return $this->publisher;
     }
+
+    /**
+     * @param Publisher $publisher
+     */
+    public function setPublisher(Publisher $publisher): void
+    {
+        $this->publisher = $publisher;
+    }
 }
