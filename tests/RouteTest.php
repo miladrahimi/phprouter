@@ -48,4 +48,24 @@ class RouteTest extends TestCase
 
         $this->assertEquals(json_encode($expected), $this->output($router));
     }
+
+    public function test_lately_added_attributes_of_route()
+    {
+        $this->mockRequest('POST', 'http://shop.com/admin/profile/666');
+
+        $router = $this->router();
+
+        $router->post('/admin/profile/{id}', function (Route $route) {
+            return [
+                $route->getParameters(),
+                $route->getUri(),
+            ];
+        }, 'admin.profile');
+
+        $router->dispatch();
+
+        $expected = [['id' => '666'], '/admin/profile/666'];
+
+        $this->assertEquals(json_encode($expected), $this->output($router));
+    }
 }
