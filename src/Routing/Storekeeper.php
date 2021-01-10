@@ -7,7 +7,7 @@ class Storekeeper
     /**
      * @var Repository
      */
-    private $store;
+    private $repository;
 
     /**
      * @var State
@@ -17,12 +17,12 @@ class Storekeeper
     /**
      * Storekeeper constructor.
      *
-     * @param Repository $store
+     * @param Repository $repository
      * @param State $state
      */
-    public function __construct(Repository $store, State $state)
+    public function __construct(Repository $repository, State $state)
     {
-        $this->store = $store;
+        $this->repository = $repository;
         $this->state = $state;
     }
 
@@ -36,7 +36,7 @@ class Storekeeper
      */
     public function add(string $method, string $path, $controller, ?string $name = null): void
     {
-        $this->store->save(
+        $this->repository->save(
             $method,
             $this->state->getPrefix() . $path,
             $controller,
@@ -44,22 +44,6 @@ class Storekeeper
             $this->state->getMiddleware(),
             $this->state->getDomain()
         );
-    }
-
-    /**
-     * @return Repository
-     */
-    public function getStore(): Repository
-    {
-        return $this->store;
-    }
-
-    /**
-     * @param Repository $store
-     */
-    public function setStore(Repository $store): void
-    {
-        $this->store = $store;
     }
 
     /**
