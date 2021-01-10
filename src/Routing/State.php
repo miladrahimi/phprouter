@@ -38,21 +38,6 @@ class State
     }
 
     /**
-     * Create a state from the given array
-     *
-     * @param array $attributes
-     * @return self
-     */
-    public static function createFromArray(array $attributes): self
-    {
-        return new static(
-            $attributes[static::PREFIX ?? ''],
-            $attributes[static::MIDDLEWARE ?? []],
-            $attributes[static::DOMAIN ?? null]
-        );
-    }
-
-    /**
      * Append new attributes to the existing ones
      *
      * @param array $attributes
@@ -73,14 +58,6 @@ class State
     }
 
     /**
-     * @param string $prefix
-     */
-    public function setPrefix(string $prefix): void
-    {
-        $this->prefix = $prefix;
-    }
-
-    /**
      * @return array
      */
     public function getMiddleware(): array
@@ -89,26 +66,10 @@ class State
     }
 
     /**
-     * @param array $middleware
-     */
-    public function setMiddleware(array $middleware): void
-    {
-        $this->middleware = $middleware;
-    }
-
-    /**
      * @return string|null
      */
     public function getDomain(): ?string
     {
         return $this->domain;
-    }
-
-    /**
-     * @param string|null $domain
-     */
-    public function setDomain(?string $domain): void
-    {
-        $this->domain = $domain;
     }
 }
