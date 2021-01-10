@@ -4,10 +4,6 @@ namespace MiladRahimi\PhpRouter\Routing;
 
 class State
 {
-    const MIDDLEWARE = 'middleware';
-    const PREFIX = 'prefix';
-    const DOMAIN = 'domain';
-
     /**
      * @var string
      */
@@ -44,9 +40,9 @@ class State
      */
     public function append(array $attributes): void
     {
-        $this->domain = $attributes[State::DOMAIN] ?? null;
-        $this->prefix .= $attributes[State::PREFIX] ?? '';
-        $this->middleware = array_merge($this->middleware, $attributes[State::MIDDLEWARE] ?? []);
+        $this->domain = $attributes[Attributes::DOMAIN] ?? null;
+        $this->prefix .= $attributes[Attributes::PREFIX] ?? '';
+        $this->middleware = array_merge($this->middleware, $attributes[Attributes::MIDDLEWARE] ?? []);
     }
 
     /**

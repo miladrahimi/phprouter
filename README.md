@@ -394,6 +394,8 @@ $router->dispatch();
 
 The group attributes will be explained later in this documentation.
 
+You can use [Attributes](src/Routing/Attributes.php) enum, as well.
+
 ### Middleware
 
 PhpRouter supports middleware.
