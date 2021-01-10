@@ -16,6 +16,7 @@ use MiladRahimi\PhpRouter\Services\HttpPublisher;
 use MiladRahimi\PhpRouter\Services\Publisher;
 use Psr\Container\ContainerInterface;
 use Laminas\Diactoros\ServerRequestFactory;
+use RuntimeException;
 
 class Router
 {
@@ -89,7 +90,6 @@ class Router
      * Create a new router instance
      *
      * @return static
-     * @throws ContainerException
      */
     public static function create(): self
     {
@@ -99,7 +99,11 @@ class Router
         $container->singleton(Repository::class, new Repository());
         $container->singleton(Publisher::class, HttpPublisher::class);
 
-        return $container->instantiate(Router::class);
+        try {
+            return $container->instantiate(Router::class);
+        } catch (ContainerException $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
