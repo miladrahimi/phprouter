@@ -25,6 +25,8 @@ class HttpPublisher implements Publisher
             fwrite($output, $content->getBody());
         } elseif (is_scalar($content)) {
             fwrite($output, $content);
+        } elseif ($content === null) {
+            fwrite($output, '');
         } else {
             fwrite($output, json_encode($content));
         }
