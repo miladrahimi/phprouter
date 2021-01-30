@@ -4,7 +4,7 @@ namespace MiladRahimi\PhpRouter\Exceptions;
 
 use Exception;
 
-class UndefinedRouteException extends Exception
+class InvalidCallableException extends Exception
 {
     //
 }

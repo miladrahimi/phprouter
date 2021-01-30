@@ -2,11 +2,10 @@
 
 namespace MiladRahimi\PhpRouter\Tests;
 
-use Closure;
-use MiladRahimi\PhpRouter\Enums\HttpMethods;
+use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Services\Publisher;
-use MiladRahimi\PhpRouter\Tests\Testing\TestPublisher;
+use MiladRahimi\PhpRouter\Tests\Common\TrapPublisher;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -14,11 +13,11 @@ class TestCase extends BaseTestCase
     /**
      * @inheritDoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->mockRequest(HttpMethods::GET, 'http://example.com/');
+        $this->mockRequest('GET', 'http://example.com/');
     }
 
     /**
@@ -39,28 +38,15 @@ class TestCase extends BaseTestCase
     /**
      * Get a router instance for testing purposes
      *
-     * @param string $prefix
-     * @param string $namespace
      * @return Router
+     * @throws ContainerException
      */
-    protected function router(string $prefix = '', string $namespace = ''): Router
+    protected function router(): Router
     {
-        $router = new Router($prefix, $namespace);
-        $router->setPublisher(new TestPublisher());
+        $router = Router::create();
+        $router->setPublisher(new  TrapPublisher());
 
         return $router;
-    }
-
-    /**
-     * Get a sample controller that returns an 'OK' string
-     *
-     * @return Closure
-     */
-    protected function OkController(): Closure
-    {
-        return function () {
-            return 'OK';
-        };
     }
 
     /**
@@ -71,16 +57,16 @@ class TestCase extends BaseTestCase
      */
     protected function output(Router $router)
     {
-        return $router->getPublisher()->output;
+        return $this->publisher($router)->output;
     }
 
     /**
      * Get the given router publisher.
      *
      * @param Router $router
-     * @return TestPublisher|Publisher
+     * @return TrapPublisher|Publisher
      */
-    protected function publisher(Router $router): TestPublisher
+    protected function publisher(Router $router): TrapPublisher
     {
         return $router->getPublisher();
     }
