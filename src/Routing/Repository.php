@@ -56,7 +56,7 @@ class Repository
     }
 
     /**
-     * Find route by given name
+     * Find route by the given name
      *
      * @param string $name
      * @return Route|null

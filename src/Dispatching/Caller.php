@@ -12,12 +12,14 @@ use Psr\Http\Message\ServerRequestInterface;
 class Caller
 {
     /**
+     * The dependency injection IoC container
+     *
      * @var Container
      */
     private $container;
 
     /**
-     * Caller constructor.
+     * Constructor
      *
      * @param Container $container
      */

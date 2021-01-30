@@ -20,7 +20,7 @@ class State
     private $domain;
 
     /**
-     * Attributes constructor.
+     * Constructor
      *
      * @param string $prefix
      * @param array $middleware

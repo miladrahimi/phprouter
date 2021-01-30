@@ -27,14 +27,14 @@ class Router
     private $container;
 
     /**
-     * The storekeeper of route repository
+     * The storekeeper of the route repository
      *
      * @var Storekeeper
      */
     private $storekeeper;
 
     /**
-     * The route matcher that finds appropriate routes for requests
+     * The route matcher that finds appropriate routes for incoming requests
      *
      * @var Matcher
      */
@@ -48,7 +48,7 @@ class Router
     private $caller;
 
     /**
-     * The publisher that publish controller outputs
+     * The publisher that publish controller outputs (responses)
      *
      * @var Publisher
      */
@@ -62,7 +62,7 @@ class Router
     private $patterns = [];
 
     /**
-     * Router constructor.
+     * Constructor
      *
      * @param Container $container
      * @param Storekeeper $storekeeper
@@ -104,7 +104,7 @@ class Router
     /**
      * Group routes with the given attributes
      *
-     * @param array $attributes
+     * @param string[] $attributes
      * @param Closure $body
      */
     public function group(array $attributes, Closure $body): void
@@ -132,7 +132,7 @@ class Router
     }
 
     /**
-     * Dispatch routes and run the application
+     * Dispatch routes (and run the application)
      *
      * @throws ContainerException
      * @throws InvalidCallableException

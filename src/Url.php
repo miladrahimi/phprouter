@@ -8,12 +8,14 @@ use MiladRahimi\PhpRouter\Routing\Repository;
 class Url
 {
     /**
+     * Route repository that holds all the declared routes
+     *
      * @var Repository
      */
     private $repository;
 
     /**
-     * Url constructor.
+     * Constructor
      *
      * @param Repository $repository
      */
@@ -23,7 +25,7 @@ class Url
     }
 
     /**
-     * Generate URL for given route name
+     * Generate URL for the given route name considering the given parameters
      *
      * @param string $routeName
      * @param string[] $parameters

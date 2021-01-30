@@ -47,7 +47,7 @@ class Route
     private $parameters = [];
 
     /**
-     * Route constructor.
+     * Constructor
      *
      * @param string|null $name
      * @param string $path

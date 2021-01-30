@@ -10,12 +10,14 @@ use Psr\Http\Message\ServerRequestInterface;
 class Matcher
 {
     /**
+     * Route repository that holds all the declared routes
+     *
      * @var Repository
      */
     private $repository;
 
     /**
-     * Matcher constructor.
+     * Constructor
      *
      * @param Repository $repository
      */

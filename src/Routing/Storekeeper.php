@@ -5,17 +5,21 @@ namespace MiladRahimi\PhpRouter\Routing;
 class Storekeeper
 {
     /**
+     * Route repository that holds all the declared routes
+     *
      * @var Repository
      */
     private $repository;
 
     /**
+     * The state that holds all the attributes for the prospective routes
+     *
      * @var State
      */
     private $state;
 
     /**
-     * Storekeeper constructor.
+     * Constructor
      *
      * @param Repository $repository
      * @param State $state
