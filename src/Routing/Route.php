@@ -79,14 +79,14 @@ class Route
     public function toArray(): array
     {
         return [
-            'method' => $this->method,
-            'path' => $this->path,
-            'controller' => $this->controller,
-            'name' => $this->name,
-            'middleware' => $this->middleware,
-            'domain' => $this->domain,
-            'uri' => $this->uri,
-            'parameters' => $this->parameters,
+            'method' => $this->getMethod(),
+            'path' => $this->getPath(),
+            'controller' => $this->getController(),
+            'name' => $this->getName(),
+            'middleware' => $this->getMiddleware(),
+            'domain' => $this->getDomain(),
+            'uri' => $this->getUri(),
+            'parameters' => $this->getParameters(),
         ];
     }
 

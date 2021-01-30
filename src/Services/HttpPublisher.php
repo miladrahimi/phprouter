@@ -4,13 +4,6 @@ namespace MiladRahimi\PhpRouter\Services;
 
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Class HttpPublisher
- * HttpPublisher publishes controller responses as over HTTP.
- *
- * @package MiladRahimi\PhpRouter\Services
- * @codeCoverageIgnore
- */
 class HttpPublisher implements Publisher
 {
     /**
@@ -18,7 +11,7 @@ class HttpPublisher implements Publisher
      */
     public function publish($content): void
     {
-        $content = empty($content) ? '' : $content;
+        $content = empty($content) ? null : $content;
 
         $output = fopen('php://output', 'a');
 
