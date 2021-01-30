@@ -43,6 +43,46 @@ class ControllerTest extends TestCase
         $router->get('/', ['invalid', 'array', 'controller']);
 
         $this->expectException(InvalidCallableException::class);
+        $this->expectExceptionMessage('Invalid callable: invalid,array,controller');
+        $router->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_an_invalid_class_as_controller_it_should_fail()
+    {
+        $router = $this->router();
+        $router->get('/', ['InvalidController', 'show']);
+
+        $this->expectException(InvalidCallableException::class);
+        $this->expectExceptionMessage('Class `InvalidController` not found.');
+        $router->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_an_int_as_controller_it_should_fail()
+    {
+        $router = $this->router();
+        $router->get('/', 666);
+
+        $this->expectException(InvalidCallableException::class);
+        $this->expectExceptionMessage('Invalid callable.');
+        $router->dispatch();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_with_an_handle_less_class_as_controller_it_should_fail()
+    {
+        $router = $this->router();
+        $router->get('/', SampleController::class);
+
+        $this->expectException(InvalidCallableException::class);
+        $this->expectExceptionMessage('Method `handle` is not declared.');
         $router->dispatch();
     }
 
@@ -55,6 +95,7 @@ class ControllerTest extends TestCase
         $router->get('/', [SampleController::class, 'invalid']);
 
         $this->expectException(InvalidCallableException::class);
+        $this->expectExceptionMessage('Method `' . SampleController::class . '::invalid` is not declared.');
         $router->dispatch();
     }
 

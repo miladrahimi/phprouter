@@ -67,16 +67,16 @@ class Caller
                 throw new InvalidCallableException('Invalid callable: ' . implode(',', $callable));
             }
 
-            list($class, $method) = $callable;
+            [$class, $method] = $callable;
 
             if (class_exists($class) == false) {
-                throw new InvalidCallableException("Class `$callable` not found.");
+                throw new InvalidCallableException("Class `$class` not found.");
             }
 
             $object = $this->container->instantiate($class);
 
             if (method_exists($object, $method) == false) {
-                throw new InvalidCallableException("Method `$class::$method` not found.");
+                throw new InvalidCallableException("Method `$class::$method` is not declared.");
             }
 
             $callable = [$object, $method];
@@ -89,11 +89,11 @@ class Caller
                 }
             }
 
-            if (is_object($callable) && !($callable instanceof Closure)) {
+            if (is_object($callable) && !$callable instanceof Closure) {
                 if (method_exists($callable, 'handle')) {
                     $callable = [$callable, 'handle'];
                 } else {
-                    throw new InvalidCallableException("Method `$callable::handle` not found.");
+                    throw new InvalidCallableException("Method `handle` is not declared.");
                 }
             }
         }
