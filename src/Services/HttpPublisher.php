@@ -19,7 +19,7 @@ class HttpPublisher implements Publisher
             http_response_code($content->getStatusCode());
 
             foreach ($content->getHeaders() as $name => $values) {
-                header($name . ': ' . $content->getHeaderLine($name));
+                @header($name . ': ' . $content->getHeaderLine($name));
             }
 
             fwrite($output, $content->getBody());

@@ -56,4 +56,21 @@ class HttpPublisherTest extends TestCase
 
         $this->assertEquals('["a","b","c"]', ob_get_clean());
     }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_publish_a_standard_response()
+    {
+        ob_start();
+
+        $router = Router::create();
+        $router->get('/', function () {
+            return new JsonResponse(['error' => 'failed'], 400);
+        });
+
+        $router->dispatch();
+
+        $this->assertEquals('{"error":"failed"}', ob_get_clean());
+    }
 }
