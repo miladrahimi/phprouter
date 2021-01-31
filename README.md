@@ -574,6 +574,8 @@ $router->get('/container', function (Container $container) {
 $router->dispatch();
 ```
 
+Check [PhpContainer](https://github.com/miladrahimi/phpcontainer) for more information about this powerful IoC container.
+
 ### Error Handling
 
 Your application runs through the `Router::dispatch()` method.
