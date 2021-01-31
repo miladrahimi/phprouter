@@ -400,7 +400,7 @@ You can use [Attributes](src/Routing/Attributes.php) enum, as well.
 
 PhpRouter supports middleware.
 You can use it for different purposes, such as authentication, authorization, throttles, and so forth.
-Middleware runs before controllers, and it can check and manipulate requests and responses.
+Middleware runs before and after controllers, and it can check and manipulate requests and responses.
 
 Here you can see the request lifecycle considering some middleware:
 
@@ -444,7 +444,7 @@ $router->group(['middleware' => [AuthMiddleware::class]], function(Router $route
 $router->dispatch();
 ```
 
-As you can see, the middleware catches the request and a closure.
+As you can see, the middleware catches the request and the `$next` closure.
 The closure calls the next middleware or the controller if no middleware is left.
 The middleware must return a response, as well.
 A middleware can break the lifecycle and return a response itself,
@@ -497,11 +497,11 @@ use MiladRahimi\PhpRouter\Url;
 
 $router = Router::create();
 
-$router->get('/', [HomeController::class, 'show'], 'home');
+$router->get('/about', [AboutController::class, 'show'], 'about');
 $router->get('/post/{id}', [PostController::class, 'show'], 'post');
 $router->get('/links', function (Url $url) {
     return new JsonResponse([
-        'about' => $url->make('home'),              /* Result: /about  */
+        'about' => $url->make('about'),             /* Result: /about  */
         'post1' => $url->make('post', ['id' => 1]), /* Result: /post/1 */
         'post2' => $url->make('post', ['id' => 2])  /* Result: /post/2 */
     ]);
@@ -525,15 +525,51 @@ $router = Router::create();
 $router->get('/{id}', function (Route $route) {
     return new JsonResponse([
         'uri'    => $route->getUri(),            /* Result: "/1" */
-        'name'   => $route->getName(),           /* Result: sample */
+        'name'   => $route->getName(),           /* Result: "sample" */
         'path'   => $route->getPath(),           /* Result: "/{id}" */
-        'method' => $route->getMethod(),         /* Result: GET */
+        'method' => $route->getMethod(),         /* Result: "GET" */
         'domain' => $route->getDomain(),         /* Result: null */
         'parameters' => $route->getParameters(), /* Result: {"id": "1"} */
         'middleware' => $route->getMiddleware(), /* Result: []  */
         'controller' => $route->getController(), /* Result: {}  */
     ]);
 }, 'sample');
+
+$router->dispatch();
+```
+
+### IoC Container
+
+PhpRouter uses [PhpContainer](https://github.com/miladrahimi/phpcontainer) to provide an IoC container for the package itself and your application's dependencies.
+
+#### How does PhpRouter use the container?
+
+PhpRouter binds route parameters, HTTP Request, Route (Current route), Url (URL generator), Container itself.
+The controller method or constructor can resolve these dependencies and catch them.
+
+#### How can your app use the container?
+
+Just look at the following example.
+
+```php
+use MiladRahimi\PhpContainer\Container;
+use MiladRahimi\PhpRouter\Router;
+
+$router = Router::create();
+
+$router->getContainer()->singleton(Database::class, MySQL::class);
+$router->getContainer()->singleton(Config::class, JsonConfig::class);
+
+// Resolve directly
+$router->get('/direct', function (Database $database, Config $config) {
+    // Use MySQL and JsonConfig...
+});
+
+// Resolve container
+$router->get('/container', function (Container $container) {
+    $database = $container->get(Database::class);
+    $config = $container->get(Config::class);
+});
 
 $router->dispatch();
 ```
