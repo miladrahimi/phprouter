@@ -1,13 +1,12 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Services;
+namespace MiladRahimi\PhpRouter\Publisher;
 
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class HttpPublisher
- * It publishes responses provided by controllers and middleware
- * as HTTP responses
+ * It publishes responses provided by controllers and middleware as HTTP responses
  *
  * @package MiladRahimi\PhpRouter\Services
  */

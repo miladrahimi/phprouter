@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Services;
+namespace MiladRahimi\PhpRouter\Publisher;
 
 /**
  * Interface Publisher
