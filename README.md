@@ -34,6 +34,7 @@ The current version requires PHP `v7.1` or newer versions including `v8.0`.
     - [Controllers](#controllers)
     - [Route Parameters](#route-parameters)
     - [Requests and Responses](#requests-and-responses)
+    - [Views](#views)
     - [Route Groups](#route-groups)
     - [Middleware](#middleware)
     - [Domains and Subdomains](#domains-and-subdomains)
@@ -278,7 +279,7 @@ $router->get('/post/{id}', function (int $id) { /* ... */ });
 $router->dispatch();
 ```
 
-### Requests, Responses, and Views
+### Requests and Responses
 
 PhpRouter uses [laminas-diactoros](https://github.com/laminas/laminas-diactoros/)
 (formerly known as [zend-diactoros](https://github.com/zendframework/zend-diactoros))
@@ -348,7 +349,7 @@ $router->get('/redirect', function () {
 $router->dispatch();
 ```
 
-#### Views
+### Views
 
 You might need to create a classic-style website that uses views.
 PhpRouter has a simple feature for working with PHP/HTML views.
