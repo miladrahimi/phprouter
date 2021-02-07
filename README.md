@@ -10,18 +10,18 @@ PhpRouter is a powerful, lightweight, and very fast HTTP URL router for PHP proj
 
 Some of the provided features:
 * Route parameters
+* Predefined route parameter patterns
 * Middleware
+* Closure and class controllers/middleware
 * Route groups (by prefix, middleware, and domain)
-* Route naming
+* Route naming (and generating route by name)
 * PSR-7 requests and responses
 * Multiple (sub)domains (using regex patterns)
-* Closure and class controllers
-* Predefined route parameter patterns
 * Custom HTTP methods
-* Integrated with IoC container out of the box
-* Auto-injection of request, response, router, etc
+* Integrated with a [PhpContainer](https://github.com/miladrahimi/phpcontainer)
+* Method and constructor auto-injection of request, route, url, etc
 
-The current version requires PHP `v7.1` or newer versions.
+The current version requires PHP `v7.1` or newer versions including (`v8.0`).
 
 ## Contents
 - [Versions](#versions)
