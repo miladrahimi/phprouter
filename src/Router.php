@@ -12,8 +12,10 @@ use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Routing\Route;
 use MiladRahimi\PhpRouter\Routing\Storekeeper;
 use MiladRahimi\PhpRouter\Routing\Repository;
-use MiladRahimi\PhpRouter\Services\HttpPublisher;
-use MiladRahimi\PhpRouter\Services\Publisher;
+use MiladRahimi\PhpRouter\Publisher\HttpPublisher;
+use MiladRahimi\PhpRouter\View\PhpView;
+use MiladRahimi\PhpRouter\Publisher\Publisher;
+use MiladRahimi\PhpRouter\View\View;
 use Psr\Container\ContainerInterface;
 use Laminas\Diactoros\ServerRequestFactory;
 
@@ -95,6 +97,19 @@ class Router
         $container->singleton(Publisher::class, HttpPublisher::class);
 
         return $container->instantiate(Router::class);
+    }
+
+    /**
+     * Setup (enable) View
+     * @link View
+     *
+     * @param string $directory
+     */
+    public function setupView(string $directory): void
+    {
+        $this->container->singleton(View::class, function () use ($directory) {
+            return new PhpView($directory);
+        });
     }
 
     /**
