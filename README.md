@@ -517,7 +517,7 @@ $router->get('/profile', function (View $view) {
 
 $router->get('/blog/post', function (View $view) {
     // It looks for a view with path: __DIR__/../views/blog/post.phtml
-    return $view->make('blog.post', ['user' => 'Jack']);
+    return $view->make('blog.post', ['post' => $post]);
 });
 
 $router->dispatch();
@@ -526,6 +526,19 @@ $router->dispatch();
 There is also some points:
 * View files must have the ".phtml" extension (e.g. `profile.phtml`).
 * You must separate sub-directories with `.` (e.g. `blog.post` for `blog/post.phtml`).
+
+View files are pure PHP or mixed with HTML.
+You should use PHP language with template style in the view files.
+This is a sample view file:
+
+```php
+<h1><?php echo $title ?></h1>
+<ul>
+    <?php foreach ($posts as $post): ?>
+        <li><?php echo $post['content'] ?></li>
+    <?php endforeach ?>
+</ul>
+```
 
 ### Route Names
 
