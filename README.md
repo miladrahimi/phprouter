@@ -16,13 +16,13 @@ Some of the provided features:
 * Route groups (by prefix, middleware, and domain)
 * Route naming (and generating route by name)
 * PSR-7 requests and responses
-* Views
+* Views (simple PHP/HTML views)
 * Multiple (sub)domains (using regex patterns)
 * Custom HTTP methods
-* Integrated with an Ioc Container([PhpContainer](https://github.com/miladrahimi/phpcontainer))
-* Method and constructor auto-injection of request, route, url, etc
+* Integrated with an IoC Container ([PhpContainer](https://github.com/miladrahimi/phpcontainer))
+* Method and constructor auto-injection of Request, Route, Url, etc
 
-The current version requires PHP `v7.1` or newer versions including (`v8.0`).
+The current version requires PHP `v7.1` or newer versions including `v8.0`.
 
 ## Contents
 - [Versions](#versions)
@@ -53,9 +53,6 @@ Supported versions:
 Unsupported versions:
 
 * v3.x.x
-
-Unavailable versions:
-
 * v2.x.x
 * v1.x.x
 
@@ -102,9 +99,9 @@ Here you can see sample configurations for NGINX and Apache HTTP Server.
 
 ### Getting Started
 
-It's so easy to work with PhpRouter! Just take a look at the following example.
+It's so easy to work with Php Router! Just take a look at the following example.
 
-*  API Example:
+*  JSON API Example:
 
     ```php
     use MiladRahimi\PhpRouter\Router;
