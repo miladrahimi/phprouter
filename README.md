@@ -16,9 +16,10 @@ Some of the provided features:
 * Route groups (by prefix, middleware, and domain)
 * Route naming (and generating route by name)
 * PSR-7 requests and responses
+* Views
 * Multiple (sub)domains (using regex patterns)
 * Custom HTTP methods
-* Integrated with a [PhpContainer](https://github.com/miladrahimi/phpcontainer)
+* Integrated with an Ioc Container([PhpContainer](https://github.com/miladrahimi/phpcontainer))
 * Method and constructor auto-injection of request, route, url, etc
 
 The current version requires PHP `v7.1` or newer versions including (`v8.0`).
@@ -36,6 +37,7 @@ The current version requires PHP `v7.1` or newer versions including (`v8.0`).
     - [Route Groups](#route-groups)
     - [Middleware](#middleware)
     - [Domains and Subdomains](#domains-and-subdomains)
+    - [Views](#views)
     - [Route Names](#route-names)
     - [Current Route](#current-route)
     - [Error Handling](#error-handling)
@@ -102,17 +104,36 @@ Here you can see sample configurations for NGINX and Apache HTTP Server.
 
 It's so easy to work with PhpRouter! Just take a look at the following example.
 
-```php
-use MiladRahimi\PhpRouter\Router;
+*  API Example:
 
-$router = Router::create();
+    ```php
+    use MiladRahimi\PhpRouter\Router;
+    use Laminas\Diactoros\Response\JsonResponse;
 
-$router->get('/', function () {
-    return 'This is homepage!';
-});
+    $router = Router::create();
 
-$router->dispatch();
-```
+    $router->get('/', function () {
+        return new JsonResponse(['message' => 'ok']);
+    });
+
+    $router->dispatch();
+    ```
+
+* View Example:
+
+    ```php
+    use MiladRahimi\PhpRouter\Router;
+    use MiladRahimi\PhpRouter\View\View
+
+    $router = Router::create();
+    $router->setupView('/../views');
+
+    $router->get('/', function (View $view) {
+        return $view->make('profile', ['user' => 'Jack']);
+    });
+
+    $router->dispatch();
+    ```
 
 ### HTTP Methods
 
@@ -473,6 +494,38 @@ $router->group(['domain' => '(.*).example.com'], function(Router $router) {
 
 $router->dispatch();
 ```
+
+### Views
+
+You might need to create a classic-style website that uses views.
+PhpRouter has a simple feature for working with PHP/HTML views.
+Look at the following example.
+
+```php
+use MiladRahimi\PhpRouter\Router;
+use MiladRahimi\PhpRouter\View\View
+
+$router = Router::create();
+
+// Setup view feature and set the directory of view files
+$router->setupView(__DIR__ . '/../views');
+
+$router->get('/profile', function (View $view) {
+    // It looks for a view with path: __DIR__/../views/profile.phtml
+    return $view->make('profile', ['user' => 'Jack']);
+});
+
+$router->get('/blog/post', function (View $view) {
+    // It looks for a view with path: __DIR__/../views/blog/post.phtml
+    return $view->make('blog.post', ['user' => 'Jack']);
+});
+
+$router->dispatch();
+```
+
+There is also some points:
+* View files must have the ".phtml" extension (e.g. `profile.phtml`).
+* You must separate sub-directories with `.` (e.g. `blog.post` for `blog/post.phtml`).
 
 ### Route Names
 
