@@ -100,7 +100,7 @@ class Router
     /**
      * Group routes with the given common attributes
      *
-     * @param string[] $attributes
+     * @param array $attributes
      * @param Closure $body
      */
     public function group(array $attributes, Closure $body): void
