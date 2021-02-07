@@ -49,6 +49,9 @@ class RouteTest extends TestCase
         $this->assertEquals(json_encode($expected), $this->output($router));
     }
 
+    /**
+     * @throws Throwable
+     */
     public function test_lately_added_attributes_of_route()
     {
         $this->mockRequest('POST', 'http://shop.com/admin/profile/666');

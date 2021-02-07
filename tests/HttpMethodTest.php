@@ -3,7 +3,6 @@
 namespace MiladRahimi\PhpRouter\Tests;
 
 use Laminas\Diactoros\ServerRequest;
-use MiladRahimi\PhpRouter\Exceptions\RouteNotFoundException;
 use MiladRahimi\PhpRouter\Tests\Common\SampleController;
 use Throwable;
 
