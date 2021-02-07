@@ -4,44 +4,66 @@ namespace MiladRahimi\PhpRouter\Routing;
 
 use Closure;
 
+/**
+ * Class Route
+ * It is a single defined route
+ *
+ * @package MiladRahimi\PhpRouter\Routing
+ */
 class Route
 {
     /**
+     * The route name
+     *
      * @var string|null
      */
     private $name;
 
     /**
+     * The route path
+     *
      * @var string
      */
     private $path;
 
     /**
+     * The route http method
+     *
      * @var string
      */
     private $method;
 
     /**
-     * @var array|Closure
+     * The route controller
+     *
+     * @var Closure|string|array
      */
     private $controller;
 
     /**
-     * @var array[]|Closure[]
+     * The route middleware
+     *
+     * @var array
      */
     private $middleware;
 
     /**
+     * The route domain
+     *
      * @var string|null
      */
     private $domain;
 
     /**
+     * The route uri from user request (post-property)
+     *
      * @var string
      */
     private $uri = null;
 
     /**
+     * The route parameters from user request (post-property)
+     *
      * @var string[]
      */
     private $parameters = [];
@@ -52,8 +74,8 @@ class Route
      * @param string|null $name
      * @param string $path
      * @param string|null $method
-     * @param Closure|array $controller
-     * @param string[]|callable[] $middleware
+     * @param Closure|string|array $controller
+     * @param array $middleware
      * @param string|null $domain
      */
     public function __construct(
@@ -131,7 +153,7 @@ class Route
     }
 
     /**
-     * @return array|Closure
+     * @return Closure|string|array
      */
     public function getController()
     {
@@ -139,7 +161,7 @@ class Route
     }
 
     /**
-     * @return array[]|Closure[]
+     * @return array
      */
     public function getMiddleware(): array
     {
@@ -171,17 +193,17 @@ class Route
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getUri(): string
+    public function getUri(): ?string
     {
         return $this->uri;
     }
 
     /**
-     * @param string $uri
+     * @param ?string $uri
      */
-    public function setUri(string $uri): void
+    public function setUri(?string $uri): void
     {
         $this->uri = $uri;
     }

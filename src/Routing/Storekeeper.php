@@ -2,18 +2,22 @@
 
 namespace MiladRahimi\PhpRouter\Routing;
 
+use Closure;
+
+/**
+ * Class Storekeeper
+ * It adds new routes with an existing state (attributes) into a Route repository
+ *
+ * @package MiladRahimi\PhpRouter\Routing
+ */
 class Storekeeper
 {
     /**
-     * Route repository that holds all the declared routes
-     *
      * @var Repository
      */
     private $repository;
 
     /**
-     * The state that holds all the attributes for the prospective routes
-     *
      * @var State
      */
     private $state;
@@ -31,11 +35,11 @@ class Storekeeper
     }
 
     /**
-     * Add a route to the collection
+     * Add a new route
      *
      * @param string $method
      * @param string $path
-     * @param $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      */
     public function add(string $method, string $path, $controller, ?string $name = null): void

@@ -2,6 +2,12 @@
 
 namespace MiladRahimi\PhpRouter\Routing;
 
+/**
+ * Class State
+ * It is state (attributes) of routes
+ *
+ * @package MiladRahimi\PhpRouter\Routing
+ */
 class State
 {
     /**

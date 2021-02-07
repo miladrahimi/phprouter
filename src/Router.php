@@ -17,45 +17,41 @@ use MiladRahimi\PhpRouter\Services\Publisher;
 use Psr\Container\ContainerInterface;
 use Laminas\Diactoros\ServerRequestFactory;
 
+/**
+ * Class Router
+ * It defines the application routes and dispatches them (runs the application).
+ *
+ * @package MiladRahimi\PhpRouter
+ */
 class Router
 {
     /**
-     * The dependency injection IoC container
-     *
      * @var Container
      */
     private $container;
 
     /**
-     * The storekeeper of the route repository
-     *
      * @var Storekeeper
      */
     private $storekeeper;
 
     /**
-     * The route matcher that finds appropriate routes for incoming requests
-     *
      * @var Matcher
      */
     private $matcher;
 
     /**
-     * The callable caller that calls (invokes) middleware and controllers
-     *
      * @var Caller
      */
     private $caller;
 
     /**
-     * The publisher that publish controller outputs (responses)
-     *
      * @var Publisher
      */
     private $publisher;
 
     /**
-     * List of defined parameter patterns
+     * List of defined parameter patterns with `pattern()` method
      *
      * @var string[]
      */
@@ -86,7 +82,7 @@ class Router
     }
 
     /**
-     * Create a new router instance
+     * Create a new Router instance
      *
      * @return static
      */
@@ -102,7 +98,7 @@ class Router
     }
 
     /**
-     * Group routes with the given attributes
+     * Group routes with the given common attributes
      *
      * @param string[] $attributes
      * @param Closure $body
@@ -119,19 +115,6 @@ class Router
     }
 
     /**
-     * Map a controller to a route
-     *
-     * @param string $method
-     * @param string $path
-     * @param Closure|array $controller
-     * @param string|null $name
-     */
-    public function map(string $method, string $path, $controller, ?string $name = null): void
-    {
-        $this->storekeeper->add($method, $path, $controller, $name);
-    }
-
-    /**
      * Dispatch routes (and run the application)
      *
      * @throws ContainerException
@@ -143,17 +126,14 @@ class Router
         $request = ServerRequestFactory::fromGlobals();
 
         $route = $this->matcher->find($request, $this->patterns);
-
         $this->container->singleton(Route::class, $route);
 
         foreach ($route->getParameters() as $key => $value) {
             $this->container->singleton('$' . $key, $value);
         }
 
-        $this->publisher->publish($this->caller->stack(
-            array_merge($route->getMiddleware(), [$route->getController()]),
-            $request
-        ));
+        $stack = array_merge($route->getMiddleware(), [$route->getController()]);
+        $this->publisher->publish($this->caller->stack($stack, $request));
     }
 
     /**
@@ -168,90 +148,88 @@ class Router
     }
 
     /**
-     * Map a controller to given route with multiple http methods
+     * Define a new route
      *
-     * @param array $methods
+     * @param string $method
      * @param string $path
-     * @param Closure|callable|string $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      */
-    public function match(array $methods, string $path, $controller, ?string $name = null): void
+    public function define(string $method, string $path, $controller, ?string $name = null): void
     {
-        foreach ($methods as $method) {
-            $this->map($method, $path, $controller, $name);
-        }
+        $this->storekeeper->add($method, $path, $controller, $name);
     }
 
     /**
      * Map a controller to given route for all the http methods
      *
      * @param string $path
-     * @param Closure|callable|string $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      */
     public function any(string $path, $controller, ?string $name = null): void
     {
-        $this->map('*', $path, $controller, $name);
+        $this->define('*', $path, $controller, $name);
     }
 
     /**
      * Map a controller to given GET route
      *
      * @param string $path
-     * @param Closure|callable|string $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      */
     public function get(string $path, $controller, ?string $name = null): void
     {
-        $this->map('GET', $path, $controller, $name);
+        $this->define('GET', $path, $controller, $name);
     }
 
     /**
      * Map a controller to given POST route
      *
      * @param string $path
-     * @param Closure|callable|string $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      */
     public function post(string $path, $controller, ?string $name = null): void
     {
-        $this->map('POST', $path, $controller, $name);
+        $this->define('POST', $path, $controller, $name);
     }
 
     /**
      * Map a controller to given PUT route
      *
      * @param string $path
-     * @param Closure|callable|string $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      */
     public function put(string $path, $controller, ?string $name = null): void
     {
-        $this->map('PUT', $path, $controller, $name);
+        $this->define('PUT', $path, $controller, $name);
     }
 
     /**
      * Map a controller to given PATCH route
      *
      * @param string $path
-     * @param Closure|callable|string $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      */
     public function patch(string $path, $controller, ?string $name = null): void
     {
-        $this->map('PATCH', $path, $controller, $name);
+        $this->define('PATCH', $path, $controller, $name);
     }
 
     /**
      * Map a controller to given DELETE route
      *
      * @param string $path
-     * @param Closure|callable|string $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      */
     public function delete(string $path, $controller, ?string $name = null): void
     {
-        $this->map('DELETE', $path, $controller, $name);
+        $this->define('DELETE', $path, $controller, $name);
     }
 
     /**
@@ -260,6 +238,14 @@ class Router
     public function getContainer(): Container
     {
         return $this->container;
+    }
+
+    /**
+     * @param Container $container
+     */
+    public function setContainer(Container $container): void
+    {
+        $this->container = $container;
     }
 
     /**

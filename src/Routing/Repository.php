@@ -2,19 +2,29 @@
 
 namespace MiladRahimi\PhpRouter\Routing;
 
+use Closure;
+
+/**
+ * Class Repository
+ * It is a repository for the defined routes
+ *
+ * @package MiladRahimi\PhpRouter\Routing
+ */
 class Repository
 {
     /**
+     * List of the defined routes
+     *
      * @var Route[]
      */
     private $routes = [];
 
     /**
-     * Add a route to the repository
+     * Save a new route
      *
      * @param string $method
      * @param string $path
-     * @param $controller
+     * @param Closure|string|array $controller
      * @param string|null $name
      * @param array $middleware
      * @param string|null $domain
@@ -32,13 +42,13 @@ class Repository
 
         $this->routes['method'][$method][] = $route;
 
-        if ($name) {
+        if ($name !== null) {
             $this->routes['name'][$name] = $route;
         }
     }
 
     /**
-     * Find routes by given method
+     * Find routes by method
      *
      * @param string $method
      * @return Route[]
@@ -56,7 +66,7 @@ class Repository
     }
 
     /**
-     * Find route by the given name
+     * Find route by name
      *
      * @param string $name
      * @return Route|null

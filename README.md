@@ -142,35 +142,21 @@ $router->delete('/', function () {
 $router->dispatch();
 ```
 
-You can use the `map()` method for other HTTP methods like this example:
+You can use the `define()` method for other HTTP methods like this example:
 
 ```php
 use MiladRahimi\PhpRouter\Router;
 
 $router = Router::create();
 
-$router->map('GET', '/', function () {
+$router->define('GET', '/', function () {
     return 'GET';
 });
-$router->map('OPTIONS', '/', function () {
+$router->define('OPTIONS', '/', function () {
     return 'OPTIONS';
 });
-$router->map('CUSTOM', '/', function () {
+$router->define('CUSTOM', '/', function () {
     return 'CUSTOM';
-});
-
-$router->dispatch();
-```
-
-If you need to assign multiple HTTP methods to a single controller, there is the `match()` method for you.
-
-```php
-use MiladRahimi\PhpRouter\Router;
-
-$router = Router::create();
-
-$router->match(['GET', 'POST'], '/', function () {
-    return 'GET or POST!';
 });
 
 $router->dispatch();

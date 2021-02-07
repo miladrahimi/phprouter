@@ -6,13 +6,13 @@ use MiladRahimi\PhpRouter\Router;
 
 $router = Router::create();
 
-$router->map('GET', '/', function () {
+$router->define('GET', '/', function () {
     return 'GET';
 });
-$router->map('OPTIONS', '/', function () {
+$router->define('OPTIONS', '/', function () {
     return 'OPTIONS';
 });
-$router->map('CUSTOM', '/', function () {
+$router->define('CUSTOM', '/', function () {
     return 'CUSTOM';
 });
 

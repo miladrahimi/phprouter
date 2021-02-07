@@ -5,11 +5,15 @@ namespace MiladRahimi\PhpRouter;
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Routing\Repository;
 
+/**
+ * Class Url
+ * It generates URLs by name based on the defined routes
+ *
+ * @package MiladRahimi\PhpRouter
+ */
 class Url
 {
     /**
-     * Route repository that holds all the declared routes
-     *
      * @var Repository
      */
     private $repository;
@@ -25,23 +29,23 @@ class Url
     }
 
     /**
-     * Generate URL for the given route name considering the given parameters
+     * Generate (make) URL by name based on the defined routes
      *
-     * @param string $routeName
+     * @param string $name
      * @param string[] $parameters
      * @return string
      * @throws UndefinedRouteException
      */
-    public function make(string $routeName, array $parameters = []): string
+    public function make(string $name, array $parameters = []): string
     {
-        if (!($route = $this->repository->findByName($routeName))) {
-            throw new UndefinedRouteException("There is no route named `$routeName`.");
+        if (!($route = $this->repository->findByName($name))) {
+            throw new UndefinedRouteException("There is no route named `$name`.");
         }
 
         $uri = $route->getPath();
 
-        foreach ($parameters as $name => $value) {
-            $uri = preg_replace('/\??{' . $name . '\??}/', $value, $uri);
+        foreach ($parameters as $key => $value) {
+            $uri = preg_replace('/\??{' . $key . '\??}/', $value, $uri);
         }
 
         $uri = preg_replace('/{[^}]+\?}/', '', $uri);

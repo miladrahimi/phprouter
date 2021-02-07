@@ -7,11 +7,15 @@ use MiladRahimi\PhpRouter\Routing\Route;
 use MiladRahimi\PhpRouter\Routing\Repository;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class Matcher
+ * It finds an appropriate route for HTTP requests
+ *
+ * @package MiladRahimi\PhpRouter\Dispatching
+ */
 class Matcher
 {
     /**
-     * Route repository that holds all the declared routes
-     *
      * @var Repository
      */
     private $repository;
@@ -60,12 +64,12 @@ class Matcher
     private function pruneRouteParameters(array $parameters): array
     {
         return array_filter($parameters, function ($value, $name) {
-            return is_numeric($name) == false;
+            return is_numeric($name) === false;
         }, ARRAY_FILTER_USE_BOTH);
     }
 
     /**
-     * Compare given route with the given http request
+     * Compare the route with the given HTTP request
      *
      * @param Route $route
      * @param ServerRequestInterface $request

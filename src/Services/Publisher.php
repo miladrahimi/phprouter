@@ -2,12 +2,18 @@
 
 namespace MiladRahimi\PhpRouter\Services;
 
+/**
+ * Interface Publisher
+ * It publishes responses provided by controllers and middleware
+ *
+ * @package MiladRahimi\PhpRouter\Services
+ */
 interface Publisher
 {
     /**
-     * Publish the content
+     * Publish the response
      *
-     * @param mixed $content
+     * @param mixed $response
      */
-    public function publish($content): void;
+    public function publish($response): void;
 }

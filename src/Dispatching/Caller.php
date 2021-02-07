@@ -9,11 +9,15 @@ use MiladRahimi\PhpContainer\Exceptions\ContainerException;
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class Caller
+ * It calls (runs) middleware and controllers
+ *
+ * @package MiladRahimi\PhpRouter\Dispatching
+ */
 class Caller
 {
     /**
-     * The dependency injection IoC container
-     *
      * @var Container
      */
     private $container;
@@ -29,7 +33,7 @@ class Caller
     }
 
     /**
-     * Call the given callable stack
+     * Call a callable stack
      *
      * @param string[] $callables
      * @param ServerRequestInterface $request
@@ -55,7 +59,7 @@ class Caller
     }
 
     /**
-     * Run the given callable
+     * Run a callable
      *
      * @param Closure|callable|string $callable
      * @return mixed

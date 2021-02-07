@@ -87,7 +87,7 @@ class HttpMethodTest extends TestCase
         $this->mockRequest('POST', 'http://example.com/');
 
         $router = $this->router();
-        $router->map('POST', '/', [SampleController::class, 'home']);
+        $router->define('POST', '/', [SampleController::class, 'home']);
         $router->dispatch();
 
         $this->assertEquals('Home', $this->output($router));
@@ -101,41 +101,10 @@ class HttpMethodTest extends TestCase
         $this->mockRequest('CUSTOM', 'http://example.com/');
 
         $router = $this->router();
-        $router->map('CUSTOM', '/', [SampleController::class, 'home']);
+        $router->define('CUSTOM', '/', [SampleController::class, 'home']);
         $router->dispatch();
 
         $this->assertEquals('Home', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_match_multiple_routes()
-    {
-        $router = $this->router();
-        $router->match(['PUT', 'PATCH'], '/', [SampleController::class, 'home']);
-
-        $this->mockRequest('PUT', 'http://example.com/');
-        $router->dispatch();
-        $this->assertEquals('Home', $this->output($router));
-
-        $this->mockRequest('PATCH', 'http://example.com/');
-        $router->dispatch();
-        $this->assertEquals('Home', $this->output($router));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function test_match_no_route()
-    {
-        $this->mockRequest('GET', 'http://example.com/');
-
-        $router = $this->router();
-        $router->match([], '/', [SampleController::class, 'home']);
-
-        $this->expectException(RouteNotFoundException::class);
-        $router->dispatch();
     }
 
     /**

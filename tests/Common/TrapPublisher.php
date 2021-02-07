@@ -25,23 +25,23 @@ class TrapPublisher implements Publisher
     /**
      * @inheritdoc
      */
-    public function publish($content): void
+    public function publish($response): void
     {
-        $content = empty($content) ? '' : $content;
+        $response = empty($response) ? '' : $response;
 
-        if ($content instanceof ResponseInterface) {
-            $this->responseCode = $content->getStatusCode();
+        if ($response instanceof ResponseInterface) {
+            $this->responseCode = $response->getStatusCode();
 
-            foreach ($content->getHeaders() as $name => $values) {
-                $value = $content->getHeaderLine($name);
+            foreach ($response->getHeaders() as $name => $values) {
+                $value = $response->getHeaderLine($name);
                 $this->headerLines[] = $name.': '.$value;
             }
 
-            $this->output = $content->getBody();
-        } elseif (is_scalar($content)) {
-            $this->output = (string)$content;
+            $this->output = $response->getBody();
+        } elseif (is_scalar($response)) {
+            $this->output = (string)$response;
         } else {
-            $this->output = json_encode($content);
+            $this->output = json_encode($response);
         }
     }
 }
