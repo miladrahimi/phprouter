@@ -1,11 +1,12 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use MiladRahimi\PhpContainer\Container;
 use MiladRahimi\PhpRouter\Tests\Common\SampleClass;
 use MiladRahimi\PhpRouter\Tests\Common\SampleConstructorController;
 use MiladRahimi\PhpRouter\Tests\Common\SampleInterface;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Throwable;
 
 class ContainerTest extends TestCase

@@ -1,7 +1,8 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Throwable;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\Response\HtmlResponse;

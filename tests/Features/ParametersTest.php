@@ -1,7 +1,8 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Throwable;
 
 class ParametersTest extends TestCase

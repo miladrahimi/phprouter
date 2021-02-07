@@ -1,11 +1,12 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Routing\Attributes;
 use MiladRahimi\PhpRouter\Routing\Route;
 use MiladRahimi\PhpRouter\Tests\Common\SampleMiddleware;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Throwable;
 
 class RouteTest extends TestCase

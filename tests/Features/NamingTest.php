@@ -1,8 +1,9 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use MiladRahimi\PhpRouter\Routing\Route;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Throwable;
 
 class NamingTest extends TestCase

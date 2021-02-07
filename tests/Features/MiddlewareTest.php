@@ -1,12 +1,13 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Tests\Common\SampleController;
 use MiladRahimi\PhpRouter\Tests\Common\SampleMiddleware;
 use MiladRahimi\PhpRouter\Tests\Common\StopperMiddleware;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Throwable;
 
 class MiddlewareTest extends TestCase

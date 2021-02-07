@@ -1,10 +1,11 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use Laminas\Diactoros\ServerRequest;
 use MiladRahimi\PhpContainer\Container;
 use MiladRahimi\PhpRouter\Routing\Route;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;

@@ -1,9 +1,10 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use Laminas\Diactoros\ServerRequest;
 use MiladRahimi\PhpRouter\Tests\Common\SampleController;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Throwable;
 
 class HttpMethodTest extends TestCase

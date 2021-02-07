@@ -1,6 +1,6 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests\Services;
+namespace MiladRahimi\PhpRouter\Tests\Units;
 
 use Laminas\Diactoros\Response\JsonResponse;
 use MiladRahimi\PhpRouter\Router;

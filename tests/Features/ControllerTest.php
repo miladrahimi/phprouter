@@ -1,9 +1,10 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use MiladRahimi\PhpRouter\Tests\Common\SampleController;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use Throwable;
 
 class ControllerTest extends TestCase

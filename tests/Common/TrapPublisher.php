@@ -2,7 +2,7 @@
 
 namespace MiladRahimi\PhpRouter\Tests\Common;
 
-use MiladRahimi\PhpRouter\Services\Publisher;
+use MiladRahimi\PhpRouter\Publisher\Publisher;
 use Psr\Http\Message\ResponseInterface;
 
 class TrapPublisher implements Publisher

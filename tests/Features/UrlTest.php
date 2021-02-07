@@ -1,8 +1,9 @@
 <?php
 
-namespace MiladRahimi\PhpRouter\Tests;
+namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
+use MiladRahimi\PhpRouter\Tests\TestCase;
 use MiladRahimi\PhpRouter\Url;
 use Throwable;
 
