@@ -1,5 +1,6 @@
 /.idea
 /vendor
+/examples
 /composer.lock
 /build
 .DS_Store
