@@ -162,7 +162,7 @@ $router->define('CUSTOM', '/', function () {
 $router->dispatch();
 ```
 
-If you don't want to care about HTTP verbs, you can use the `any()` method.
+If you don't care about HTTP verbs, you can use the `any()` method.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -225,7 +225,7 @@ $router->dispatch();
 
 A URL might have one or more variable parts like product IDs on a shopping website.
 We call it a route parameter.
-You can catch them by controller arguments like the example below.
+You can catch them by controller method arguments like the example below.
 
 ```php
 use MiladRahimi\PhpRouter\Router;
@@ -255,6 +255,8 @@ $router->get('/post/{pid}/comment/{cid}', function ($pid, $cid) {
 
 $router->dispatch();
 ```
+
+#### Route Parameter Patterns
 
 In default, route parameters can have any value, but you can define regex patterns to limit them.
 
@@ -291,8 +293,8 @@ use Laminas\Diactoros\Response\JsonResponse;
 
 $router = Router::create();
 
-$router->get('/test', function (ServerRequest $request) {
-    return new JsonResponse([
+$router->get('/', function (ServerRequest $request) {
+    $info = [
         'method' => $request->getMethod(),
         'uri' => $request->getUri()->getPath(),
         'body' => $request->getBody()->getContents(),
@@ -300,7 +302,8 @@ $router->get('/test', function (ServerRequest $request) {
         'headers' => $request->getHeaders(),
         'queryParameters' => $request->getQueryParams(),
         'attributes' => $request->getAttributes(),
-    ]);
+    ];
+    // ...
 });
 
 $router->dispatch();
@@ -409,8 +412,8 @@ class AuthMiddleware
 {
     public function handle(ServerRequestInterface $request, Closure $next)
     {
-        if ($request->getHeader('Authorization')) {
-            // Check the auth header...
+        if ($request->getHeader('Authorization')) {            
+            // Call the next middleware/controller
             return $next($request);
         }
 
@@ -423,7 +426,7 @@ $router = Router::create();
 // The middleware attribute takes an array of middleware, not a single one!
 $router->group(['middleware' => [AuthMiddleware::class]], function(Router $router) {
     $router->get('/admin', function () {
-        return 'Admin Panel';
+        return 'Admin API';
     });
 });
 
@@ -547,12 +550,12 @@ $router->getContainer()->singleton(Database::class, MySQL::class);
 $router->getContainer()->singleton(Config::class, JsonConfig::class);
 
 // Resolve directly
-$router->get('/direct', function (Database $database, Config $config) {
+$router->get('/', function (Database $database, Config $config) {
     // Use MySQL and JsonConfig...
 });
 
 // Resolve container
-$router->get('/container', function (Container $container) {
+$router->get('/', function (Container $container) {
     $database = $container->get(Database::class);
     $config = $container->get(Config::class);
 });
@@ -582,6 +585,7 @@ $router->get('/', function () {
 try {
     $router->dispatch();
 } catch (RouteNotFoundException $e) {
+    // It's 404!
     $router->getPublisher()->publish(new HtmlResponse('Not found.', 404));
 } catch (Throwable $e) {
     // Log and report...
