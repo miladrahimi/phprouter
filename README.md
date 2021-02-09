@@ -375,7 +375,7 @@ $router->dispatch();
 
 There is also some points:
 * View files must have the ".phtml" extension (e.g. `profile.phtml`).
-* You must separate sub-directories with `.` (e.g. `blog.post` for `blog/post.phtml`).
+* You can separate directories with `.` (e.g. `blog.post` for `blog/post.phtml`).
 
 View files are pure PHP or mixed with HTML.
 You should use PHP language with template style in the view files.
