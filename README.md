@@ -298,15 +298,11 @@ use Laminas\Diactoros\Response\JsonResponse;
 $router = Router::create();
 
 $router->get('/', function (ServerRequest $request) {
-    $info = [
-        'method' => $request->getMethod(),
-        'uri' => $request->getUri()->getPath(),
-        'body' => $request->getBody()->getContents(),
-        'parsedBody' => $request->getParsedBody(),
-        'headers' => $request->getHeaders(),
-        'queryParameters' => $request->getQueryParams(),
-        'attributes' => $request->getAttributes(),
-    ];
+    $method  = $request->getMethod();
+    $uriPath = $request->getUri()->getPath();
+    $headers = $request->getHeaders();
+    $queryParameters = $request->getQueryParams();
+    $bodyContents    = $request->getBody()->getContents();
     // ...
 });
 
