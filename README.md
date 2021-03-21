@@ -99,7 +99,7 @@ Here you can see sample configurations for NGINX and Apache HTTP Server.
 
 ### Getting Started
 
-It's so easy to work with Php Router! Just take a look at the following example.
+It's so easy to work with PhpRouter! Just take a look at the following example.
 
 *  JSON API Example:
 
