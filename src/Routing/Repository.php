@@ -30,11 +30,11 @@ class Repository
      * @param string|null $domain
      */
     public function save(
-        string $method,
-        string $path,
-        $controller,
+        string  $method,
+        string  $path,
+                $controller,
         ?string $name,
-        array $middleware,
+        array   $middleware,
         ?string $domain
     ): void
     {
@@ -74,5 +74,22 @@ class Repository
     public function findByName(string $name): ?Route
     {
         return $this->routes['name'][$name] ?? null;
+    }
+
+    /**
+     * Index all the defined routes
+     *
+     * @return Route[]
+     */
+    public function all(): array
+    {
+        $all = [];
+        foreach ($this->routes['method'] as $group) {
+            foreach ($group as $route) {
+                $all[] = $route;
+            }
+        }
+
+        return $all;
     }
 }

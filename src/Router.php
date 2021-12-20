@@ -69,11 +69,11 @@ class Router
      * @param Publisher $publisher
      */
     public function __construct(
-        Container $container,
+        Container   $container,
         Storekeeper $storekeeper,
-        Matcher $matcher,
-        Caller $caller,
-        Publisher $publisher
+        Matcher     $matcher,
+        Caller      $caller,
+        Publisher   $publisher
     )
     {
         $this->container = $container;
@@ -101,9 +101,9 @@ class Router
 
     /**
      * Setup (enable) View
+     * @param string $directory
      * @link View
      *
-     * @param string $directory
      */
     public function setupView(string $directory): void
     {
@@ -160,6 +160,16 @@ class Router
     public function pattern(string $name, string $pattern)
     {
         $this->patterns[$name] = $pattern;
+    }
+
+    /**
+     * Index all the defined routes
+     *
+     * @return Route[]
+     */
+    public function all(): array
+    {
+        return $this->storekeeper->getRepository()->all();
     }
 
     /**

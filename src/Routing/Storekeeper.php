@@ -69,4 +69,12 @@ class Storekeeper
     {
         $this->state = $state;
     }
+
+    /**
+     * @return Repository
+     */
+    public function getRepository(): Repository
+    {
+        return $this->repository;
+    }
 }
