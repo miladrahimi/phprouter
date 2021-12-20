@@ -3,6 +3,7 @@
 namespace MiladRahimi\PhpRouter\Tests\Features;
 
 use MiladRahimi\PhpContainer\Container;
+use MiladRahimi\PhpRouter\Router;
 use MiladRahimi\PhpRouter\Tests\Common\SampleClass;
 use MiladRahimi\PhpRouter\Tests\Common\SampleConstructorController;
 use MiladRahimi\PhpRouter\Tests\Common\SampleInterface;
@@ -67,5 +68,21 @@ class ContainerTest extends TestCase
         $router->dispatch();
 
         $this->assertEquals(SampleClass::class, $this->output($router));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function test_binding_router_object()
+    {
+        $router = $this->router();
+
+        $router->get('/', function (Router $router) {
+            return count($router->all());
+        });
+
+        $router->dispatch();
+
+        $this->assertEquals('1', $this->output($router));
     }
 }
