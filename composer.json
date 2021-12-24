@@ -33,7 +33,7 @@
     "miladrahimi/phpcontainer": "^5.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7|^8"
+    "phpunit/phpunit": "^7|^8|^9"
   },
   "autoload": {
     "psr-4": {
