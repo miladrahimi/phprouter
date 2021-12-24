@@ -22,7 +22,7 @@ Some of the provided features:
 * Integrated with an IoC Container ([PhpContainer](https://github.com/miladrahimi/phpcontainer))
 * Method and constructor auto-injection of Request, Route, Url, etc
 
-The current version requires PHP `v7.1` or newer versions including `v8.0`.
+The current version requires PHP `v7.1` or newer versions including `v8.*`.
 
 ## Contents
 - [Versions](#versions)
