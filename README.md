@@ -44,14 +44,8 @@ The current version requires PHP `v7.4` or newer versions including `v8.*`.
 - [License](#license)
 
 ## Versions
-
-Supported versions:
-
-* v5.x.x
+* **v5.x.x** (Current, Supported)
 * v4.x.x
-
-Unsupported versions:
-
 * v3.x.x
 * v2.x.x
 * v1.x.x
