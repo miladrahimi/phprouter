@@ -5,10 +5,7 @@ namespace MiladRahimi\PhpRouter\Routing;
 use Closure;
 
 /**
- * Class Repository
  * It is a repository for the defined routes
- *
- * @package MiladRahimi\PhpRouter\Routing
  */
 class Repository
 {
@@ -17,7 +14,7 @@ class Repository
      *
      * @var Route[]
      */
-    private $routes = [];
+    private array $routes = [];
 
     /**
      * Save a new route

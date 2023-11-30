@@ -14,7 +14,7 @@ class HttpMethodTest extends TestCase
      */
     public function test_a_get_route()
     {
-        $this->mockRequest('GET', 'http://example.com/');
+        $this->mockRequest('GET', 'https://example.com/');
 
         $router = $this->router();
         $router->get('/', [SampleController::class, 'home']);
@@ -28,7 +28,7 @@ class HttpMethodTest extends TestCase
      */
     public function test_a_post_route()
     {
-        $this->mockRequest('POST', 'http://example.com/');
+        $this->mockRequest('POST', 'https://example.com/');
 
         $router = $this->router();
         $router->post('/', [SampleController::class, 'home']);
@@ -42,7 +42,7 @@ class HttpMethodTest extends TestCase
      */
     public function test_a_put_route()
     {
-        $this->mockRequest('PUT', 'http://example.com/');
+        $this->mockRequest('PUT', 'https://example.com/');
 
         $router = $this->router();
         $router->put('/', [SampleController::class, 'home']);
@@ -56,7 +56,7 @@ class HttpMethodTest extends TestCase
      */
     public function test_a_patch_route()
     {
-        $this->mockRequest('PATCH', 'http://example.com/');
+        $this->mockRequest('PATCH', 'https://example.com/');
 
         $router = $this->router();
         $router->patch('/', [SampleController::class, 'home']);
@@ -70,7 +70,7 @@ class HttpMethodTest extends TestCase
      */
     public function test_a_delete_route()
     {
-        $this->mockRequest('DELETE', 'http://example.com/');
+        $this->mockRequest('DELETE', 'https://example.com/');
 
         $router = $this->router();
         $router->delete('/', [SampleController::class, 'home']);
@@ -84,7 +84,7 @@ class HttpMethodTest extends TestCase
      */
     public function test_map_a_post_route()
     {
-        $this->mockRequest('POST', 'http://example.com/');
+        $this->mockRequest('POST', 'https://example.com/');
 
         $router = $this->router();
         $router->define('POST', '/', [SampleController::class, 'home']);
@@ -98,7 +98,7 @@ class HttpMethodTest extends TestCase
      */
     public function test_map_a_custom_method()
     {
-        $this->mockRequest('CUSTOM', 'http://example.com/');
+        $this->mockRequest('CUSTOM', 'https://example.com/');
 
         $router = $this->router();
         $router->define('CUSTOM', '/', [SampleController::class, 'home']);
@@ -117,11 +117,11 @@ class HttpMethodTest extends TestCase
             return $request->getMethod();
         });
 
-        $this->mockRequest('GET', 'http://example.com/');
+        $this->mockRequest('GET', 'https://example.com/');
         $router->dispatch();
         $this->assertEquals('GET', $this->output($router));
 
-        $this->mockRequest('POST', 'http://example.com/');
+        $this->mockRequest('POST', 'https://example.com/');
         $router->dispatch();
         $this->assertEquals('POST', $this->output($router));
     }

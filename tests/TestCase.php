@@ -17,7 +17,7 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->mockRequest('GET', 'http://example.com/');
+        $this->mockRequest('GET', 'https://example.com/');
     }
 
     /**
@@ -55,7 +55,7 @@ class TestCase extends BaseTestCase
      * @param Router $router
      * @return string
      */
-    protected function output(Router $router)
+    protected function output(Router $router): string
     {
         return $this->publisher($router)->output;
     }

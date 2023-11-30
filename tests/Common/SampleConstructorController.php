@@ -4,10 +4,7 @@ namespace MiladRahimi\PhpRouter\Tests\Common;
 
 class SampleConstructorController
 {
-    /**
-     * @var SampleInterface
-     */
-    public $sample;
+    public SampleInterface $sample;
 
     public function __construct(SampleInterface $sample)
     {

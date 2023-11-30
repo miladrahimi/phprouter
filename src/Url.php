@@ -6,23 +6,12 @@ use MiladRahimi\PhpRouter\Exceptions\UndefinedRouteException;
 use MiladRahimi\PhpRouter\Routing\Repository;
 
 /**
- * Class Url
  * It generates URLs by name based on the defined routes
- *
- * @package MiladRahimi\PhpRouter
  */
 class Url
 {
-    /**
-     * @var Repository
-     */
-    private $repository;
+    private Repository $repository;
 
-    /**
-     * Constructor
-     *
-     * @param Repository $repository
-     */
     public function __construct(Repository $repository)
     {
         $this->repository = $repository;
@@ -49,8 +38,6 @@ class Url
         }
 
         $uri = preg_replace('/{[^}]+\?}/', '', $uri);
-        $uri = str_replace('/?', '', $uri);
-
-        return $uri;
+        return str_replace('/?', '', $uri);
     }
 }

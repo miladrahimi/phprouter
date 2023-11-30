@@ -16,7 +16,7 @@ class RouteTest extends TestCase
      */
     public function test_current_route_for_a_route_with_all_attributes()
     {
-        $this->mockRequest('POST', 'http://shop.com/admin/profile/666');
+        $this->mockRequest('POST', 'https://shop.com/admin/profile/666');
 
         $router = $this->router();
 
@@ -55,7 +55,7 @@ class RouteTest extends TestCase
      */
     public function test_lately_added_attributes_of_route()
     {
-        $this->mockRequest('POST', 'http://shop.com/admin/profile/666');
+        $this->mockRequest('POST', 'https://shop.com/admin/profile/666');
 
         $router = $this->router();
 

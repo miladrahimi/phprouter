@@ -5,10 +5,7 @@ namespace MiladRahimi\PhpRouter\Publisher;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class HttpPublisher
  * It publishes responses provided by controllers and middleware as HTTP responses
- *
- * @package MiladRahimi\PhpRouter\Services
  */
 class HttpPublisher implements Publisher
 {

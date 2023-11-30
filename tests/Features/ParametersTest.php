@@ -13,7 +13,7 @@ class ParametersTest extends TestCase
     public function test_with_a_required_parameter()
     {
         $id = random_int(1, 100);
-        $this->mockRequest('GET', "http://example.com/products/$id");
+        $this->mockRequest('GET', "https://example.com/products/$id");
 
         $router = $this->router();
         $router->get('/products/{id}', function ($id) {
@@ -31,7 +31,7 @@ class ParametersTest extends TestCase
     {
         $pid = random_int(1, 100);
         $cid = random_int(1, 100);
-        $this->mockRequest('GET', "http://example.com/products/$pid/comments/$cid");
+        $this->mockRequest('GET', "https://example.com/products/$pid/comments/$cid");
 
         $router = $this->router();
         $router->get('/products/{pid}/comments/{cid}', function ($pid, $cid) {
@@ -48,7 +48,7 @@ class ParametersTest extends TestCase
     public function test_with_a_provided_optional_parameter()
     {
         $id = random_int(1, 100);
-        $this->mockRequest('GET', "http://example.com/products/$id");
+        $this->mockRequest('GET', "https://example.com/products/$id");
 
         $router = $this->router();
         $router->get('/products/{id?}', function ($id = 'default') {
@@ -64,7 +64,7 @@ class ParametersTest extends TestCase
      */
     public function test_with_a_unprovided_optional_parameter()
     {
-        $this->mockRequest('GET', "http://example.com/products/");
+        $this->mockRequest('GET', "https://example.com/products/");
 
         $router = $this->router();
         $router->get('/products/{id?}', function ($id = 'default') {
@@ -80,7 +80,7 @@ class ParametersTest extends TestCase
      */
     public function test_with_a_unprovided_optional_parameter_and_slash()
     {
-        $this->mockRequest('GET', "http://example.com/products");
+        $this->mockRequest('GET', "https://example.com/products");
 
         $router = $this->router();
         $router->get('/products/?{id?}', function ($id = 'default') {
@@ -98,7 +98,7 @@ class ParametersTest extends TestCase
     {
         $pid = random_int(1, 100);
         $cid = random_int(1, 100);
-        $this->mockRequest('GET', "http://example.com/products/$pid/comments/$cid");
+        $this->mockRequest('GET', "https://example.com/products/$pid/comments/$cid");
 
         $router = $this->router();
         $router->get('/products/{pid?}/comments/{cid?}', function ($pid, $cid) {
@@ -116,7 +116,7 @@ class ParametersTest extends TestCase
     {
         $pid = random_int(1, 100);
         $cid = random_int(1, 100);
-        $this->mockRequest('GET', "http://example.com/products/$pid/comments/$cid");
+        $this->mockRequest('GET', "https://example.com/products/$pid/comments/$cid");
 
         $router = $this->router();
         $router->get('/products/{pid}/comments/{cid?}', function ($pid, $cid = 'default') {

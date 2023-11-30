@@ -10,23 +10,12 @@ use MiladRahimi\PhpRouter\Exceptions\InvalidCallableException;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Caller
  * It calls (runs) middleware and controllers
- *
- * @package MiladRahimi\PhpRouter\Dispatching
  */
 class Caller
 {
-    /**
-     * @var Container
-     */
-    private $container;
+    private Container $container;
 
-    /**
-     * Constructor
-     *
-     * @param Container $container
-     */
     public function __construct(Container $container)
     {
         $this->container = $container;
@@ -75,13 +64,13 @@ class Caller
 
             [$class, $method] = $callable;
 
-            if (class_exists($class) == false) {
+            if (!class_exists($class)) {
                 throw new InvalidCallableException("Class `$class` not found.");
             }
 
             $object = $this->container->instantiate($class);
 
-            if (method_exists($object, $method) == false) {
+            if (!method_exists($object, $method)) {
                 throw new InvalidCallableException("Method `$class::$method` is not declared.");
             }
 
@@ -104,7 +93,7 @@ class Caller
             }
         }
 
-        if (is_callable($callable) == false) {
+        if (!is_callable($callable)) {
             throw new InvalidCallableException('Invalid callable.');
         }
 

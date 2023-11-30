@@ -67,7 +67,7 @@ class GroupingTest extends TestCase
      */
     public function test_with_a_prefix()
     {
-        $this->mockRequest('GET', 'http://example.com/group/page');
+        $this->mockRequest('GET', 'https://example.com/group/page');
 
         $router = $this->router();
         $router->group(['prefix' => '/group'], function (Router $router) {
@@ -83,7 +83,7 @@ class GroupingTest extends TestCase
      */
     public function test_nested_groups_with_prefix()
     {
-        $this->mockRequest('GET', 'http://example.com/group1/group2/page');
+        $this->mockRequest('GET', 'https://example.com/group1/group2/page');
 
         $router = $this->router();
         $router->group(['prefix' => '/group1'], function (Router $router) {
@@ -101,7 +101,7 @@ class GroupingTest extends TestCase
      */
     public function test_with_domain()
     {
-        $this->mockRequest('GET', 'http://sub.domain.tld/');
+        $this->mockRequest('GET', 'https://sub.domain.tld/');
 
         $router = $this->router();
         $router->group(['domain' => 'sub.domain.tld'], function (Router $router) {
@@ -117,7 +117,7 @@ class GroupingTest extends TestCase
      */
     public function test_nested_groups_with_domain_it_should_consider_the_inner_group_domain()
     {
-        $this->mockRequest('GET', 'http://sub2.domain.com/');
+        $this->mockRequest('GET', 'https://sub2.domain.com/');
 
         $router = $this->router();
         $router->group(['domain' => 'sub1.domain.com'], function (Router $router) {

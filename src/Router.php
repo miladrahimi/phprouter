@@ -20,54 +20,27 @@ use Psr\Container\ContainerInterface;
 use Laminas\Diactoros\ServerRequestFactory;
 
 /**
- * Class Router
  * It defines the application routes and dispatches them (runs the application).
- *
- * @package MiladRahimi\PhpRouter
  */
 class Router
 {
-    /**
-     * @var Container
-     */
-    private $container;
+    private Container $container;
 
-    /**
-     * @var Storekeeper
-     */
-    private $storekeeper;
+    private Storekeeper $storekeeper;
 
-    /**
-     * @var Matcher
-     */
-    private $matcher;
+    private Matcher $matcher;
 
-    /**
-     * @var Caller
-     */
-    private $caller;
+    private Caller $caller;
 
-    /**
-     * @var Publisher
-     */
-    private $publisher;
+    private Publisher $publisher;
 
     /**
      * List of defined parameter patterns with `pattern()` method
      *
      * @var string[]
      */
-    private $patterns = [];
+    private array $patterns = [];
 
-    /**
-     * Constructor
-     *
-     * @param Container $container
-     * @param Storekeeper $storekeeper
-     * @param Matcher $matcher
-     * @param Caller $caller
-     * @param Publisher $publisher
-     */
     public function __construct(
         Container   $container,
         Storekeeper $storekeeper,

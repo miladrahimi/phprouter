@@ -28,7 +28,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page()
     {
-        $this->mockRequest('GET', 'http://web.com/page');
+        $this->mockRequest('GET', 'https://web.com/page');
 
         $router = $this->router();
         $router->get('/', function (Url $url) {
@@ -47,7 +47,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_required_parameter()
     {
-        $this->mockRequest('GET', 'http://web.com/');
+        $this->mockRequest('GET', 'https://web.com/');
 
         $router = $this->router();
         $router->get('/', function (Url $url) {
@@ -66,7 +66,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_optional_parameter()
     {
-        $this->mockRequest('GET', 'http://web.com/');
+        $this->mockRequest('GET', 'https://web.com/');
 
         $router = $this->router();
         $router->get('/', function (Url $url) {
@@ -85,7 +85,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_optional_parameter_ignored()
     {
-        $this->mockRequest('GET', 'http://web.com/');
+        $this->mockRequest('GET', 'https://web.com/');
 
         $router = $this->router();
         $router->get('/', function (Url $url) {
@@ -104,7 +104,7 @@ class UrlTest extends TestCase
      */
     public function test_generating_url_for_a_page_with_optional_parameter_and_slash_ignored()
     {
-        $this->mockRequest('GET', 'http://web.com/');
+        $this->mockRequest('GET', 'https://web.com/');
 
         $router = $this->router();
         $router->get('/', function (Url $url) {

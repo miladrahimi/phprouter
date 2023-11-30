@@ -7,20 +7,14 @@ use Psr\Http\Message\ResponseInterface;
 
 class TrapPublisher implements Publisher
 {
-    /**
-     * @var string
-     */
-    public $output = '';
+    public string $output = '';
 
-    /**
-     * @var int
-     */
-    public $responseCode = 0;
+    public int $responseCode = 0;
 
     /**
      * @var string[]
      */
-    public $headerLines = [];
+    public array $headerLines = [];
 
     /**
      * @inheritdoc

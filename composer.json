@@ -16,21 +16,21 @@
   "authors": [
     {
       "name": "Milad Rahimi",
-      "email": "info@miladrahimi.com",
+      "email": "i@miladrahimi.com",
       "homepage": "https://miladrahimi.com",
       "role": "Developer"
     }
   ],
   "support": {
-    "email": "info@miladrahimi.com",
+    "email": "i@miladrahimi.com",
     "source": "https://github.com/miladrahimi/phprouter/issues"
   },
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.4",
     "ext-json": "*",
     "ext-mbstring": "*",
     "laminas/laminas-diactoros": "^2.2",
-    "miladrahimi/phpcontainer": "^5.3.1"
+    "miladrahimi/phpcontainer": "^5.3.3"
   },
   "require-dev": {
     "phpunit/phpunit": "^7|^8|^9"

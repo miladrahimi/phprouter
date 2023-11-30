@@ -1,0 +1,27 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  run:
+    strategy:
+      matrix:
+        include:
+          - php: '7.4'
+          - php: '8.0'
+          - php: '8.1'
+          - php: '8.2'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ matrix.php }}"
+      - name: Install dependencies
+        run: composer self-update && composer install && composer dump-autoload
+      - name: Run tests and collect coverage
+        run: vendor/bin/phpunit --coverage-clover coverage.xml .
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4-beta
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

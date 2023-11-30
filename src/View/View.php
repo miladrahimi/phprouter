@@ -3,19 +3,13 @@
 namespace MiladRahimi\PhpRouter\View;
 
 /**
- * Interface View
  * It makes views
- *
- * @package MiladRahimi\PhpRouter\Services
  */
 interface View
 {
     /**
      * Make a view
      *
-     * @param string $name
-     * @param array $data
-     * @param int $httpStatus
      * @param string[] $httpHeaders
      * @return mixed
      */

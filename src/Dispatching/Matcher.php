@@ -8,23 +8,12 @@ use MiladRahimi\PhpRouter\Routing\Repository;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Matcher
  * It finds an appropriate route for HTTP requests
- *
- * @package MiladRahimi\PhpRouter\Dispatching
  */
 class Matcher
 {
-    /**
-     * @var Repository
-     */
-    private $repository;
+    private Repository $repository;
 
-    /**
-     * Constructor
-     *
-     * @param Repository $repository
-     */
     public function __construct(Repository $repository)
     {
         $this->repository = $repository;
@@ -38,7 +27,7 @@ class Matcher
      * @return Route
      * @throws RouteNotFoundException
      */
-    public function find(ServerRequestInterface $request, array $patterns)
+    public function find(ServerRequestInterface $request, array $patterns): Route
     {
         foreach ($this->repository->findByMethod($request->getMethod()) as $route) {
             $parameters = [];
@@ -59,7 +48,6 @@ class Matcher
      *
      * @param string[] $parameters
      * @return string[]
-     * @noinspection PhpUnusedParameterInspection
      */
     private function pruneRouteParameters(array $parameters): array
     {

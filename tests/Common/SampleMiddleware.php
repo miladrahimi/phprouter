@@ -6,22 +6,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class SampleMiddleware
 {
-    /**
-     * @var string
-     */
-    public $content;
+    public string $content;
 
-    /**
-     * @var array
-     */
-    public static $output = [];
+    public static array $output = [];
 
-    /**
-     * SampleMiddleware constructor.
-     *
-     * @param string|null $content
-     */
-    public function __construct(string $content = null)
+    public function __construct(?string $content = null)
     {
         static::$output = [];
 

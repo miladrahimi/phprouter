@@ -3,27 +3,15 @@
 namespace MiladRahimi\PhpRouter\Routing;
 
 /**
- * Class State
  * It is state (attributes) of routes
- *
- * @package MiladRahimi\PhpRouter\Routing
  */
 class State
 {
-    /**
-     * @var string
-     */
-    private $prefix;
+    private string $prefix;
 
-    /**
-     * @var array
-     */
-    private $middleware;
+    private array $middleware;
 
-    /**
-     * @var string|null
-     */
-    private $domain;
+    private ?string $domain;
 
     /**
      * Constructor
@@ -41,8 +29,6 @@ class State
 
     /**
      * Append new attributes to the existing ones
-     *
-     * @param array $attributes
      */
     public function append(array $attributes): void
     {
@@ -51,25 +37,16 @@ class State
         $this->middleware = array_merge($this->middleware, $attributes[Attributes::MIDDLEWARE] ?? []);
     }
 
-    /**
-     * @return string
-     */
     public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    /**
-     * @return array
-     */
     public function getMiddleware(): array
     {
         return $this->middleware;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDomain(): ?string
     {
         return $this->domain;

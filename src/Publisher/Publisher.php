@@ -3,10 +3,7 @@
 namespace MiladRahimi\PhpRouter\Publisher;
 
 /**
- * Interface Publisher
  * It publishes responses provided by controllers and middleware
- *
- * @package MiladRahimi\PhpRouter\Services
  */
 interface Publisher
 {

@@ -2,28 +2,16 @@
 
 namespace MiladRahimi\PhpRouter\View;
 
-use Laminas\Diactoros\Response\EmptyResponse;
-
 /**
- * Class PhpView
  * It makes views from PHP and HTML/PHP files
- *
- * @package MiladRahimi\PhpRouter\Services
  */
 class PhpView implements View
 {
     /**
      * The root directory of view files
-     *
-     * @var string
      */
-    private $directory;
+    private string $directory;
 
-    /**
-     * Constructor
-     *
-     * @param string $directory
-     */
     public function __construct(string $directory)
     {
         $this->directory = $directory;
@@ -45,7 +33,6 @@ class PhpView implements View
 
         extract($data);
 
-        /** @noinspection PhpIncludeInspection */
         require $path;
 
         return null;

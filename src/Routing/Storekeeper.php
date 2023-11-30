@@ -5,29 +5,14 @@ namespace MiladRahimi\PhpRouter\Routing;
 use Closure;
 
 /**
- * Class Storekeeper
  * It adds new routes with an existing state (attributes) into a Route repository
- *
- * @package MiladRahimi\PhpRouter\Routing
  */
 class Storekeeper
 {
-    /**
-     * @var Repository
-     */
-    private $repository;
+    private Repository $repository;
 
-    /**
-     * @var State
-     */
-    private $state;
+    private State $state;
 
-    /**
-     * Constructor
-     *
-     * @param Repository $repository
-     * @param State $state
-     */
     public function __construct(Repository $repository, State $state)
     {
         $this->repository = $repository;
@@ -54,25 +39,16 @@ class Storekeeper
         );
     }
 
-    /**
-     * @return State
-     */
     public function getState(): State
     {
         return $this->state;
     }
 
-    /**
-     * @param State $state
-     */
     public function setState(State $state): void
     {
         $this->state = $state;
     }
 
-    /**
-     * @return Repository
-     */
     public function getRepository(): Repository
     {
         return $this->repository;
