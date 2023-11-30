@@ -1,7 +1,8 @@
 [![Latest Stable Version](https://poser.pugx.org/miladrahimi/phprouter/v)](//packagist.org/packages/miladrahimi/phprouter)
 [![Total Downloads](https://poser.pugx.org/miladrahimi/phprouter/downloads)](//packagist.org/packages/miladrahimi/phprouter)
-[![Build Status](https://travis-ci.org/miladrahimi/phprouter.svg?branch=master)](https://travis-ci.org/miladrahimi/phprouter)
-[![Coverage Status](https://coveralls.io/repos/github/miladrahimi/phprouter/badge.svg?branch=master)](https://coveralls.io/github/miladrahimi/phprouter?branch=master)
+[![Build](https://github.com/miladrahimi/phprouter/actions/workflows/ci.yml/badge.svg)](https://github.com/miladrahimi/phprouter/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/miladrahimi/phprouter/graph/badge.svg?token=KctrYUweFd)](https://codecov.io/gh/miladrahimi/phprouter)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/miladrahimi/phprouter/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/miladrahimi/phprouter/?branch=master)
 [![License](https://poser.pugx.org/miladrahimi/phprouter/license)](//packagist.org/packages/miladrahimi/phprouter)
 
 # PhpRouter
