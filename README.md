@@ -7,7 +7,7 @@
 
 # PhpRouter
 
-PhpRouter is a powerful, lightweight, and very fast HTTP URL router for PHP projects.
+PhpRouter is a full-featured yet very fast HTTP URL router for PHP projects.
 
 Some of the provided features:
 * Route parameters
