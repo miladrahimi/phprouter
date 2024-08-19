@@ -342,7 +342,7 @@ $router->dispatch();
 
 ### Views
 
-You might need to create a classic-style website that uses views.
+You might need to create a classic-style server-side rendered (SSR) website that uses views.
 PhpRouter has a simple feature for working with PHP/HTML views.
 Look at the following example.
 
