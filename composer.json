@@ -1,5 +1,5 @@
 {
-  "name": "miladrahimi/phprouter",
+  "name": "lazarusphp/phprouter",
   "description": "A powerful, lightweight, and very fast HTTP URL router for PHP projects.",
   "keywords": [
     "Route",
