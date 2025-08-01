@@ -10,6 +10,7 @@ use Throwable;
 class ViewTest extends TestCase
 {
     /**
+     * @runInSeparateProcess
      * @throws Throwable
      */
     public function test_with_the_sample_view()
@@ -28,6 +29,7 @@ class ViewTest extends TestCase
     }
 
     /**
+     * @runInSeparateProcess
      * @throws Throwable
      */
     public function test_with_the_sample_view_and_status_201_and_headers()
