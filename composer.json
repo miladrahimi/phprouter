@@ -29,7 +29,7 @@
     "php": ">=7.4",
     "ext-json": "*",
     "ext-mbstring": "*",
-    "laminas/laminas-diactoros": "^2",
+    "laminas/laminas-diactoros": "^3",
     "miladrahimi/phpcontainer": "^5"
   },
   "require-dev": {
