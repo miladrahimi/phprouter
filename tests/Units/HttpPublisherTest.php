@@ -58,6 +58,7 @@ class HttpPublisherTest extends TestCase
     }
 
     /**
+     * @runInSeparateProcess
      * @throws Throwable
      */
     public function test_publish_a_standard_response()
