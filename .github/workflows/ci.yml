@@ -1,5 +1,9 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
 jobs:
   run:
     strategy:
@@ -11,18 +15,23 @@ jobs:
           - php: '8.2'
           - php: '8.3'
           - php: '8.4'
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "${{ matrix.php }}"
+
       - name: Install dependencies
         run: composer self-update && composer install && composer dump-autoload
+
       - name: Run tests and collect coverage
         run: vendor/bin/phpunit --coverage-clover coverage.xml .
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4-beta
         env:
